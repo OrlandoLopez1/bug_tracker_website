@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profilePicture: { type: String, default: '/defaultpfp.png' },
 });
 
 const User = mongoose.model('User', userSchema);
@@ -62,6 +63,24 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ status: "error", message: error.message });
     }
 });
+
+app.get('/user', async (req, res) => {
+    const username = req.query.username;
+    const user = await User.findOne({ username: username });
+
+    if (user == null) {
+        return res.status(404).json({ message: 'Cannot find user' });
+    }
+
+    // You could omit the password from the returned user data
+    const userWithoutPassword = {
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture
+    };
+    res.json(userWithoutPassword);
+});
+
 
 
 app.listen(5000, () => {
