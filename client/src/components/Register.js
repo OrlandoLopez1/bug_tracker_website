@@ -7,7 +7,6 @@ export default function Register() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(username, email, password); //todo remove later
         fetch("http://localhost:5000/register", {
             method: "POST",
             crossDomain: true,
