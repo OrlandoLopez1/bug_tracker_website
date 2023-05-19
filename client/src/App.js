@@ -1,18 +1,24 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import SideMenu from './components/SideMenu';
-import Login from './components/Login';
-import Register from './components/Register';
+import React from "react";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Login from "./components/Login";
+import Register from "./components/Register";
+import HomePage from "./components/HomePage";
 
 function App() {
+    const isLoggedIn = window.localStorage.getItem("loggedIn");
     return (
         <Router>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/" element={<><Navbar /><SideMenu /></>} />
-            </Routes>
+            <div className="App">
+                <Routes>
+                    <Route path="/" element={ isLoggedIn ? <HomePage /> : <Login /> } />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/homepage" element={<HomePage />} />
+
+                </Routes>
+            </div>
         </Router>
     );
 }

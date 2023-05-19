@@ -1,43 +1,94 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
-function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+export default function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        // send a request to the server for authentication
-        // then store the JWT in localStorage
+        console.log("submit clicked");
+        fetch("http://localhost:5000/login", {
+            method: "POST",
+            crossDomain: true,
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.status === "ok") {
+                    // Store username in localStorage after successful login
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('loggedIn', 'true')
+                    console.log(data, "userLogin");
+                    navigate("/homepage")
+                    alert("Login Successful");
+                } else {
+                    alert("Something went wrong");
+                }
+            });
+
+
+
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Email:
-                <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                />
-            </label>
-            <label>
-                Password:
-                <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                />
-            </label>
-            <button type="submit">Log In</button>
-            <Link to="/register">Don't have an account? Register</Link>
+        <div className="auth-wrapper">
+            <div className="auth-inner">
+                <form onSubmit={handleSubmit}>
+                    <h3>Sign In</h3>
 
-        </form>
+                    <div className="mb-3">
+                        <label>Email address</label>
+                        <input
+                            type="email"
+                            className="form-control"
+                            placeholder="Enter email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            placeholder="Enter password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <div className="custom-control custom-checkbox">
+                            <input
+                                type="checkbox"
+                                className="custom-control-input"
+                                id="customCheck1"
+                            />
+                            <label className="custom-control-label" htmlFor="customCheck1">
+                                Remember me
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="d-grid">
+                        <button type="submit" className="btn btn-primary">
+                            Submit
+                        </button>
+                    </div>
+                    <p className="forgot-password text-right">
+                        Forgot <a href="#">password?</a>
+                    </p>
+                </form>
+            </div>
+        </div>
     );
 }
-
-export default Login;

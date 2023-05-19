@@ -1,22 +1,69 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
-// Connect to MongoDB
-mongoose.connect('<your_connection_string>', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB Connected...'))
-    .catch(err => console.log(err));
-
+const bcrypt = require('bcrypt');
+const cors = require('cors');
 const app = express();
 
-// Use the built-in JSON middleware to automatically parse JSON
 app.use(express.json());
+app.use(cors());
 
-// TODO: Add your routes here
-const bugsRoutes = require('./routes/bugs');
+require('dotenv').config();
+const mongoUrl = process.env.MONGO_URL;
+mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Successfully connected to MongoDB'))
+    .catch((error) => console.error('Failed to connect to MongoDB:', error));
 
-app.use('/api/bugs', bugsRoutes);
+
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+});
+
+const User = mongoose.model('User', userSchema);
+
+app.post('/register', async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        const user = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hashedPassword
+        });
+
+        await user.save();
+
+        res.status(201).json({ message: 'User created' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error registering user', error: error.message });
+    }
+});
 
 
-const PORT = process.env.PORT || 5000;
+app.post('/login', async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    if (user == null) {
+        return res.status(400).json({ status: "error", message: "Cannot find user" });
+    }
+
+    try {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            // Send back username as part of response
+            res.json({ status: "ok", message: "Success", username: user.username });
+        } else {
+            res.json({ status: "error", message: "Not Allowed" });
+        }
+    } catch (error) {
+        res.status(500).json({ status: "error", message: error.message });
+    }
+});
+
+
+app.listen(5000, () => {
+    console.log('Server is running on port 5000');
+});
