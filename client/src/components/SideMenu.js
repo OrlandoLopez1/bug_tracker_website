@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import './SideMenu.css';
+import { useNavigate } from 'react-router-dom';
 
 async function getUserData(username) {
     const response = await fetch(`http://localhost:5000/user?username=${username}`);
@@ -13,13 +14,14 @@ async function getUserData(username) {
 
 function SideMenu() {
     const [userData, setUserData] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            const username = localStorage.getItem('username'); // Retrieve the username from localStorage
-            if (username) { // Only attempt to fetch user data if the username is not null
+            const username = localStorage.getItem('username');
+            if (username) {
                 try {
-                    const data = await getUserData(username); // Pass the username to getUserData()
+                    const data = await getUserData(username);
                     setUserData(data);
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);
@@ -40,9 +42,9 @@ function SideMenu() {
             )}
             <Button className="w-100 text-start">Dashboard</Button>
             <Button className="w-100 text-start">My Projects</Button>
-                <Button className="w-100 text-start">My Tickets</Button>
+            <Button className="w-100 text-start" onClick={() => navigate('/ticketPage')}>My Tickets</Button>
         </div>
-);
+    );
 }
 
 export default SideMenu;
