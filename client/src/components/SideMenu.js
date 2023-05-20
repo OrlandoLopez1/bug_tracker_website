@@ -10,7 +10,7 @@ function SideMenu() {
     const buttons = [
         'Dashboard',
         'My Projects',
-        { name: 'My Tickets', dropdown: ['Ticket 1', 'Ticket 2'] },
+        { name: 'My Tickets', dropdown: ['View', 'Add', 'Edit'] },
         'Another Button',
         'One More Button'
     ];
@@ -35,7 +35,8 @@ function SideMenu() {
         <div className="sidenav">
             {buttons.map((button, index) => (
                 typeof button === 'string'
-                    ? <Button className="w-100 text-start" key={button} onClick={() => navigate(`/${button.toLowerCase().replace(' ', '')}`)}>{button}</Button>
+                    ? <Button className="w-100 text-start" key={button} onClick={() =>
+                        navigate(`/${button.toLowerCase().replace(' ', '')}`)}>{button}</Button>
                     : (
                         <>
                             <Button
@@ -52,7 +53,9 @@ function SideMenu() {
 
                                 <div id={`dropdown-${index}`} className="mb-1">
                                     {button.dropdown.map(subitem => (
-                                        <Button key={subitem} className={`w-100 text-start sub-item ${openDropdowns[index] ? 'active-dropdown-item' : ''}`}>{subitem}</Button>
+                                        <Button key={subitem} className=
+                                            {`w-100 sub-item-button ${openDropdowns[index] ?
+                                                'active-dropdown-item' : ''}`}>{subitem}</Button>
                                     ))}
                                 </div>
                             </Collapse>
