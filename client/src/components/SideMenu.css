@@ -44,3 +44,18 @@
     font-weight: bold;
     color: #aaadb7
 }
+
+.sidenav .btn:active ~ .collapse .btn,
+.sidenav .btn:focus ~ .collapse .btn {
+    background-color: #1d2124;
+}
+
+.sidenav .btn.clicked {
+    background-color: #1d2124;
+}
+
+.sidenav .active-dropdown-item {
+    background-color: #1d2124;
+}
+
+

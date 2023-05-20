@@ -1,48 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import './SideMenu.css';
+import { useState } from 'react';
+import { Button, Collapse } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
-async function getUserData(username) {
-    const response = await fetch(`http://localhost:5000/user?username=${username}`);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-}
+import './SideMenu.css';
 
 function SideMenu() {
-    const [userData, setUserData] = useState(null);
+    const [openDropdowns, setOpenDropdowns] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const username = localStorage.getItem('username');
-            if (username) {
-                try {
-                    const data = await getUserData(username);
-                    setUserData(data);
-                } catch (error) {
-                    console.error("Failed to fetch user data:", error);
-                }
-            }
-        };
+    const buttons = [
+        'Dashboard',
+        'My Projects',
+        { name: 'My Tickets', dropdown: ['Ticket 1', 'Ticket 2'] },
+        'Another Button',
+        'One More Button'
+    ];
 
-        fetchData();
-    }, []);
+    const toggleDropdown = (index) => {
+        setOpenDropdowns(prev => {
+            const newOpenDropdowns = [...prev];
+            newOpenDropdowns[index] = !newOpenDropdowns[index];
+            return newOpenDropdowns;
+        });
+    };
+
+    const closeDropdown = (index) => {
+        setOpenDropdowns(prev => {
+            const newOpenDropdowns = [...prev];
+            newOpenDropdowns[index] = false;
+            return newOpenDropdowns;
+        });
+    };
 
     return (
         <div className="sidenav">
-            {userData && (
-                <div className="profile-info">
-                    <img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture"/>
-                    <h2>{userData.username}</h2>
-                </div>
-            )}
-            <Button className="w-100 text-start">Dashboard</Button>
-            <Button className="w-100 text-start">My Projects</Button>
-            <Button className="w-100 text-start" onClick={() => navigate('/ticketPage')}>My Tickets</Button>
+            {buttons.map((button, index) => (
+                typeof button === 'string'
+                    ? <Button className="w-100 text-start" key={button} onClick={() => navigate(`/${button.toLowerCase().replace(' ', '')}`)}>{button}</Button>
+                    : (
+                        <>
+                            <Button
+                                key={button.name}
+                                onClick={() => toggleDropdown(index)}
+                                onBlur={() => closeDropdown(index)}
+                                aria-controls={`dropdown-${index}`}
+                                aria-expanded={openDropdowns[index]}
+                                className={`w-100 text-start ${openDropdowns[index] ? 'open' : ''}`}
+                            >
+                                {button.name} &#9660;
+                            </Button>
+                            <Collapse in={openDropdowns[index]} timeout={200}>
+
+                                <div id={`dropdown-${index}`} className="mb-1">
+                                    {button.dropdown.map(subitem => (
+                                        <Button key={subitem} className={`w-100 text-start sub-item ${openDropdowns[index] ? 'active-dropdown-item' : ''}`}>{subitem}</Button>
+                                    ))}
+                                </div>
+                            </Collapse>
+                        </>
+                    )
+            ))}
         </div>
     );
 }
