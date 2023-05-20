@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import HomePage from "./components/HomePage";
+import TicketForm from "./components/TicketForm";
+import TicketPage from "./components/TicketPage";
 
 function App() {
     const isLoggedIn = window.localStorage.getItem("loggedIn");
@@ -16,6 +18,8 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/homepage" element={<HomePage />} />
+                    <Route path="/ticketForm" element={<TicketForm />} />
+                    <Route path="/ticketPage" element={<TicketPage />} />
 
                 </Routes>
             </div>

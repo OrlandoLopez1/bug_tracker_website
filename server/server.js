@@ -23,8 +23,21 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     profilePicture: { type: String, default: '/defaultpfp.png' },
 });
-
 const User = mongoose.model('User', userSchema);
+
+//todo make it so that the projects can me selected from a dropdown
+const ticketSchema = new mongoose.Schema({
+    title: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    assignedBy: { type: String, required: true },
+    assignedTo: { type: String, required: true },
+    type: { type: String, required: true },
+    project_name: { type: String, required: true },
+    status: { type: String, required: true, default: 'open' },
+    priority: { type: String, required: true, default: 'medium' }
+}, { timestamps: true });
+const Ticket = mongoose.model('Ticket', ticketSchema);
+
 
 app.post('/register', async (req, res) => {
     try {
@@ -72,7 +85,6 @@ app.get('/user', async (req, res) => {
         return res.status(404).json({ message: 'Cannot find user' });
     }
 
-    // You could omit the password from the returned user data
     const userWithoutPassword = {
         username: user.username,
         email: user.email,
@@ -81,6 +93,55 @@ app.get('/user', async (req, res) => {
     res.json(userWithoutPassword);
 });
 
+app.post('/addTicket', async (req, res) => {
+    try{
+        const ticket =  new Ticket({
+            title: req.body.title,
+            description: req.body.description,
+            assignedBy: req.body.assignedBy,
+            assignedTo: req.body.assignedTo,
+            project_name: req.body.project_name,
+            type: req.body.type,
+            status: req.body.status,
+            priority: req.body.priority
+        })
+        await ticket.save();
+        res.status(201).json({message: 'Ticket created'});
+    } catch (error) {
+        res.status(500).json({message: 'Error creating ticket', error: error.message});
+    }
+
+});
+app.get('/ticket', async (req, res) =>{
+    const title = req.query.title;
+    const ticket = await Ticket.findOne({title:title})
+
+    if (ticket == null) {
+        return res.status(404).json({message: 'Cannot find ticket'})
+    }
+
+    const ticket_info = {
+        title: ticket.title,
+        description: ticket.description,
+        assignedBy: ticket.assignedBy,
+        assignedTo: ticket.assignedTo,
+        status: ticket.status,
+        priority: ticket.priority
+
+    }
+   res.json(ticket_info);
+});
+
+
+// Acquires all the tickets in the database
+app.get('/tickets', async (req, res) => {
+    try {
+        const tickets = await Ticket.find({});
+        res.json(tickets);
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting tickets', error: error.message });
+    }
+});
 
 
 app.listen(5000, () => {

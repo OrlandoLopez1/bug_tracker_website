@@ -1,0 +1,32 @@
+.side-menu-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 200px;  /* Set the width of the side menu here */
+    overflow: auto;
+}
+
+.navbar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 200px;  /* Adjust this value to match the width of the side menu */
+    right: 0;
+    height: 50px;  /* Set the height of the navbar here */
+}
+
+.main-content-wrapper {
+    position: relative;
+    top: 50px;  /* Adjust this value to match the height of the navbar */
+    margin-left: 200px;  /* Adjust this value to match the width of the side menu */
+    overflow: auto;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.ticket-page-content {
+    flex-grow: 1;
+}
