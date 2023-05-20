@@ -10,7 +10,14 @@ function SideMenu() {
     const buttons = [
         'Dashboard',
         'My Projects',
-        { name: 'My Tickets', dropdown: ['View', 'Add', 'Edit'] },
+        {
+            name: 'My Tickets',
+            dropdown: [
+                { name: 'View', path: '/ticketpage' },
+                { name: 'Add', path: '/ticketform' },
+                { name: 'Edit' }
+            ]
+        },
         'Another Button',
         'One More Button'
     ];
@@ -53,9 +60,13 @@ function SideMenu() {
 
                                 <div id={`dropdown-${index}`} className="mb-1">
                                     {button.dropdown.map(subitem => (
-                                        <Button key={subitem} className=
-                                            {`w-100 sub-item-button ${openDropdowns[index] ?
-                                                'active-dropdown-item' : ''}`}>{subitem}</Button>
+                                        <Button
+                                            key={subitem.name}
+                                            className={`w-100 sub-item-button ${openDropdowns[index] ? 'active-dropdown-item' : ''}`}
+                                            onClick={() => subitem.path && navigate(subitem.path)}
+                                        >
+                                            {subitem.name}
+                                        </Button>
                                     ))}
                                 </div>
                             </Collapse>
