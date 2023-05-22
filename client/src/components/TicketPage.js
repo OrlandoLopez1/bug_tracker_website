@@ -11,7 +11,7 @@ function TicketPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const ticketsData =  fetchTickets();
+                const ticketsData =  await fetchTickets();
                 setTickets(ticketsData);
             } catch (error) {
                 console.error('Failed to fetch tickets:', error);
