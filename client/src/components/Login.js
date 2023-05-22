@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from "../controllers/AuthController";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -9,19 +10,7 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("submit clicked");
-        fetch("http://localhost:5000/login", {
-            method: "POST",
-            crossDomain: true,
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
-        })
+        loginUser(email, password)
             .then((res) => res.json())
             .then((data) => {
                 if (data.status === "ok") {

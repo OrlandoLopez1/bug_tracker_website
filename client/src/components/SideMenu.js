@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { Button, Collapse } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserData } from '../controllers/UserController';
 import './SideMenu.css';
 
 function SideMenu() {
@@ -21,14 +22,6 @@ function SideMenu() {
         },
     ];
 
-    async function getUserData(username) {
-        const response = await fetch(`http://localhost:5000/user?username=${username}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
     const toggleDropdown = (index) => {
         setOpenDropdowns(prev => {
             const newOpenDropdowns = [...prev];
@@ -51,7 +44,7 @@ function SideMenu() {
             const username = localStorage.getItem('username'); // Retrieve the username from localStorage
             if (username) { // Only attempt to fetch user data if the username is not null
                 try {
-                    const data = await getUserData(username); // Pass the username to getUserData()
+                    const data = await fetchUserData(username); // Pass the username to getUserData()
                     setUserData(data);
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);

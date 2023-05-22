@@ -1,36 +1,21 @@
-import React, { Component, useState } from "react";
+// src/components/Register.js
+import React, { useState } from "react";
+import { registerUser } from "../controllers/AuthController";
 
 export default function Register() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch("http://localhost:5000/register", {
-            method: "POST",
-            crossDomain: true,
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: JSON.stringify({
-                username,
-                email,
-                password
-            }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data, "userRegister");
-                if (data.message === 'User created') {
-                    alert("Registration Successful");
-                } else {
-                    alert("Something went wrong");
-                }
-            });
-
+        const data = await registerUser(username, email, password);
+        console.log(data, "userRegister");
+        if (data.message === 'User created') {
+            alert("Registration Successful");
+        } else {
+            alert("Something went wrong");
+        }
     };
 
     return (
