@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-//todo make it so that the projects can me selected from a dropdown
+/*todo make it so that the projects can be selected from a dropdown,
+   also clean up data form so that it can take these new values
+ */
 const ticketSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
     description: { type: String, required: true },

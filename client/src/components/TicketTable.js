@@ -1,5 +1,18 @@
 import React from 'react';
 
+function getPriorityColor(priority) {
+    switch(priority) {
+        case 'high':
+            return '#FFD6C9';
+        case 'medium':
+            return '#FEFFD6';
+        case 'low':
+            return '#CAF2C2';
+        default:
+            return 'white';
+    }
+}
+
 function TicketTable({ tickets }) {
     return (
         <table className="table">
@@ -14,15 +27,19 @@ function TicketTable({ tickets }) {
             </tr>
             </thead>
             <tbody>
-            {tickets.map((ticket, index) => (
+            {tickets.map((ticket) => (
                 <tr key={ticket.title}>
-                    <th scope="row">{index + 1}</th>
                     <td>{ticket.title}</td>
                     <td>{ticket.description}</td>
                     <td>{ticket.assignedBy}</td>
                     <td>{ticket.assignedTo}</td>
                     <td>{ticket.status}</td>
-                    <td>{ticket.priority}</td>
+                    <td>
+                        <span style={{backgroundColor: getPriorityColor(ticket.priority), padding: "5px",
+                                      borderRadius: "5px" }}>
+                            {ticket.priority}
+                        </span>
+                    </td>
                 </tr>
             ))}
             </tbody>
