@@ -13,11 +13,12 @@ exports.addTicket = async (req, res) => {
             priority: req.body.priority
         });
         await ticket.save();
-        res.status(201).json({message: 'Ticket created'});
+        res.status(201).json({ message: 'Ticket created' });
     } catch (error) {
-        res.status(500).json({message: 'Error creating ticket', error: error.message});
+        res.status(500).json({ message: 'Error creating ticket', error: error.message });
     }
 };
+
 
 exports.getTicket = async (req, res) => {
     const title = req.query.title;
@@ -30,6 +31,8 @@ exports.getTicket = async (req, res) => {
     const ticket_info = {
         title: ticket.title,
         description: ticket.description,
+        type: ticket.type,
+        project_name: ticket.project_name,
         assignedBy: ticket.assignedBy,
         assignedTo: ticket.assignedTo,
         status: ticket.status,

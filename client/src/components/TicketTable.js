@@ -20,6 +20,8 @@ function TicketTable({ tickets }) {
             <tr>
                 <th scope="col">Title</th>
                 <th scope="col">Description</th>
+                <th scope="col">Type</th>
+                <th scope="col">Project</th>
                 <th scope="col">Assigned By</th>
                 <th scope="col">Assigned To</th>
                 <th scope="col">Status</th>
@@ -31,6 +33,8 @@ function TicketTable({ tickets }) {
                 <tr key={ticket.title}>
                     <td>{ticket.title}</td>
                     <td>{ticket.description}</td>
+                    <td>{ticket.type}</td>
+                    <td>{ticket.project_name}</td>
                     <td>{ticket.assignedBy}</td>
                     <td>{ticket.assignedTo}</td>
                     <td>{ticket.status}</td>

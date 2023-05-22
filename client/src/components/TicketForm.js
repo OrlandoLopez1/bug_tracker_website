@@ -9,20 +9,22 @@ function CreateTicketPage() {
     const [description, setDescription] = useState('');
     const [assignedBy, setAssignedBy] = useState('');
     const [assignedTo, setAssignedTo] = useState('');
+    const [type, setType] = useState('');
+    const [project_name, setProject] = useState('');
     const [status, setStatus] = useState('open');
     const [priority, setPriority] = useState('medium');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const ticket = { title, description, assignedBy, assignedTo, status, priority };
+            const ticket = { title, description, type, project_name, assignedBy, assignedTo, status, priority };
             const data = await createTicket(ticket);
-            console.log(data);
-            // Redirect to another page or clear the form
             setTitle('');
             setDescription('');
             setAssignedBy('');
             setAssignedTo('');
+            setType('');
+            setProject('');
             setStatus('open');
             setPriority('medium');
         } catch (error) {
@@ -40,6 +42,25 @@ function CreateTicketPage() {
                     onChange={e => setTitle(e.target.value)}
                 />
             </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Type</Form.Label>
+                <Form.Control
+                    type="text"
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                />
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Project</Form.Label>
+                <Form.Control
+                    type="text"
+                    value={project_name}
+                    onChange={e => setProject(e.target.value)}
+                />
+            </Form.Group>
+
             <Form.Group>
                 <Form.Label>Description</Form.Label>
                 <Form.Control
