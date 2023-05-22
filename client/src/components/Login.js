@@ -7,27 +7,26 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("submit clicked");
-        loginUser(email, password)
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.status === "ok") {
-                    // Store username in localStorage after successful login
-                    localStorage.setItem('username', data.username);
-                    localStorage.setItem('loggedIn', 'true')
-                    console.log(data, "userLogin");
-                    navigate("/homepage")
-                    alert("Login Successful");
-                } else {
-                    alert("Something went wrong");
-                }
-            });
-
-
-
+        try {
+            const data = await loginUser(email, password);
+            if (data.status === "ok") {
+                // Store username in localStorage after successful login
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('loggedIn', 'true')
+                console.log(data, "userLogin");
+                navigate("/homepage")
+                alert("Login Successful");
+            } else {
+                alert("Something went wrong");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
+
 
     return (
         <div className="auth-wrapper">
