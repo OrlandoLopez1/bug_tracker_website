@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Button, Collapse } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './SideMenu.css';
@@ -6,6 +6,7 @@ import './SideMenu.css';
 function SideMenu() {
     const [openDropdowns, setOpenDropdowns] = useState([]);
     const navigate = useNavigate();
+    const [userData, setUserData] = useState(null);
 
     const buttons = [
         'Dashboard',
@@ -18,10 +19,16 @@ function SideMenu() {
                 { name: 'Edit' }
             ]
         },
-        'Another Button',
-        'One More Button'
     ];
 
+    async function getUserData(username) {
+        const response = await fetch(`http://localhost:5000/user?username=${username}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    }
     const toggleDropdown = (index) => {
         setOpenDropdowns(prev => {
             const newOpenDropdowns = [...prev];
@@ -38,8 +45,31 @@ function SideMenu() {
         });
     };
 
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const username = localStorage.getItem('username'); // Retrieve the username from localStorage
+            if (username) { // Only attempt to fetch user data if the username is not null
+                try {
+                    const data = await getUserData(username); // Pass the username to getUserData()
+                    setUserData(data);
+                } catch (error) {
+                    console.error("Failed to fetch user data:", error);
+                }
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <div className="sidenav">
+            {userData && (
+                <div className="profile-info">
+                    <img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture"/>
+                    <h2>{userData.username}</h2>
+                </div>
+            )}
             {buttons.map((button, index) => (
                 typeof button === 'string'
                     ? <Button className="w-100 text-start" key={button} onClick={() =>

@@ -31,3 +31,26 @@
     text-align: start;
     padding-left: 20px;
 }
+
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgb(210, 214, 222);
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.profile-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.profile-info h2 {
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #aaadb7
+}
