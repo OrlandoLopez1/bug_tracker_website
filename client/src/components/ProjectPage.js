@@ -41,22 +41,28 @@ function ProjectPage() {
     }, []);
 
     return (
-        <div className="main-content">
-            <SideMenu />
-            <div className="accordion-container">
-                <Accordion>
-                    {projects.map((project, index) => (
-                        <Accordion.Item eventKey={index.toString()} key={project._id} className="accordion-item">
-                            <Accordion.Header>
-                                {project.projectName}
-                            </Accordion.Header>
-                            <Accordion.Body>
-                                <AccordionBody project={project} />
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    ))}
-                </Accordion>
+        <div>
+            <CustomNavbar/>
+
+            <div className="main-content">
+                <SideMenu />
+                <div className="accordion-container">
+                    <h1>Projects</h1>
+                    <Accordion>
+                        {projects.map((project, index) => (
+                            <Accordion.Item eventKey={index.toString()} key={project._id} className="accordion-item">
+                                <Accordion.Header>
+                                    {project.projectName}
+                                </Accordion.Header>
+                                <Accordion.Body>
+                                    <AccordionBody project={project} />
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        ))}
+                    </Accordion>
+                </div>
             </div>
+
         </div>
 
     );

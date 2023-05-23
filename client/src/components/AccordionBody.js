@@ -1,19 +1,32 @@
+import "./AccordionBody.css"
 function AccordionBody({ project }) {
     return (
-        <>
-            <h5>Description:</h5>
+
+        <div >
             <p>{project.projectDescription}</p>
-            <h5>Manager:</h5>
-            <p>{project.projectManager}</p>
-            <h5>Start Date:</h5>
-            <p>{project.startDate}</p>
-            <h5>End Date:</h5>
-            <p>{project.endDate}</p>
-            <h5>Priority:</h5>
-            <p>{project.priority}</p>
-            <h5>Status:</h5>
-            <p>{project.currentStatus}</p>
-        </>
+            <div className="horizontal-container">
+                <div className="item">
+                    <p className="header">Manager:</p>
+                    <p>{project.projectManager}</p>
+                </div>
+                <div className="item">
+                    <p className="header">Start Date:</p>
+                    <p>{project.startDate}</p>
+                </div>
+                <div className="item">
+                    <p className="header">End Date:</p>
+                    <p>{project.endDate}</p>
+                </div>
+                <div className="item">
+                    <p className="header">Priority:</p>
+                    <p>{project.priority}</p>
+                </div>
+                <div className="item">
+                    <p className="header">Status:</p>
+                    <p>{project.currentStatus}</p>
+                </div>
+            </div>
+        </div>
     );
 }
 

@@ -1,0 +1,23 @@
+.horizontal-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevents wrapping to the next line. */
+    overflow-x: auto; /* Adds scroll bar if items overflow. */
+}
+
+.description-item {
+    display: flex;
+    flex-direction: column; /* Aligns .description-item contents vertically. */
+    margin-bottom: 10px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.header {
+    font-weight: bold;
+    margin-right: 5px;
+}
