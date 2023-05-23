@@ -7,7 +7,7 @@ import Register from "./components/Register";
 import HomePage from "./components/HomePage";
 import TicketForm from "./components/TicketForm";
 import TicketPage from "./components/TicketPage";
-import  ProjectsPage from "./components/ProjectsPage";
+import  ProjectPage from "./components/ProjectPage";
 import  ProjectForm from "./components/ProjectForm";
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
                     <Route path="/ticketForm" element={<TicketForm />} />
                     <Route path="/ticketPage" element={<TicketPage />} />
                     <Route path="/projectForm" element={<ProjectForm />} />
-                    <Route path="/projectsPage" element={<ProjectsPage />} />
+                    <Route path="/projectPage" element={<ProjectPage />} />
 
                 </Routes>
             </div>

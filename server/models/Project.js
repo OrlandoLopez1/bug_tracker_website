@@ -12,7 +12,6 @@ const ProjectSchema = new mongoose.Schema({
     },
     projectManager: {
         type: String
-        // ref: 'User'
     },
     startDate: {
         type: Date,
