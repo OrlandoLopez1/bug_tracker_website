@@ -6,9 +6,12 @@ exports.register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const user = new User({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             username: req.body.username,
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: req.body.role
         });
 
         await user.save();
@@ -18,6 +21,7 @@ exports.register = async (req, res) => {
         res.status(500).json({ message: 'Error registering user', error: error.message });
     }
 };
+
 
 exports.login = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
@@ -46,9 +50,13 @@ exports.getUser = async (req, res) => {
     }
 
     const userWithoutPassword = {
+        firstName: user.firstName,
+        lastName: user.lastName,
         username: user.username,
         email: user.email,
-        profilePicture: user.profilePicture
+        profilePicture: user.profilePicture,
+        role: user.role
     };
     res.json(userWithoutPassword);
 };
+

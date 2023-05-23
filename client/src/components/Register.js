@@ -3,13 +3,24 @@ import React, { useState } from "react";
 import { registerUser } from "../controllers/AuthController";
 
 export default function Register() {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [role, setRole] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = await registerUser(username, email, password);
+        const userData = {
+            firstName,
+            lastName,
+            username,
+            email,
+            password,
+            role
+        };
+        const data = await registerUser(userData);
         console.log(data, "userRegister");
         if (data.message === 'User created') {
             alert("Registration Successful");
@@ -23,6 +34,24 @@ export default function Register() {
             <div className="auth-inner">
                 <form onSubmit={handleSubmit}>
                     <h3>Sign Up</h3>
+
+                    <div className="mb-3">
+                        <label>First Name</label>
+                        <input
+                            className="form-control"
+                            placeholder="Enter first name"
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label>Last Name</label>
+                        <input
+                            className="form-control"
+                            placeholder="Enter last name"
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+                    </div>
 
                     <div className="mb-3">
                         <label>Username</label>
@@ -50,6 +79,15 @@ export default function Register() {
                             className="form-control"
                             placeholder="Enter password"
                             onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label>Role</label>
+                        <input
+                            className="form-control"
+                            placeholder="Enter role"
+                            onChange={(e) => setRole(e.target.value)}
                         />
                     </div>
 

@@ -1,3 +1,4 @@
+// todo, separate necessary components into serverside controller
 export async function registerUser(username, email, password) {
     const response = await fetch("http://localhost:5000/register", {
         method: "POST",
