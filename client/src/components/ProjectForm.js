@@ -4,7 +4,8 @@ import { addProject } from '../controllers/ProjectController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 
-function CreateProjectPage() {
+// todo make it not make my eyes bleed, eventually
+function CreateProjectForm() {
     const [projectName, setProjectName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [projectManager, setProjectManager] = useState('');
@@ -42,10 +43,9 @@ function CreateProjectPage() {
     return (
         <Form onSubmit={handleSubmit}>
             <CustomNavbar username={username} />
-            <div className="content-container">
+            <div className="main-content">
                 <SideMenu />
                 <div className="project-page-content">
-
                     <Form.Group>
                         <Form.Label>Project Name</Form.Label>
                         <Form.Control
@@ -126,4 +126,4 @@ function CreateProjectPage() {
     );
 }
 
-export default CreateProjectPage;
+export default CreateProjectForm;

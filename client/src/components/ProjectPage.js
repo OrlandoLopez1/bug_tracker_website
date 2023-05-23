@@ -4,6 +4,8 @@ import CustomNavbar from './CustomNavbar';
 import { Accordion } from 'react-bootstrap';
 import './ProjectPage.css';
 import AccordionBody from './AccordionBody';
+import {fetchTickets} from "../controllers/TicketController";
+import {fetchProjects} from "../controllers/ProjectController";
 
 function ProjectPage() {
     const [username, setUsername] = useState(null);
@@ -37,7 +39,17 @@ function ProjectPage() {
         if (usernameFromStorage) {
             setUsername(usernameFromStorage);
         }
-        setProjects(placeholders);
+        const fetchData = async () => {
+            try {
+                const projectData =  await fetchProjects();
+                setProjects(projectData);
+            } catch (error) {
+                console.error('Failed to fetch tickets:', error);
+            }
+        };
+
+        fetchData();
+        setProjects(projects);
     }, []);
 
     return (
