@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userController = require('./controllers/UserController');
 const ticketController = require('./controllers/TicketController');
+const projectController = require('./controllers/ProjectController'); // import ProjectController
 
 const app = express();
 
@@ -25,6 +26,11 @@ app.get('/user', userController.getUser);
 app.post('/addTicket', ticketController.addTicket);
 app.get('/ticket', ticketController.getTicket);
 app.get('/tickets', ticketController.getTickets);
+
+app.get('/projects', projectController.getProjects);
+app.post('/addProject', projectController.addProject);
+app.put('/projects/:id', projectController.updateProject);
+app.delete('/projects/:id', projectController.deleteProject);
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');

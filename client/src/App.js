@@ -7,6 +7,8 @@ import Register from "./components/Register";
 import HomePage from "./components/HomePage";
 import TicketForm from "./components/TicketForm";
 import TicketPage from "./components/TicketPage";
+import  ProjectsPage from "./components/ProjectsPage";
+import  ProjectForm from "./components/ProjectForm";
 
 function App() {
     const isLoggedIn = window.localStorage.getItem("loggedIn");
@@ -20,6 +22,8 @@ function App() {
                     <Route path="/homepage" element={<HomePage />} />
                     <Route path="/ticketForm" element={<TicketForm />} />
                     <Route path="/ticketPage" element={<TicketPage />} />
+                    <Route path="/projectForm" element={<ProjectForm />} />
+                    <Route path="/projectsPage" element={<ProjectsPage />} />
 
                 </Routes>
             </div>

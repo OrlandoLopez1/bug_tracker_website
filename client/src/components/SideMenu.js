@@ -11,7 +11,14 @@ function SideMenu() {
 
     const buttons = [
         'Dashboard',
-        'My Projects',
+        {
+            name: 'My Projects',
+            dropdown: [
+                { name: 'View', path: '/projectpage' },
+                { name: 'Add', path: '/projectform' },
+                { name: 'Edit' }
+            ]
+        },
         {
             name: 'My Tickets',
             dropdown: [

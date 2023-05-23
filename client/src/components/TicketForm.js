@@ -3,7 +3,6 @@ import { Form, Button } from 'react-bootstrap';
 import { createTicket } from '../controllers/TicketController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
-import TicketTable from "./TicketTable";
 
 function CreateTicketPage() {
     const [title, setTitle] = useState('');
