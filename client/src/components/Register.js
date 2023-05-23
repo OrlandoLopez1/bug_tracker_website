@@ -1,6 +1,7 @@
 // src/components/Register.js
 import React, { useState } from "react";
 import { registerUser } from "../controllers/AuthController";
+import {Form} from "react-bootstrap";
 
 export default function Register() {
     const [firstName, setFirstName] = useState("");
@@ -82,15 +83,19 @@ export default function Register() {
                         />
                     </div>
 
-                    <div className="mb-3">
-                        <label>Role</label>
-                        <input
-                            className="form-control"
-                            placeholder="Enter role"
-                            onChange={(e) => setRole(e.target.value)}
-                        />
-                    </div>
-
+                    <Form.Group>
+                        <Form.Label>Role</Form.Label>
+                        <Form.Control
+                            as="select"
+                            value={role}
+                            onChange={e => setRole(e.target.value)}
+                        >
+                            <option value="submitter">Submitter</option>
+                            <option value="developer">Developer</option>
+                            <option value="projectmanager">Project Manager</option>
+                            <option value="admin">Admin</option>
+                        </Form.Control>
+                    </Form.Group>
                     <div className="d-grid">
                         <button type="submit" className="btn btn-primary">
                             Register
