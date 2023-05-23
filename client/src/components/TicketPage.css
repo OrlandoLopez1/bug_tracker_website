@@ -15,6 +15,11 @@
     height: 50px;  /* Set the height of the navbar here */
 }
 
+.main-content {
+    display: flex;
+    flex: 1;
+}
+
 .main-content-wrapper {
     position: relative;
     top: 50px;  /* Adjust this value to match the height of the navbar */
@@ -30,3 +35,4 @@
 .ticket-page-content {
     flex-grow: 1;
 }
+

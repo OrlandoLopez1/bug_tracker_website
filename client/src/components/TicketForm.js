@@ -44,7 +44,7 @@ function CreateTicketPage() {
     return (
         <Form onSubmit={handleSubmit}>
             <CustomNavbar username={username} />
-            <div className="content-container">
+            <div className="main-content">
                 <SideMenu />
                 <div className="ticket-page-content">
 

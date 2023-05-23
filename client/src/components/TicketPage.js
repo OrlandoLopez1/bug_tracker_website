@@ -34,7 +34,7 @@ function TicketPage() {
     return (
         <div>
             <CustomNavbar username={username} />
-            <div className="content-container">
+            <div className="main-content">
                 <SideMenu />
                 <div className="ticket-page-content">
                     <h1>Tickets</h1>
