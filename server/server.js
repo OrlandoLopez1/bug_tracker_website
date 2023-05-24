@@ -4,6 +4,7 @@ const cors = require('cors');
 const userController = require('./controllers/UserController');
 const ticketController = require('./controllers/TicketController');
 const projectController = require('./controllers/ProjectController'); // import ProjectController
+const authController = require('./controllers/AuthController'); // import ProjectController
 
 const app = express();
 
@@ -20,8 +21,8 @@ mongoose.connect(mongoUrl, {
     .then(() => console.log('Successfully connected to MongoDB'))
     .catch((error) => console.error('Failed to connect to MongoDB:', error));
 
-app.post('/register', userController.register);
-app.post('/login', userController.login);
+app.post('/register', authController.register);
+app.post('/login', authController.login);
 app.get('/user', userController.getUser);
 app.post('/addTicket', ticketController.addTicket);
 app.get('/ticket', ticketController.getTicket);
