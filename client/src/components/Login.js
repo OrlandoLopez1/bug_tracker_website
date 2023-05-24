@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from "../controllers/AuthController";
-
+// todo make it look better
+// todo give the user the option to register
+// todo give the user feedback when password was inputed incorrect
+// todo limit password attempts (low priority)
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -9,14 +12,12 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("submit clicked");
         try {
             const data = await loginUser(email, password);
             if (data.status === "ok") {
                 // Store username in localStorage after successful login
                 localStorage.setItem('username', data.username);
                 localStorage.setItem('loggedIn', 'true')
-                console.log(data, "userLogin");
                 navigate("/homepage")
                 alert("Login Successful");
             } else {
@@ -74,6 +75,9 @@ export default function Login() {
                     </div>
                     <p className="forgot-password text-right">
                         Forgot <a href="#">password?</a>
+                    </p>
+                    <p className="forgot-password text-right">
+                         <a href="/register">register?</a>
                     </p>
                 </form>
             </div>
