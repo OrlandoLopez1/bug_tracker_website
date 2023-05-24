@@ -13,7 +13,7 @@ function getPriorityColor(priority) {
     }
 }
 
-function TicketTable({ tickets }) {
+function TicketTable({ tickets, projectID }) {
     return (
         <table className="table">
             <thead>
@@ -21,7 +21,6 @@ function TicketTable({ tickets }) {
                 <th scope="col">Title</th>
                 <th scope="col">Description</th>
                 <th scope="col">Type</th>
-                <th scope="col">Project</th>
                 <th scope="col">Assigned By</th>
                 <th scope="col">Assigned To</th>
                 <th scope="col">Status</th>
@@ -34,18 +33,17 @@ function TicketTable({ tickets }) {
                     <td>{ticket.title}</td>
                     <td>{ticket.description}</td>
                     <td>{ticket.type}</td>
-                    <td>{ticket.project_name}</td>
                     <td>{ticket.assignedBy}</td>
                     <td>{ticket.assignedTo}</td>
                     <td>{ticket.status}</td>
                     <td>
-                        <span style={{backgroundColor: getPriorityColor(ticket.priority), padding: "5px",
-                                      borderRadius: "5px" }}>
-                            {ticket.priority}
-                        </span>
+            <span style={{ backgroundColor: getPriorityColor(ticket.priority), padding: "5px", borderRadius: "5px" }}>
+                {ticket.priority}
+            </span>
                     </td>
                 </tr>
             ))}
+
             </tbody>
         </table>
     );

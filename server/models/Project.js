@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ProjectSchema = new mongoose.Schema({
-    projectName: {
+    name: {
         type: String,
         required: true,
         unique: true
@@ -16,9 +16,6 @@ const ProjectSchema = new mongoose.Schema({
     startDate: {
         type: Date,
         default: Date.now
-    },
-    endDate: {
-        type: Date,
     },
     priority: {
         type: String,

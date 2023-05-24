@@ -3,11 +3,9 @@ const Project = require('../models/Project');
 exports.addProject = async (req, res) => {
     try {
         const project = new Project({
-            projectName: req.body.projectName,
+            name: req.body.name,
             projectDescription: req.body.projectDescription,
             projectManager: req.body.projectManager,
-            startDate: req.body.startDate,
-            endDate: req.body.endDate,
             priority: req.body.priority,
             currentStatus: req.body.currentStatus
         });

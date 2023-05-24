@@ -6,11 +6,9 @@ import SideMenu from "./SideMenu";
 
 // todo make it not make my eyes bleed, eventually
 function CreateProjectForm() {
-    const [projectName, setProjectName] = useState('');
+    const [name, setName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [projectManager, setProjectManager] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
     const [priority, setPriority] = useState('medium');
     const [currentStatus, setCurrentStatus] = useState('Planning'); // new
     const [username, setUsername] = useState(null);
@@ -18,13 +16,11 @@ function CreateProjectForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const project = { projectName, projectDescription, projectManager, startDate, endDate, priority, currentStatus };
+            const project = { name, projectDescription, projectManager, priority, currentStatus };
             const data = await addProject(project);
-            setProjectName('');
+            setName('');
             setProjectDescription('');
             setProjectManager('');
-            setStartDate('');
-            setEndDate('');
             setPriority('medium');
             setCurrentStatus('Planning');
         } catch (error) {
@@ -50,8 +46,8 @@ function CreateProjectForm() {
                         <Form.Label>Project Name</Form.Label>
                         <Form.Control
                             type="text"
-                            value={projectName}
-                            onChange={e => setProjectName(e.target.value)}
+                            value={name}
+                            onChange={e => setName(e.target.value)}
                         />
                     </Form.Group>
 
@@ -71,24 +67,6 @@ function CreateProjectForm() {
                             type="text"
                             value={projectManager}
                             onChange={e => setProjectManager(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group>
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control
-                            type="date"
-                            value={startDate}
-                            onChange={e => setStartDate(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group>
-                        <Form.Label>End Date</Form.Label>
-                        <Form.Control
-                            type="date"
-                            value={endDate}
-                            onChange={e => setEndDate(e.target.value)}
                         />
                     </Form.Group>
 

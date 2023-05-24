@@ -27,6 +27,8 @@ app.post('/addTicket', ticketController.addTicket);
 app.get('/ticket', ticketController.getTicket);
 app.get('/tickets', ticketController.getTickets);
 
+app.get('/tickets/project/:projectId', ticketController.getTicketsForProject);
+
 app.get('/projects', projectController.getProjects);
 app.post('/addProject', projectController.addProject);
 app.put('/projects/:id', projectController.updateProject);

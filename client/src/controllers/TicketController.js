@@ -23,4 +23,11 @@ export async function createTicket(ticket) {
 
     return await response.json();
 }
+export async function fetchTicketsForProject(projectId) {
+    const response = await fetch(`http://localhost:5000/tickets/project/${projectId}`);
 
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+}

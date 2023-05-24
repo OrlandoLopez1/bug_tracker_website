@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { createTicket } from '../controllers/TicketController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
+import {fetchProjects} from "../controllers/ProjectController";
 
 function CreateTicketPage() {
     const [title, setTitle] = useState('');
@@ -10,22 +11,23 @@ function CreateTicketPage() {
     const [assignedBy, setAssignedBy] = useState('');
     const [assignedTo, setAssignedTo] = useState('');
     const [type, setType] = useState('');
-    const [project_name, setProject] = useState('');
+    const [project, setProject] = useState('');
     const [status, setStatus] = useState('open');
     const [priority, setPriority] = useState('medium');
     const [username, setUsername] = useState(null);
-
+    const [projects, setProjects] = useState([]);
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const ticket = { title, description, type, project_name, assignedBy, assignedTo, status, priority };
+            const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
             const data = await createTicket(ticket);
+            console.log("Client SIDEEEEEEEEEEE "); // <-- Add this
+            // console.log("_project: ", _project);  // <-- Add thi
             setTitle('');
             setDescription('');
             setAssignedBy('');
             setAssignedTo('');
             setType('');
-            setProject('');
             setStatus('open');
             setPriority('medium');
         } catch (error) {
@@ -35,11 +37,22 @@ function CreateTicketPage() {
 
     useEffect(() => {
         const usernameFromStorage = localStorage.getItem('username');
-
         if (usernameFromStorage) {
             setUsername(usernameFromStorage);
         }
+
+        const fetchAndSetProjects = async () => {
+            try {
+                const data = await fetchProjects();
+                setProjects(data);
+            } catch (error) {
+                console.error('Failed to fetch projects:', error);
+            }
+        }
+
+        fetchAndSetProjects().then();
     }, []);
+
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -69,11 +82,24 @@ function CreateTicketPage() {
                     <Form.Group>
                         <Form.Label>Project</Form.Label>
                         <Form.Control
-                            type="text"
-                            value={project_name}
-                            onChange={e => setProject(e.target.value)}
-                        />
+                            as="select"
+                            value={project}     // Change this to project instead of _project
+                            onChange={e => setProject(e.target.value)}   // Change this to project instead of _project
+                        >
+                            {projects.length > 0 ? (
+                                projects.map((project) => (
+                                    <option key={project._id} value={project._id}>
+                                        {project.name}
+                                    </option>
+                                ))
+                            ) : (
+                                <option>No projects available</option>
+                            )}
+
+                        </Form.Control>
                     </Form.Group>
+
+
 
                     <Form.Group>
                         <Form.Label>Description</Form.Label>
