@@ -13,7 +13,11 @@ const app = express();
 console.log(process.env.NODE_ENV)
 
 app.use(logger);
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // replace with your client app's origin
+    credentials: true, // this allows cookies to be sent
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 

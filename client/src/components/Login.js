@@ -12,16 +12,16 @@ export default function Login() {
         console.log("submit clicked");
         try {
             const data = await loginUser(email, password);
-            if (data.status === "ok") {
-                // Store username in localStorage after successful login
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('loggedIn', 'true')
+            if (data.accessToken) {
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('loggedIn', 'true');
                 console.log(data, "userLogin");
-                navigate("/homepage")
+                navigate("/homepage");
                 alert("Login Successful");
             } else {
                 alert("Something went wrong");
             }
+
         } catch (error) {
             console.error('Error:', error);
         }

@@ -1,12 +1,10 @@
-// todo, separate necessary components into serverside controller
+// Register User
 export async function registerUser(username, email, password) {
     const response = await fetch("http://localhost:5000/register", {
         method: "POST",
-        crossDomain: true,
+        credentials: 'include', // Include credentials to handle cookies
         headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
-            "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
             username,
@@ -23,14 +21,13 @@ export async function registerUser(username, email, password) {
     return data;
 }
 
+// Login User
 export async function loginUser(email, password) {
-    const response = await fetch("http://localhost:5000/login", {
+    const response = await fetch("http://localhost:5000/auth", {
         method: "POST",
-        crossDomain: true,
+        credentials: 'include', // Include credentials to handle cookies
         headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
-            "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
             email,
