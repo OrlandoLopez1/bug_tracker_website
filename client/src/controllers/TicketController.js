@@ -1,9 +1,8 @@
-export async function fetchTickets() {
-    const token = localStorage.getItem('token');
+export async function fetchTickets(token) {
     const response = await fetch('http://localhost:5000/tickets', {
         headers: {
-        'Authorization': `Bearer ${token}`
-    }
+            'Authorization': `Bearer ${token}`
+        }
     });
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -11,23 +10,21 @@ export async function fetchTickets() {
     return response.json();
 }
 
-export async function createTicket(ticket) {
-
+export async function createTicket(ticket, token) {
     const response = await fetch('http://localhost:5000/tickets', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(ticket)
     });
-
-
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     return await response.json();
 }
+
 export async function fetchTicketsForProject(projectId, token) {
     const response = await fetch(`http://localhost:5000/tickets/project/${projectId}`, {
         method: "GET",

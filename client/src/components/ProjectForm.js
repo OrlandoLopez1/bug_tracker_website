@@ -12,12 +12,13 @@ function CreateProjectForm() {
     const [priority, setPriority] = useState('medium');
     const [currentStatus, setCurrentStatus] = useState('Planning'); // new
     const [username, setUsername] = useState(null);
+    const token = localStorage.getItem('accessToken');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const project = { name, projectDescription, projectManager, priority, currentStatus };
-            const data = await addProject(project);
+            const data = await addProject(project, token);
             setName('');
             setProjectDescription('');
             setProjectManager('');

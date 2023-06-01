@@ -1,13 +1,16 @@
 import {useEffect, useState} from 'react';
 import { Button, Collapse } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserData } from '../controllers/UserController';
+import jwtDecode from 'jwt-decode';
+import {fetchUserData, getAllUsers} from '../controllers/UserController';
 import './SideMenu.css';
 
 function SideMenu() {
     const [openDropdowns, setOpenDropdowns] = useState([]);
     const navigate = useNavigate();
-    const [userData, setUserData] = useState(null);
+    const [userName, setUserName] = useState(null);
+    const token = localStorage.getItem('accessToken');
+
 
     const buttons = [
         'Dashboard',
@@ -48,26 +51,24 @@ function SideMenu() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const username = localStorage.getItem('username'); // Retrieve the username from localStorage
-            if (username) { // Only attempt to fetch user data if the username is not null
-                try {
-                    const data = await fetchUserData(username); // Pass the username to getUserData()
-                    setUserData(data);
-                } catch (error) {
-                    console.error("Failed to fetch user data:", error);
-                }
+            if (token) {
+                const decodedToken = jwtDecode(token);
+
+                const username = decodedToken.UserInfo.username;
+                setUserName({username});
             }
         };
 
         fetchData();
-    }, []);
+    }, [token]);
+
 
     return (
         <div className="sidenav">
-            {userData && (
+            {userName && (
                 <div className="profile-info">
                     <img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture"/>
-                    <h2>{userData.username}</h2>
+                    <h2>{userName.username}</h2>
                 </div>
             )}
             {buttons.map((button, index) => (

@@ -16,13 +16,14 @@ function CreateTicketPage() {
     const [priority, setPriority] = useState('medium');
     const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
+    const token = localStorage.getItem('accessToken');
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
-            const data = await createTicket(ticket);
-            console.log("Client SIDEEEEEEEEEEE "); // <-- Add this
-            // console.log("_project: ", _project);  // <-- Add thi
+            console.log("PROJECT: ", project)
+            const data = await createTicket(ticket, token);
             setTitle('');
             setDescription('');
             setAssignedBy('');
@@ -43,7 +44,10 @@ function CreateTicketPage() {
 
         const fetchAndSetProjects = async () => {
             try {
-                const data = await fetchProjects();
+                const data = await fetchProjects(token);
+                if (data.length > 0) {
+                    setProject(data[0]._id);
+                }
                 setProjects(data);
             } catch (error) {
                 console.error('Failed to fetch projects:', error);
@@ -83,8 +87,8 @@ function CreateTicketPage() {
                         <Form.Label>Project</Form.Label>
                         <Form.Control
                             as="select"
-                            value={project}     // Change this to project instead of _project
-                            onChange={e => setProject(e.target.value)}   // Change this to project instead of _project
+                            value={project}
+                            onChange={e => setProject(e.target.value)}
                         >
                             {projects.length > 0 ? (
                                 projects.map((project) => (
