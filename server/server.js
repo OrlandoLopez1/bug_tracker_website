@@ -4,7 +4,7 @@ const errorHandler = require('./middleware/errorHandler')
 const { logger, logEvents } = require('./middleware/logger')
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
-const userController = require('./controllers/UsersController');
+const userController = require('./controllers/UserController');
 const ticketController = require('./controllers/TicketController');
 const projectController = require('./controllers/ProjectController'); // import ProjectController
 
