@@ -7,11 +7,12 @@ import './TicketPage.css';
 
 function TicketPage() {
     const [tickets, setTickets] = useState([]);
+    const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const ticketsData =  await fetchTickets();
+                const ticketsData =  await fetchTickets(token);
                 setTickets(ticketsData);
             } catch (error) {
                 console.error('Failed to fetch tickets:', error);
