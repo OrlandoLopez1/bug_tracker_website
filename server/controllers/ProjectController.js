@@ -38,7 +38,11 @@ const getProject = asyncHandler(async (req, res) => {
 // @access Private
 const getProjects = asyncHandler(async (req, res) => {
     const projects = await Project.find({});
+    if (!projects) {
+        return res.status(4040).json({message: 'Cannot find projects'});
+    }
     res.json(projects);
+
 });
 
 // @desc Update a specific project
