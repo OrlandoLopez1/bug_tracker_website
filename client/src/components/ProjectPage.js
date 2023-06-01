@@ -9,26 +9,27 @@ import {fetchProjects} from "../controllers/ProjectController";
 function ProjectPage() {
     const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
-
+    const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
-        const usernameFromStorage = localStorage.getItem('username');
+        // const usernameFromStorage = localStorage.getItem('username');
 
-        if (usernameFromStorage) {
-            setUsername(usernameFromStorage);
-        }
+        // if (usernameFromStorage) {
+        //     setUsername(usernameFromStorage);
+        // }
+        setUsername("PLACEHOLDERNOTREAL");
         const fetchData = async () => {
             try {
-                const projectData =  await fetchProjects();
+                const projectData =  await fetchProjects(token);
                 setProjects(projectData);
 
             } catch (error) {
-                console.error('Failed to fetch tickets:', error);
+                console.error('Failed to fetch projects:', error);
             }
         };
 
         fetchData().then();
-        setProjects(projects);
+        setProjects(projects); //todo check if necessary
     }, []);
 
     return (

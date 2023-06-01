@@ -1,9 +1,9 @@
-export async function fetchProjects() {
+export async function fetchProjects(token) {
     const response = await fetch("http://localhost:5000/projects", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Authorization": `Bearer ${token}`,
         },
     });
 
@@ -14,6 +14,7 @@ export async function fetchProjects() {
     return await response.json();
 
 }
+
 
 export async function addProject(project) {
     const response = await fetch("http://localhost:5000/addProject", {

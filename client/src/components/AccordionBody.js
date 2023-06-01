@@ -8,11 +8,13 @@ function AccordionBody({ project }) {
 
     useEffect(() => {
         const fetchAndSetTickets = async () => {
-            const fetchedTickets = await fetchTicketsForProject(project._id);
+            const token = localStorage.getItem('accessToken');
+            const fetchedTickets = await fetchTicketsForProject(project._id, token);
             setTickets(fetchedTickets);
         };
         fetchAndSetTickets();
     }, [project]);
+
 
 
 

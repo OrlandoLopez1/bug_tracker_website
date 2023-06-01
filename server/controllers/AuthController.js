@@ -1,41 +1,103 @@
-const bcrypt = require("bcrypt");
-const User = require("../models/User");
-exports.register = async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+const User = require('../models/User')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const asyncHandler = require('express-async-handler')
 
-        const user = new User({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            username: req.body.username,
-            email: req.body.email,
-            password: hashedPassword,
-            role: req.body.role
-        });
+// @desc Login
+// @route POST /auth
+// @access Public
+const login = asyncHandler(async (req, res) => {
+    const { email, password } = req.body
 
-        await user.save();
-
-        res.status(201).json({ message: 'User created' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error registering user', error: error.message });
-    }
-};
-
-
-exports.login = async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-
-    if (user == null) {
-        return res.status(400).json({ status: "error", message: "Cannot find user" });
+    if (!email || !password) {
+        return res.status(400).json({ message: 'All fields are required' })
     }
 
-    try {
-        if (await bcrypt.compare(req.body.password, user.password)) {
-            res.json({ status: "ok", message: "Success", username: user.username });
-        } else {
-            res.json({ status: "error", message: "Not Allowed" });
-        }
-    } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+    const foundUser = await User.findOne({ email }).exec()
+
+    if (!foundUser) {
+        return res.status(401).json({ message: 'Unauthorized' })
     }
-};
+
+    const match = await bcrypt.compare(password, foundUser.password)
+
+    if (!match) return res.status(401).json({ message: 'Unauthorized' })
+
+    const accessToken = jwt.sign(
+        {
+            "UserInfo": {
+                "email": foundUser.email,
+                "role": foundUser.role
+            }
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    )
+
+    const refreshToken = jwt.sign(
+        { "email": foundUser.email },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    )
+
+    res.cookie('jwt', refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+
+    res.json({ accessToken })
+})
+
+// @desc Refresh
+// @route GET /auth/refresh
+// @access Public
+const refresh = (req, res) => {
+    const cookies = req.cookies
+
+    if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
+
+    const refreshToken = cookies.jwt
+
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        asyncHandler(async (err, decoded) => {
+            if (err) return res.status(403).json({ message: 'Forbidden' })
+
+            const foundUser = await User.findOne({ email: decoded.email }).exec()
+
+            if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
+
+            const accessToken = jwt.sign(
+                {
+                    "UserInfo": {
+                        "email": foundUser.email,
+                        "role": foundUser.role
+                    }
+                },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '15m' }
+            )
+
+            res.json({ accessToken })
+        })
+    )
+}
+
+// @desc Logout
+// @route POST /auth/logout
+// @access Public
+const logout = (req, res) => {
+    const cookies = req.cookies
+    if (!cookies?.jwt) return res.sendStatus(204) //No content
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
+    res.json({ message: 'Cookie cleared' })
+}
+
+module.exports = {
+    login,
+    refresh,
+    logout
+}
