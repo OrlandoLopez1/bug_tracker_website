@@ -17,7 +17,7 @@ export async function fetchProjects(token) {
 
 
 export async function addProject(project, token) {
-    const response = await fetch("http://localhost:5000/addProject", {
+    const response = await fetch("http://localhost:5000/projects", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
