@@ -93,7 +93,6 @@ export default function Register() {
                             <option value="submitter">Submitter</option>
                             <option value="developer">Developer</option>
                             <option value="projectmanager">Project Manager</option>
-                            <option value="admin">Admin</option>
                         </Form.Control>
                     </Form.Group>
                     <div className="d-grid">
