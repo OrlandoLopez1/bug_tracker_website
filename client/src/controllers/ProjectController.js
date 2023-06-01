@@ -16,11 +16,12 @@ export async function fetchProjects(token) {
 }
 
 
-export async function addProject(project) {
+export async function addProject(project, token) {
     const response = await fetch("http://localhost:5000/addProject", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(project),
     });
@@ -32,12 +33,12 @@ export async function addProject(project) {
     return await response.json();
 }
 
-export async function updateProject(project) {
+export async function updateProject(project, token) {
     const response = await fetch(`http://localhost:5000/projects/${project._id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(project),
     });
@@ -47,15 +48,14 @@ export async function updateProject(project) {
     }
 
     return await response.json();
-
 }
 
-export async function deleteProject(projectId) {
+export async function deleteProject(projectId, token) {
     const response = await fetch(`http://localhost:5000/projects/${projectId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Authorization": `Bearer ${token}`,
         },
     });
 
@@ -65,3 +65,4 @@ export async function deleteProject(projectId) {
 
     return await response.json();
 }
+

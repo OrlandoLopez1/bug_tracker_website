@@ -16,13 +16,13 @@ function CreateTicketPage() {
     const [priority, setPriority] = useState('medium');
     const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
+    const token = localStorage.getItem('accessToken');
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
             const data = await createTicket(ticket);
-            console.log("Client SIDEEEEEEEEEEE "); // <-- Add this
-            // console.log("_project: ", _project);  // <-- Add thi
             setTitle('');
             setDescription('');
             setAssignedBy('');
@@ -43,7 +43,7 @@ function CreateTicketPage() {
 
         const fetchAndSetProjects = async () => {
             try {
-                const data = await fetchProjects();
+                const data = await fetchProjects(token);
                 setProjects(data);
             } catch (error) {
                 console.error('Failed to fetch projects:', error);
