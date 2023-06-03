@@ -9,7 +9,7 @@ export default function Register() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("");
+    const [role, setRole] = useState("submitter");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
