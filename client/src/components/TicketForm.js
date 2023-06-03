@@ -4,6 +4,7 @@ import { createTicket } from '../controllers/TicketController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 import {fetchProjects} from "../controllers/ProjectController";
+import {getAllUsers} from "../controllers/UserController";
 
 function CreateTicketPage() {
     const [title, setTitle] = useState('');
@@ -14,8 +15,9 @@ function CreateTicketPage() {
     const [project, setProject] = useState('');
     const [status, setStatus] = useState('open');
     const [priority, setPriority] = useState('medium');
-    const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
+    const [user, setUser] = useState('');
+    const [users, setUsers] = useState([]);
     const token = localStorage.getItem('accessToken');
 
     const handleSubmit = async (event) => {
@@ -37,10 +39,6 @@ function CreateTicketPage() {
     };
 
     useEffect(() => {
-        const usernameFromStorage = localStorage.getItem('username');
-        if (usernameFromStorage) {
-            setUsername(usernameFromStorage);
-        }
 
         const fetchAndSetProjects = async () => {
             try {
@@ -53,14 +51,27 @@ function CreateTicketPage() {
                 console.error('Failed to fetch projects:', error);
             }
         }
+        const fetchAndSetUsers = async () => {
+            try {
+                const data = await getAllUsers(token);
+                if (data.length > 0) {
+                    setUser(data[0]._id);
+                }
+                setUsers(data);
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+            }
+        }
 
-        fetchAndSetProjects().then();
+        fetchAndSetUsers().then();
+
+
     }, []);
 
 
     return (
         <Form onSubmit={handleSubmit}>
-            <CustomNavbar username={username} />
+            <CustomNavbar />
             <div className="main-content">
                 <SideMenu />
                 <div className="ticket-page-content">
@@ -114,22 +125,27 @@ function CreateTicketPage() {
                             onChange={e => setDescription(e.target.value)}
                         />
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Assigned By</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={assignedBy}
-                            onChange={e => setAssignedBy(e.target.value)}
-                        />
-                    </Form.Group>
+
                     <Form.Group>
                         <Form.Label>Assigned To</Form.Label>
                         <Form.Control
-                            type="text"
-                            value={assignedTo}
-                            onChange={e => setAssignedTo(e.target.value)}
-                        />
+                            as="select"
+                            value={user}
+                            onChange={e => setUser(e.target.value)}
+                        >
+                            {users.length > 0 ? (
+                                users.map((user) => (
+                                    <option key={user._id} value={user._id}>
+                                        {user.firstName} {user.lastName}
+                                    </option>
+                                ))
+                            ) : (
+                                <option>No users available</option>
+                            )}
+
+                        </Form.Control>
                     </Form.Group>
+
                     <Form.Group>
                         <Form.Label>Status</Form.Label>
                         <Form.Control
