@@ -1,15 +1,20 @@
 // Register User
-export async function registerUser(username, email, password) {
-    const response = await fetch("http://localhost:5000/register", {
+export async function registerUser(userData) {
+    const { firstName, lastName, username, email, password, role } = userData;
+
+    const response = await fetch("http://localhost:5000/auth/register", {
         method: "POST",
-        credentials: 'include', // Include credentials to handle cookies
+        credentials: 'include',
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
+            firstName,
+            lastName,
             username,
             email,
-            password
+            password,
+            role
         }),
     });
 
@@ -21,11 +26,12 @@ export async function registerUser(username, email, password) {
     return data;
 }
 
+
 // Login User
 export async function loginUser(email, password) {
-    const response = await fetch("http://localhost:5000/auth", {
+    const response = await fetch("http://localhost:5000/auth/login", {
         method: "POST",
-        credentials: 'include', // Include credentials to handle cookies
+        credentials: 'include',
         headers: {
             "Content-Type": "application/json",
         },

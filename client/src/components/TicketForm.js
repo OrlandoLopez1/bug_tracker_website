@@ -63,6 +63,7 @@ function CreateTicketPage() {
             }
         }
 
+        fetchAndSetProjects().then();
         fetchAndSetUsers().then();
 
 

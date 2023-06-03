@@ -3,6 +3,40 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 
+
+// @desc Register
+// @route POST /auth
+// @access Public
+const register = asyncHandler(async (req, res) => {
+    const { firstName, lastName, username, email, password, role } = req.body
+
+    if (!firstName || !lastName || !username || !email || !password || !role) {
+        return res.status(400).json({ message: 'All fields are required' })
+    }
+
+    const foundUser = await User.findOne({ email }).exec()
+
+    if (foundUser) {
+        return res.status(400).json({ message: 'Email already in use' })
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const user = new User({
+        firstName,
+        lastName,
+        username,
+        email,
+        password: hashedPassword,
+        role
+    })
+
+    await user.save()
+
+    res.status(201).json({ message: 'User created' })
+})
+
+
 // @desc Login
 // @route POST /auth
 // @access Public
@@ -103,6 +137,7 @@ const logout = (req, res) => {
 }
 
 module.exports = {
+    register,
     login,
     refresh,
     logout
