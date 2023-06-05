@@ -48,3 +48,22 @@ export async function loginUser(email, password) {
     const data = await response.json();
     return data;
 }
+
+
+// Logout User
+export async function logoutUser() {
+    const response = await fetch("http://localhost:5000/auth/logout", {
+        method: "POST",
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}

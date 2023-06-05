@@ -125,7 +125,7 @@ const refresh = (req, res) => {
         })
     )
 }
-
+// todo implement into website
 // @desc Logout
 // @route POST /auth/logout
 // @access Public
