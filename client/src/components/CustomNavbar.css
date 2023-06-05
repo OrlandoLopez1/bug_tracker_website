@@ -1,3 +1,28 @@
 .custom-navbar {
     padding: 0 1.5rem !important;
 }
+
+.profile-pic {
+    height: 32px;
+    margin-right: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.custom-dropdown-toggle span {
+    color: white !important;
+
+}
+
+.custom-dropdown .dropdown-toggle::after {
+    color: white;
+}
+
+.custom-dropdown .dropdown-toggle:focus {
+    border: none;
+}
+
+
+
+
+
