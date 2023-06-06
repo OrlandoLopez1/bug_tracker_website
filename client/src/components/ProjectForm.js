@@ -29,14 +29,6 @@ function CreateProjectForm() {
         }
     };
 
-    useEffect(() => {
-        const usernameFromStorage = localStorage.getItem('username');
-
-        if (usernameFromStorage) {
-            setUsername(usernameFromStorage);
-        }
-    }, []);
-
     return (
         <Form onSubmit={handleSubmit}>
             <CustomNavbar username={username} />

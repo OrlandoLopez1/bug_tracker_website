@@ -80,10 +80,11 @@ const login = asyncHandler(async (req, res) => {
 
     res.cookie('jwt', refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None',
+        secure: process.env.NODE_ENV === 'production', // only set secure flag in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // set SameSite to Lax in development
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
+
 
     res.json({ accessToken })
 })
@@ -125,7 +126,39 @@ const refresh = (req, res) => {
         })
     )
 }
-// todo implement into website
+
+
+// @desc Get user info
+// @route GET /auth/userinfo
+// @access Private
+const getUserInfo = asyncHandler(async (req, res) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) return res.status(401).json({ message: 'Unauthorized' });
+
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET,
+        asyncHandler(async (err, decoded) => {
+            console.log("Decoded JWT: ", decoded);  // Log decoded JWT
+
+            if (err) return res.status(403).json({ message: 'Forbidden' });
+
+            const foundUser = await User.findOne({ email: decoded.UserInfo.email }).exec();
+
+            if (!foundUser) return res.status(401).json({ message: 'Unauthorized' });
+
+            res.json({ UserInfo: { email: foundUser.email, username: foundUser.username, role: foundUser.role } });
+        })
+    );
+});
+
+
+
+
+
 // @desc Logout
 // @route POST /auth/logout
 // @access Public
@@ -140,5 +173,6 @@ module.exports = {
     register,
     login,
     refresh,
+    getUserInfo,
     logout
 }

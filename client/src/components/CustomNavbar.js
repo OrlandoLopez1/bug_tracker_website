@@ -1,21 +1,35 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Nav, Navbar, Dropdown} from 'react-bootstrap';
+import {Navbar, Dropdown} from 'react-bootstrap';
+import {logoutUser, getUserInfo} from "../controllers/AuthController";
 import "./CustomNavbar.css";
 import jwtDecode from "jwt-decode";
 
 function CustomNavbar() {
     const [userName, setUserName] = useState(null);
     const token = localStorage.getItem('accessToken');
-
+    //todo works in postman, returns unauthorized on website
     useEffect(() => {
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            const username = decodedToken.UserInfo.username;
-            setUserName(username);
+        async function fetchUserInfo() {
+            try {
+                const userInfo = await getUserInfo();
+                setUserName(userInfo.username);
+            } catch (error) {
+                console.error("Failed to fetch user info:", error);
+            }
         }
-    }, [token]);
+        fetchUserInfo();
+    }, []);
 
+    const handleLogout = async () => {
+        try {
+            await logoutUser(); // call your logout function
+            localStorage.removeItem('accessToken');
+            window.location.href = '/';
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
+    };
     return (
         <Navbar bg="dark" variant="dark" className="custom-navbar">
             <Navbar.Brand href="#home">Placeholder</Navbar.Brand>
@@ -31,7 +45,7 @@ function CustomNavbar() {
                             <Dropdown.Menu className="dropdown-menu-dark">
                                 <Dropdown.Item href="#action/1" className="no-hover">Profile</Dropdown.Item>
                                 <Dropdown.Item href="#action/2" className="no-hover">Settings</Dropdown.Item>
-                                <Dropdown.Item href="#action/3" className="no-hover">Logout</Dropdown.Item>
+                                <Dropdown.Item onClick={handleLogout} className="no-hover">Logout</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
@@ -39,8 +53,6 @@ function CustomNavbar() {
             </Navbar.Collapse>
         </Navbar>
     );
-
-
 }
 
 export default CustomNavbar;

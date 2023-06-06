@@ -14,7 +14,6 @@ export default function Login() {
             const data = await loginUser(email, password);
             if (data.accessToken) {
                 localStorage.setItem('accessToken', data.accessToken);
-                localStorage.setItem('loggedIn', 'true');
                 console.log(data, "userLogin");
                 navigate("/homepage");
                 alert("Login Successful");
