@@ -11,12 +11,13 @@ import  ProjectPage from "./components/ProjectPage";
 import  ProjectForm from "./components/ProjectForm";
 
 function App() {
-    const isLoggedIn = window.localStorage.getItem("loggedIn");
+    const token = localStorage.getItem('accessToken');
+
     return (
         <Router>
             <div className="App">
                 <Routes>
-                    <Route path="/" element={ isLoggedIn ? <HomePage /> : <Login /> } />
+                    <Route path="/" element={ token ? <HomePage /> : <Login /> } />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/homepage" element={<HomePage />} />

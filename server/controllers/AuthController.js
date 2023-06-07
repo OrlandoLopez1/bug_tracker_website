@@ -66,13 +66,15 @@ const login = asyncHandler(async (req, res) => {
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '1d' }
     )
 
     const refreshToken = jwt.sign(
         {
             "email": foundUser.email,
-            "username": foundUser.username
+            "username": foundUser.username,
+            "role": foundUser.role
+
         },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '7d' }
@@ -80,7 +82,7 @@ const login = asyncHandler(async (req, res) => {
 
     res.cookie('jwt', refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'None',
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
@@ -88,11 +90,13 @@ const login = asyncHandler(async (req, res) => {
     res.json({ accessToken })
 })
 
+// todo gonna have to update code to handle the refresh token
 // @desc Refresh
 // @route GET /auth/refresh
-// @access Public
+// @access Public - because access token has expired
 const refresh = (req, res) => {
     const cookies = req.cookies
+
 
     if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
@@ -102,17 +106,22 @@ const refresh = (req, res) => {
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         asyncHandler(async (err, decoded) => {
-            if (err) return res.status(403).json({ message: 'Forbidden' })
+            if (err) {
+                return res.status(403).json({ message: 'Forbidden' })
+            }
 
-            const foundUser = await User.findOne({ email: decoded.email }).exec()
 
-            if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
+            const foundUser = await User.findOne({ username: decoded.username }).exec()
+
+            if (!foundUser) {
+                return res.status(401).json({ message: 'Unauthorized' })
+            }
 
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
                         "email": foundUser.email,
-                        "username": foundUser.username, // Add the username to the token.
+                        "username": foundUser.username,
                         "role": foundUser.role
                     }
                 },
@@ -120,12 +129,12 @@ const refresh = (req, res) => {
                 { expiresIn: '15m' }
             )
 
-
-            res.json({ accessToken })
+            res.json({  accessToken })
         })
     )
 }
-// todo implement into website
+
+
 // @desc Logout
 // @route POST /auth/logout
 // @access Public

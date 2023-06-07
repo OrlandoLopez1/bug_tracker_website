@@ -3,10 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Nav, Navbar, Dropdown} from 'react-bootstrap';
 import "./CustomNavbar.css";
 import jwtDecode from "jwt-decode";
+import {loginUser, logoutUser} from "../controllers/AuthController";
+import { useNavigate } from 'react-router-dom';
 
 function CustomNavbar() {
     const [userName, setUserName] = useState(null);
     const token = localStorage.getItem('accessToken');
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (token) {
@@ -15,6 +18,23 @@ function CustomNavbar() {
             setUserName(username);
         }
     }, [token]);
+    //todo figure out how to log out after clicking log
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        console.log("Logout clicked");
+        try {
+            // Call the logout API function
+            logoutUser();
+            // Clear the access token and navigate to the logout page
+            localStorage.removeItem('accessToken');
+            navigate("/login"); // Replace "/logout" with your actual logout page path
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+
 
     return (
         <Navbar bg="dark" variant="dark" className="custom-navbar">
@@ -31,7 +51,7 @@ function CustomNavbar() {
                             <Dropdown.Menu className="dropdown-menu-dark">
                                 <Dropdown.Item href="#action/1" className="no-hover">Profile</Dropdown.Item>
                                 <Dropdown.Item href="#action/2" className="no-hover">Settings</Dropdown.Item>
-                                <Dropdown.Item href="#action/3" className="no-hover">Logout</Dropdown.Item>
+                                <Dropdown.Item onClick={handleLogout} className="no-hover">Logout</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>

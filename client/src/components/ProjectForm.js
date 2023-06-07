@@ -4,7 +4,8 @@ import { addProject } from '../controllers/ProjectController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 
-// todo make it not make my eyes bleed, eventually
+// todo make it not make my eyes bleed, eventually; Idea, remove the tabs and make it a menu that shows up in front
+// of the projects and makes a shadow.
 function CreateProjectForm() {
     const [name, setName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
