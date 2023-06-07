@@ -5,6 +5,7 @@ import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 import {fetchProjects} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
+import { useNavigate } from 'react-router-dom';
 
 function CreateTicketPage() {
     const [title, setTitle] = useState('');
@@ -19,6 +20,7 @@ function CreateTicketPage() {
     const [user, setUser] = useState('');
     const [users, setUsers] = useState([]);
     const token = localStorage.getItem('accessToken');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -67,7 +69,10 @@ function CreateTicketPage() {
         fetchAndSetUsers().then();
 
 
-    }, []);
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate, token]);
 
 
     return (

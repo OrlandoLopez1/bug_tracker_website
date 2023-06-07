@@ -4,10 +4,12 @@ import CustomNavbar from './CustomNavbar';
 import TicketTable from './TicketTable';
 import {fetchTickets} from '../controllers/TicketController.js'
 import './TicketPage.css';
+import { useNavigate } from 'react-router-dom';
 
 function TicketPage() {
     const [tickets, setTickets] = useState([]);
     const token = localStorage.getItem('accessToken');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,7 +32,10 @@ function TicketPage() {
         if (usernameFromStorage) {
             setUsername(usernameFromStorage);
         }
-    }, []);
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate, token]);
 
     return (
         <div>

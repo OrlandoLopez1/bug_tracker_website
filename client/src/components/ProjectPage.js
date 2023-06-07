@@ -5,11 +5,13 @@ import { Accordion } from 'react-bootstrap';
 import './ProjectPage.css';
 import AccordionBody from './AccordionBody';
 import {fetchProjects} from "../controllers/ProjectController";
+import { useNavigate } from 'react-router-dom';
 
 function ProjectPage() {
     const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
     const token = localStorage.getItem('accessToken');
+    const navigate = useNavigate();
 
     useEffect(() => {
         // const usernameFromStorage = localStorage.getItem('username');
@@ -30,7 +32,10 @@ function ProjectPage() {
 
         fetchData().then();
         setProjects(projects); //todo check if necessary
-    }, []);
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate, token]);
 
     return (
         <div>

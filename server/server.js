@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const errorHandler = require('./middleware/errorHandler')
+const verifyJWT = require('./middleware/verifyJWT')
 const { logger, logEvents } = require('./middleware/logger')
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
@@ -23,9 +24,9 @@ app.use(cookieParser());
 
 
 app.use('/auth', require('./routes/authRoutes'))
-app.use('/users', require('./routes/userRoutes'))
-app.use('/tickets', require('./routes/ticketRoutes'))
-app.use('/projects', require('./routes/projectRoutes'))
+app.use('/users', verifyJWT, require('./routes/userRoutes'))
+app.use('/tickets', verifyJWT, require('./routes/ticketRoutes'))
+app.use('/projects', verifyJWT, require('./routes/projectRoutes'))
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');

@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { addProject } from '../controllers/ProjectController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
-
+import { useNavigate } from 'react-router-dom';
 // todo make it not make my eyes bleed, eventually; Idea, remove the tabs and make it a menu that shows up in front
 // of the projects and makes a shadow.
 function CreateProjectForm() {
@@ -14,7 +14,7 @@ function CreateProjectForm() {
     const [currentStatus, setCurrentStatus] = useState('Planning'); // new
     const [username, setUsername] = useState(null);
     const token = localStorage.getItem('accessToken');
-
+    const navigate = useNavigate();
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -36,7 +36,10 @@ function CreateProjectForm() {
         if (usernameFromStorage) {
             setUsername(usernameFromStorage);
         }
-    }, []);
+        if (!token) {
+            navigate('/login');
+        }
+    }, [navigate, token]);
 
     return (
         <Form onSubmit={handleSubmit}>

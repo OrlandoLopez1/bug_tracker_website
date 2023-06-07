@@ -9,7 +9,6 @@ import TicketForm from "./components/TicketForm";
 import TicketPage from "./components/TicketPage";
 import  ProjectPage from "./components/ProjectPage";
 import  ProjectForm from "./components/ProjectForm";
-
 function App() {
     const token = localStorage.getItem('accessToken');
 
