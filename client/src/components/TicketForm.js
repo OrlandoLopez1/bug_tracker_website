@@ -6,7 +6,7 @@ import SideMenu from "./SideMenu";
 import {fetchProjects} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
 import { useNavigate } from 'react-router-dom';
-
+import jwtDecode from "jwt-decode";
 function CreateTicketPage() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -21,7 +21,7 @@ function CreateTicketPage() {
     const [users, setUsers] = useState([]);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
-
+    const [role, setRole] = useState(null)
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -65,6 +65,7 @@ function CreateTicketPage() {
             }
         }
 
+
         fetchAndSetProjects().then();
         fetchAndSetUsers().then();
 
@@ -72,8 +73,215 @@ function CreateTicketPage() {
         if (!token) {
             navigate('/login');
         }
+        else{
+            const decodedToken = jwtDecode(token);
+            const role = decodedToken.UserInfo.role;
+            setRole(role);
+        }
+
+
     }, [navigate, token]);
 
+
+
+    function CommonFormFields({title, setTitle, type, setType, description, setDescription, project, setProject}) {
+        return (
+            <>
+                <Form.Group>
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Type</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={type}
+                        onChange={e => setType(e.target.value)}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                    />
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Project</Form.Label>
+                    <Form.Control
+                        as="select"
+                        value={project}
+                        onChange={e => setProject(e.target.value)}
+                    >
+                        {projects.length > 0 ? (
+                            projects.map((project) => (
+                                <option key={project._id} value={project._id}>
+                                    {project.name}
+                                </option>
+                            ))
+                        ) : (
+                            <option>No projects available</option>
+                        )}
+
+                    </Form.Control>
+                </Form.Group>
+            </>
+
+        );
+    }
+
+    function SubmitterFields() {
+        // form fields specific to submitter role
+        return null;
+    }
+
+    function ProjectManagerFields({user, setUser, users}) {
+        // form fields specific to project manager role
+        return (
+            <Form.Group>
+                <Form.Label>Assigned To</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={user}
+                    onChange={e => setUser(e.target.value)}
+                >
+                    {users.length > 0 ? (
+                        users.map((user) => (
+                            <option key={user._id} value={user._id}>
+                                {user.firstName} {user.lastName}
+                            </option>
+                        ))
+                    ) : (
+                        <option>No users available</option>
+                    )}
+                </Form.Control>
+            </Form.Group>
+        );
+    }
+
+    function DeveloperFields({priority, setPriority}) {
+        return (
+            <Form.Group>
+                <Form.Label>Priority</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={priority}
+                    onChange={e => setPriority(e.target.value)}
+                >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </Form.Control>
+            </Form.Group>
+        );
+    }
+
+
+
+
+    // return (
+    //     <Form onSubmit={handleSubmit}>
+    //         <CustomNavbar />
+    //         <div className="main-content">
+    //             <SideMenu />
+    //             <div className="ticket-page-content">
+    //
+    //                 <Form.Group>
+    //                     <Form.Label>Title</Form.Label>
+    //                     <Form.Control
+    //                         type="text"
+    //                         value={title}
+    //                         onChange={e => setTitle(e.target.value)}
+    //                     />
+    //                 </Form.Group>
+    //
+    //                 <Form.Group>
+    //                     <Form.Label>Type</Form.Label>
+    //                     <Form.Control
+    //                         type="text"
+    //                         value={type}
+    //                         onChange={e => setType(e.target.value)}
+    //                     />
+    //                 </Form.Group>
+    //
+    //                 <Form.Group>
+    //                     <Form.Label>Project</Form.Label>
+    //                     <Form.Control
+    //                         as="select"
+    //                         value={project}
+    //                         onChange={e => setProject(e.target.value)}
+    //                     >
+    //                         {projects.length > 0 ? (
+    //                             projects.map((project) => (
+    //                                 <option key={project._id} value={project._id}>
+    //                                     {project.name}
+    //                                 </option>
+    //                             ))
+    //                         ) : (
+    //                             <option>No projects available</option>
+    //                         )}
+    //
+    //                     </Form.Control>
+    //                 </Form.Group>
+    //
+    //
+    //
+    //                 <Form.Group>
+    //                     <Form.Label>Description</Form.Label>
+    //                     <Form.Control
+    //                         as="textarea"
+    //                         rows={3}
+    //                         value={description}
+    //                         onChange={e => setDescription(e.target.value)}
+    //                     />
+    //                 </Form.Group>
+    //
+    //                 <Form.Group>
+    //                     <Form.Label>Assigned To</Form.Label>
+    //                     <Form.Control
+    //                         as="select"
+    //                         value={user}
+    //                         onChange={e => setUser(e.target.value)}
+    //                     >
+    //                         {users.length > 0 ? (
+    //                             users.map((user) => (
+    //                                 <option key={user._id} value={user._id}>
+    //                                     {user.firstName} {user.lastName}
+    //                                 </option>
+    //                             ))
+    //                         ) : (
+    //                             <option>No users available</option>
+    //                         )}
+    //
+    //                     </Form.Control>
+    //                 </Form.Group>
+    //
+    //                 <Form.Group>
+    //                     <Form.Label>Priority</Form.Label>
+    //                     <Form.Control
+    //                         as="select"
+    //                         value={priority}
+    //                         onChange={e => setPriority(e.target.value)}
+    //                     >
+    //                         <option value="low">Low</option>
+    //                         <option value="medium">Medium</option>
+    //                         <option value="high">High</option>
+    //                     </Form.Control>
+    //                 </Form.Group>
+    //                 <Button variant="primary" type="submit">Submit</Button>
+    //                 </div>
+    //         </div>
+    //     </Form>
+    // );
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -81,106 +289,39 @@ function CreateTicketPage() {
             <div className="main-content">
                 <SideMenu />
                 <div className="ticket-page-content">
+                    <CommonFormFields
+                        title={title}
+                        setTitle={setTitle}
+                        type={type}
+                        setType={setType}
+                        description={description}
+                        setDescription={setDescription}
+                        project={project}
+                        setProject={setProject}
+                    />
 
-                    <Form.Group>
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={title}
-                            onChange={e => setTitle(e.target.value)}
-                        />
-                    </Form.Group>
+                    {role === 'submitter' && <SubmitterFields />}
 
-                    <Form.Group>
-                        <Form.Label>Type</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={type}
-                            onChange={e => setType(e.target.value)}
-                        />
-                    </Form.Group>
+                    {role === 'projectmanager' &&
+                        <ProjectManagerFields
+                            user={user}
+                            setUser={setUser}
+                            users={users}
+                        />}
 
-                    <Form.Group>
-                        <Form.Label>Project</Form.Label>
-                        <Form.Control
-                            as="select"
-                            value={project}
-                            onChange={e => setProject(e.target.value)}
-                        >
-                            {projects.length > 0 ? (
-                                projects.map((project) => (
-                                    <option key={project._id} value={project._id}>
-                                        {project.name}
-                                    </option>
-                                ))
-                            ) : (
-                                <option>No projects available</option>
-                            )}
+                    {role === 'developer' &&
+                        <DeveloperFields
+                            priority={priority}
+                            setPriority={setPriority}
+                        />}
 
-                        </Form.Control>
-                    </Form.Group>
-
-
-
-                    <Form.Group>
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={3}
-                            value={description}
-                            onChange={e => setDescription(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group>
-                        <Form.Label>Assigned To</Form.Label>
-                        <Form.Control
-                            as="select"
-                            value={user}
-                            onChange={e => setUser(e.target.value)}
-                        >
-                            {users.length > 0 ? (
-                                users.map((user) => (
-                                    <option key={user._id} value={user._id}>
-                                        {user.firstName} {user.lastName}
-                                    </option>
-                                ))
-                            ) : (
-                                <option>No users available</option>
-                            )}
-
-                        </Form.Control>
-                    </Form.Group>
-
-                    <Form.Group>
-                        <Form.Label>Status</Form.Label>
-                        <Form.Control
-                            as="select"
-                            value={status}
-                            onChange={e => setStatus(e.target.value)}
-                        >
-                            <option value="open">Open</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="closed">Closed</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Priority</Form.Label>
-                        <Form.Control
-                            as="select"
-                            value={priority}
-                            onChange={e => setPriority(e.target.value)}
-                        >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Button variant="primary" type="submit">Submit</Button>
-                    </div>
+                </div>
             </div>
         </Form>
     );
+
 }
+
 
 export default CreateTicketPage;
