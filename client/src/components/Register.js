@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { registerUser } from "../controllers/AuthController";
 import {Form} from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Register() {
     const [firstName, setFirstName] = useState("");
@@ -10,7 +12,7 @@ export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("submitter");
-
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
         const userData = {
@@ -28,6 +30,7 @@ export default function Register() {
         } else {
             alert("Something went wrong");
         }
+        navigate("/login");
     };
 
     return (

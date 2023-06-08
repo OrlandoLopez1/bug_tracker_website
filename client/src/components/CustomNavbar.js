@@ -5,10 +5,13 @@ import {logoutUser, getUserInfo} from "../controllers/AuthController";
 import "./CustomNavbar.css";
 import jwtDecode from "jwt-decode";
 
+import { useNavigate } from 'react-router-dom';
+
 function CustomNavbar() {
     const [userName, setUserName] = useState(null);
     const token = localStorage.getItem('accessToken');
-    //todo works in postman, returns unauthorized on website
+    const navigate = useNavigate();
+
     useEffect(() => {
         async function fetchUserInfo() {
             try {
@@ -21,15 +24,23 @@ function CustomNavbar() {
         fetchUserInfo();
     }, []);
 
-    const handleLogout = async () => {
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        console.log("Logout clicked");
         try {
-            await logoutUser(); // call your logout function
+            // Call the logout API function
+            logoutUser();
+            // Clear the access token and navigate to the logout page
             localStorage.removeItem('accessToken');
-            window.location.href = '/';
+            navigate("/login"); // Replace "/logout" with your actual logout page path
         } catch (error) {
-            console.error("Logout failed", error);
+            console.error('Error:', error);
         }
     };
+
+
+
     return (
         <Navbar bg="dark" variant="dark" className="custom-navbar">
             <Navbar.Brand href="#home">Placeholder</Navbar.Brand>

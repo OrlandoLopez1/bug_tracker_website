@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+// todo allow option for attachments, tags, and comments
 const ticketSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
     description: { type: String, required: true },
