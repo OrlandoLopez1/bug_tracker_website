@@ -18,7 +18,7 @@ function CustomNavbar() {
             setUserName(username);
         }
     }, [token]);
-    //todo figure out how to log out after clicking log
+
 
     const handleLogout = async (e) => {
         e.preventDefault();
