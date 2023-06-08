@@ -87,7 +87,6 @@ const login = asyncHandler(async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-
     res.json({ accessToken })
 })
 
@@ -135,6 +134,7 @@ const refresh = (req, res) => {
     )
 }
 
+
 // @desc Logout
 // @route POST /auth/logout
 // @access Public
@@ -149,6 +149,5 @@ module.exports = {
     register,
     login,
     refresh,
-    getUserInfo,
     logout
 }
