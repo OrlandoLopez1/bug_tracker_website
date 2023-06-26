@@ -1,0 +1,28 @@
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.dashboard-item {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.large-number {
+    font-size: 50px;
+    margin: 0;
+}
+
+.large-number-subtext {
+    font-size: 20px;
+    color: #888;
+    margin: 0;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+}
