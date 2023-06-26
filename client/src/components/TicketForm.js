@@ -7,12 +7,142 @@ import {fetchProjects} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
+
+function CommonFormFields({title, setTitle, type, setType, description, setDescription, priority, setPriority, project, setProject, projects, setProjects}) {
+    return (
+        <>
+            <Form.Group>
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                    type="text"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                />
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Type</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                >
+                    <option value="bug">Bug</option>
+                    <option value="feature request">Feature Request</option>
+                    <option value="improvement">Improvement</option>
+                    <option value="maintenance">Maintenance</option>
+                    <option value="security">Security</option>
+                    <option value="documentation">Documentation</option>
+                    <option value="ui/ux">UI/UX</option>
+                    <option value="performance">Performance</option>
+                    <option value="compatibility">Compatibility</option>
+                    <option value="other">Other</option>
+                </Form.Control>
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    rows={3}
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                />
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Project</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={project}
+                    onChange={e => setProject(e.target.value)}
+                >
+                    {projects.length > 0 ? (
+                        projects.map((project) => (
+                            <option key={project._id} value={project._id}>
+                                {project.name}
+                            </option>
+                        ))
+                    ) : (
+                        <option>No projects available</option>
+                    )}
+
+                </Form.Control>
+            </Form.Group>
+        </>
+
+    );
+}
+
+function SubmitterFields() {
+    // form fields specific to submitter role
+    return null;
+}
+
+function ProjectManagerFields({user, setUser, users, priority, setPriority, assignedTo, setAssignedTo, assignedBy, setAssignedBy}) {
+    // form fields specific to project manager role
+    return (
+        <>
+            <Form.Group>
+                <Form.Label>Priority</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={priority}
+                    onChange={e => setPriority(e.target.value)}
+                >
+                    <option value="low">low</option>
+                    <option value="medium">medium</option>
+                    <option value="high">high</option>
+                </Form.Control>
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>Assigned To</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={assignedTo}
+                    onChange={e => setAssignedTo(e.target.value)}
+                >
+                    {users.length > 0 ? (
+                        users.map((user) => (
+                            <option key={user._id} value={user._id}>
+                                {user.firstName} {user.lastName}
+                            </option>
+                        ))
+                    ) : (
+                        <option>No users available</option>
+                    )}
+                </Form.Control>
+            </Form.Group>
+        </>
+
+    );
+}
+
+function DeveloperFields({priority, setPriority}) {
+    return (
+        <Form.Group>
+            <Form.Label>Priority</Form.Label>
+            <Form.Control
+                as="select"
+                value={priority}
+                onChange={e => setPriority(e.target.value)}
+            >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </Form.Control>
+        </Form.Group>
+    );
+}
+
+
 function CreateTicketPage() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [assignedBy, setAssignedBy] = useState('');
-    const [assignedTo, setAssignedTo] = useState('');
-    const [type, setType] = useState('');
+    const [assignedBy, setAssignedBy] = useState(null);
+    const [assignedTo, setAssignedTo] = useState(null);
+    const [type, setType] = useState('bug');
     const [project, setProject] = useState('');
     const [status, setStatus] = useState('open');
     const [priority, setPriority] = useState('medium');
@@ -28,17 +158,20 @@ function CreateTicketPage() {
             const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
             console.log("PROJECT: ", project)
             const data = await createTicket(ticket, token);
-            setTitle('');
-            setDescription('');
-            setAssignedBy('');
-            setAssignedTo('');
-            setType('');
-            setStatus('open');
-            setPriority('medium');
+            if (data) {  // Assuming the `createTicket` function returns something truthy on success
+                setTitle('');
+                setDescription('');
+                setAssignedBy(null);
+                setAssignedTo(null);
+                setType('bug');
+                setStatus('open');
+                setPriority('medium');
+            }
         } catch (error) {
             console.error("Failed to create ticket:", error);
         }
     };
+
 
     useEffect(() => {
 
@@ -84,204 +217,7 @@ function CreateTicketPage() {
 
 
 
-    function CommonFormFields({title, setTitle, type, setType, description, setDescription, project, setProject}) {
-        return (
-            <>
-                <Form.Group>
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                    />
-                </Form.Group>
 
-                <Form.Group>
-                    <Form.Label>Type</Form.Label>
-                    <Form.Control
-                        type="text"
-                        value={type}
-                        onChange={e => setType(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows={3}
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>Project</Form.Label>
-                    <Form.Control
-                        as="select"
-                        value={project}
-                        onChange={e => setProject(e.target.value)}
-                    >
-                        {projects.length > 0 ? (
-                            projects.map((project) => (
-                                <option key={project._id} value={project._id}>
-                                    {project.name}
-                                </option>
-                            ))
-                        ) : (
-                            <option>No projects available</option>
-                        )}
-
-                    </Form.Control>
-                </Form.Group>
-            </>
-
-        );
-    }
-
-    function SubmitterFields() {
-        // form fields specific to submitter role
-        return null;
-    }
-
-    function ProjectManagerFields({user, setUser, users}) {
-        // form fields specific to project manager role
-        return (
-            <Form.Group>
-                <Form.Label>Assigned To</Form.Label>
-                <Form.Control
-                    as="select"
-                    value={user}
-                    onChange={e => setUser(e.target.value)}
-                >
-                    {users.length > 0 ? (
-                        users.map((user) => (
-                            <option key={user._id} value={user._id}>
-                                {user.firstName} {user.lastName}
-                            </option>
-                        ))
-                    ) : (
-                        <option>No users available</option>
-                    )}
-                </Form.Control>
-            </Form.Group>
-        );
-    }
-
-    function DeveloperFields({priority, setPriority}) {
-        return (
-            <Form.Group>
-                <Form.Label>Priority</Form.Label>
-                <Form.Control
-                    as="select"
-                    value={priority}
-                    onChange={e => setPriority(e.target.value)}
-                >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </Form.Control>
-            </Form.Group>
-        );
-    }
-
-
-
-
-    // return (
-    //     <Form onSubmit={handleSubmit}>
-    //         <CustomNavbar />
-    //         <div className="main-content">
-    //             <SideMenu />
-    //             <div className="ticket-page-content">
-    //
-    //                 <Form.Group>
-    //                     <Form.Label>Title</Form.Label>
-    //                     <Form.Control
-    //                         type="text"
-    //                         value={title}
-    //                         onChange={e => setTitle(e.target.value)}
-    //                     />
-    //                 </Form.Group>
-    //
-    //                 <Form.Group>
-    //                     <Form.Label>Type</Form.Label>
-    //                     <Form.Control
-    //                         type="text"
-    //                         value={type}
-    //                         onChange={e => setType(e.target.value)}
-    //                     />
-    //                 </Form.Group>
-    //
-    //                 <Form.Group>
-    //                     <Form.Label>Project</Form.Label>
-    //                     <Form.Control
-    //                         as="select"
-    //                         value={project}
-    //                         onChange={e => setProject(e.target.value)}
-    //                     >
-    //                         {projects.length > 0 ? (
-    //                             projects.map((project) => (
-    //                                 <option key={project._id} value={project._id}>
-    //                                     {project.name}
-    //                                 </option>
-    //                             ))
-    //                         ) : (
-    //                             <option>No projects available</option>
-    //                         )}
-    //
-    //                     </Form.Control>
-    //                 </Form.Group>
-    //
-    //
-    //
-    //                 <Form.Group>
-    //                     <Form.Label>Description</Form.Label>
-    //                     <Form.Control
-    //                         as="textarea"
-    //                         rows={3}
-    //                         value={description}
-    //                         onChange={e => setDescription(e.target.value)}
-    //                     />
-    //                 </Form.Group>
-    //
-    //                 <Form.Group>
-    //                     <Form.Label>Assigned To</Form.Label>
-    //                     <Form.Control
-    //                         as="select"
-    //                         value={user}
-    //                         onChange={e => setUser(e.target.value)}
-    //                     >
-    //                         {users.length > 0 ? (
-    //                             users.map((user) => (
-    //                                 <option key={user._id} value={user._id}>
-    //                                     {user.firstName} {user.lastName}
-    //                                 </option>
-    //                             ))
-    //                         ) : (
-    //                             <option>No users available</option>
-    //                         )}
-    //
-    //                     </Form.Control>
-    //                 </Form.Group>
-    //
-    //                 <Form.Group>
-    //                     <Form.Label>Priority</Form.Label>
-    //                     <Form.Control
-    //                         as="select"
-    //                         value={priority}
-    //                         onChange={e => setPriority(e.target.value)}
-    //                     >
-    //                         <option value="low">Low</option>
-    //                         <option value="medium">Medium</option>
-    //                         <option value="high">High</option>
-    //                     </Form.Control>
-    //                 </Form.Group>
-    //                 <Button variant="primary" type="submit">Submit</Button>
-    //                 </div>
-    //         </div>
-    //     </Form>
-    // );
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -298,6 +234,7 @@ function CreateTicketPage() {
                         setDescription={setDescription}
                         project={project}
                         setProject={setProject}
+                        projects={projects}  // Pass the projects state to CommonFormFields
                     />
 
                     {role === 'submitter' && <SubmitterFields />}
@@ -307,6 +244,12 @@ function CreateTicketPage() {
                             user={user}
                             setUser={setUser}
                             users={users}
+                            priority={priority}
+                            setPriority={setPriority}
+                            assignedTo={assignedTo}
+                            setAssignedTo={setAssignedTo}
+                            assignedBy={assignedBy}
+                            setAssignedBy={setAssignedBy}
                         />}
 
                     {role === 'developer' &&
@@ -320,8 +263,6 @@ function CreateTicketPage() {
             </div>
         </Form>
     );
-
 }
-
 
 export default CreateTicketPage;
