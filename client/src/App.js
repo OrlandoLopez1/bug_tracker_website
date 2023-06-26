@@ -9,6 +9,7 @@ import TicketForm from "./components/TicketForm";
 import TicketPage from "./components/TicketPage";
 import  ProjectPage from "./components/ProjectPage";
 import  ProjectForm from "./components/ProjectForm";
+// todo make it redirect to a logged out page after a token expires
 function App() {
     const token = localStorage.getItem('accessToken');
 

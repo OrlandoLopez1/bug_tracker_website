@@ -21,6 +21,7 @@ const addTicket = asyncHandler(async (req, res) => {
         res.status(201).json({ message: 'Ticket created' });
     } catch (error) {
         if (error.name === 'ValidationError') {
+            console.log(error);
             res.status(400).json({ message: 'Error validating ticket', error: error.message });
         } else if (error.name === 'MongoError') {
             res.status(500).json({ message: 'Error saving ticket to database', error: error.message });
