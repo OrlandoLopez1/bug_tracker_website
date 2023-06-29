@@ -48,9 +48,18 @@
     align-items: center;
     flex-direction: column;
 }
-.profile-info h2 {
+
+.username-style {
     font-family: 'Arial', sans-serif;
     font-size: 20px;
     font-weight: bold;
     color: #aaadb7
+}
+
+.role-style {
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    color: #aaadb7
+
+
 }

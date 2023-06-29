@@ -9,6 +9,7 @@ function SideMenu() {
     const [openDropdowns, setOpenDropdowns] = useState([]);
     const navigate = useNavigate();
     const [userName, setUserName] = useState(null);
+    const [role, setRole] = useState(null);
     const token = localStorage.getItem('accessToken');
 
 
@@ -55,7 +56,26 @@ function SideMenu() {
                 const decodedToken = jwtDecode(token);
 
                 const username = decodedToken.UserInfo.username;
+                const role = decodedToken.UserInfo.role;
                 setUserName({username});
+
+                switch (role){
+                    case "submitter":
+                        setRole("Submitter");
+                        break;
+                    case "developer":
+                        setRole("Developer");
+                        break;
+                    case "projectmanager":
+                        setRole("Project Manager");
+                        break;
+                    case "admin":
+                        setRole("Admin");
+                        break;
+                    default:
+                        setRole("Role: ???");
+                        break;
+                }
             }
         };
 
@@ -68,7 +88,8 @@ function SideMenu() {
             {userName && (
                 <div className="profile-info">
                     <img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture"/>
-                    <h2>{userName.username}</h2>
+                    <h2 className="username-style">{userName.username}</h2>
+                    <h3 className="role-style">{role}</h3>
                 </div>
             )}
             {buttons.map((button, index) => (
