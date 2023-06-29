@@ -103,6 +103,7 @@ function ProjectManagerFields({user, setUser, users, priority, setPriority, assi
                     value={assignedTo}
                     onChange={e => setAssignedTo(e.target.value)}
                 >
+                    <option value={null}>No Assignment</option>
                     {users.length > 0 ? (
                         users.map((user) => (
                             <option key={user._id} value={user._id}>
