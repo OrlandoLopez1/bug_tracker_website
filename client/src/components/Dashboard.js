@@ -4,15 +4,16 @@ import { Chart, registerables } from 'chart.js';
 import './Dashboard.css';
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
+import UserTable from './UserTable';
 import { useNavigate } from 'react-router-dom';
+import {getAllUsers} from "../controllers/UserController";
 Chart.register(...registerables);
 
 //todo check if there is a way to modify the charts so that the label is next to the arch
-//todo add the user chart
 //todo fetch actual data
 function Dashboard() {
     const doughnutData = {
-        labels: ['Bugs', 'Features', 'Improvements'],
+        labels: ['Low', 'Medium', 'High'],
         datasets: [
             {
                 data: [300, 50, 100],
@@ -60,42 +61,69 @@ function Dashboard() {
     };
 
     const [username, setUsername] = useState(null);
+    const [users, setUsers] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     useEffect(() => {
-        const usernameFromStorage = localStorage.getItem('username');
-
-        if (usernameFromStorage) {
-            setUsername(usernameFromStorage);
-        }
         if (!token) {
             navigate('/login');
         }
+        const fetchUsers = async () => {
+            try {
+                const userData = await getAllUsers(token);
+                setUsers(userData);
+                console.log("USERDATA")
+                console.log(userData);
+            }
+            catch (error){
+                console.error('Failed to fetch Users:', error);
+            }
+        }
+
+        fetchUsers();
+
     }, [navigate, token]);
     return (
         <div>
             <CustomNavbar username={username} />
             <div className="main-content">
                 <SideMenu />
+
                 <div className="dashboard">
-                    <div className="dashboard-item">
-                        <Doughnut data={doughnutData} />
+                    <div className="row row1">
+                        <div className="dashboard-item1">
+                            <h2 className="large-number">500</h2>
+                            <p className="large-number-subtext">Tickets open</p>
+                        </div>
+                        <div className="dashboard-item1">
+                            <h2 className="large-number">127</h2>
+                            <p className="large-number-subtext">In progress</p>
+                        </div>
+                        <div className="dashboard-item chart-container">
+                            <Line data={lineData} />
+                        </div>
+
                     </div>
-                    <div className="dashboard-item">
-                        <Line data={lineData} />
+                    <div className="row row2">
+
+                        <div className="dashboard-item chart-container2">
+                            <Doughnut data={doughnutData} />
+                        </div>
+                        <div className="dashboard-item chart-container2">
+                            <Bar data={barData} options={barOptions} />
+                        </div>
+
                     </div>
-                    <div className="dashboard-item">
-                        <Bar data={barData} options={barOptions} />
-                    </div>
-                    <div className="dashboard-item">
-                        <h2 className="large-number">500</h2>
-                        <p className="large-number-subtext">Open Tickets</p>
+                    <div className="row row3">
+                        <div className="dashboard-item">
+                            {users && <UserTable users={users}></UserTable>}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     );
+
 }
 
 export default Dashboard;

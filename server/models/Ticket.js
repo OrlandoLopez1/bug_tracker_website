@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 // todo allow option for attachments, tags, and comments
+// todo also allow for several users to be assigned to a ticket
 const ticketSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
     description: { type: String, required: true },

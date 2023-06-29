@@ -16,7 +16,8 @@ function TicketPage() {
             try {
                 const ticketsData =  await fetchTickets(token);
                 setTickets(ticketsData);
-            } catch (error) {
+            }
+            catch (error) {
                 console.error('Failed to fetch tickets:', error);
             }
         };
@@ -41,7 +42,7 @@ function TicketPage() {
         <div>
             <CustomNavbar username={username} />
             <div className="main-content">
-                c<SideMenu />
+                <SideMenu />
                 <div className="ticket-page-content">
                     <h1>Tickets</h1>
                     <TicketTable tickets={tickets} />

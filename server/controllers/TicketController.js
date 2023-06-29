@@ -1,4 +1,5 @@
 const Ticket = require('../models/Ticket');
+const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 
 // @desc Create a new ticket
@@ -17,6 +18,12 @@ const addTicket = asyncHandler(async (req, res) => {
             priority,
             project
         });
+        console.log("Assigned to: ", assignedTo); // debug print
+
+        if (assignedTo) {
+            console.log("Incrementing tickets for user ID: ", assignedTo); // debug print
+            await User.findByIdAndUpdate(assignedTo, { $inc: { totalAssignedTickets: 1 } });
+        }
         await ticket.save();
         res.status(201).json({ message: 'Ticket created' });
     } catch (error) {
@@ -66,9 +73,3 @@ module.exports = {
     getTickets,
     getTicketsForProject
 };
-
-
-
-
-
-

@@ -1,0 +1,10 @@
+.table-profile-pic {
+    height: 32px;
+    margin-right: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.table-username {
+    color: #aaadb7;
+}

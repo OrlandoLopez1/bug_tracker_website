@@ -22,7 +22,6 @@ function CustomNavbar() {
 
     const handleLogout = async (e) => {
         e.preventDefault();
-        console.log("Logout clicked");
         try {
             // Call the logout API function
             logoutUser();

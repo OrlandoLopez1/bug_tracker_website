@@ -1,27 +1,58 @@
 .dashboard {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: block;
+    width: 100%;
     padding: 20px;
 }
 
-.dashboard-item {
-    border: 1px solid #ddd;
-    padding: 20px;
+.row {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 20px; /* Add space between the rows */
+}
+
+.row1 {
+    grid-template-columns: 1fr 1fr 2fr;
+}
+
+.row2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.row3 {
+    grid-template-columns: 1fr;
+}
+
+.dashboard-item1 {
+    /*padding: 20px;*/
+
     border-radius: 5px;
+
 }
 
 .large-number {
-    font-size: 50px;
+    font-size: 100px; /* Increased font-size */
     margin: 0;
 }
 
 .large-number-subtext {
-    font-size: 20px;
+    font-size: 30px; /* Increased font-size */
     color: #888;
     margin: 0;
 }
 
+/*.chart-container {*/
+/*    !*width: 80%; !* Adjust as needed *!*!*/
+/*    !*height: auto; !* Maintain aspect ratio *!*!*/
+/*    !*max-width: 300px; !* Maximum width of chart. Adjust as per your requirement *!*!*/
+/*    max-width: 30%; !* Maximum width of chart. Adjust as per your requirement *!*/
+/*    max-height: 30%;*/
+/*    !*margin: auto;*!*/
+/*    border: 1px red solid;*/
+/*}*/
+
+.chart-container2 {
+    max-height: 50vh ;
+}
 .main-content {
     display: flex;
     flex: 1;

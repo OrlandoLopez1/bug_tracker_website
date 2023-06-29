@@ -1,5 +1,6 @@
 .sidenav {
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     background-color: #343a40;
     padding: 10px;
     width: 250px;
