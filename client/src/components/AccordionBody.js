@@ -47,12 +47,6 @@ function AccordionBody({ project }) {
                     <p>{project.currentStatus}</p>
                 </div>
 
-                <div className="item">
-                    <p className="header">Associated Tickets:</p>
-                    {tickets.map(ticket => (
-                        <p key={ticket._id}>{ticket.title}</p>
-                    ))}
-                </div>
             </div>
             <div>
                 {/* Other components or HTML elements... */}

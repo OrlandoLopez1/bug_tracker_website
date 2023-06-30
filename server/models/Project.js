@@ -8,7 +8,6 @@ const ProjectSchema = new mongoose.Schema({
     },
     projectDescription: {
         type: String,
-        required: true
     },
     projectManager: {
         type: String

@@ -100,10 +100,10 @@ function ProjectManagerFields({user, setUser, users, priority, setPriority, assi
                 <Form.Label>Assigned To</Form.Label>
                 <Form.Control
                     as="select"
-                    value={assignedTo}
-                    onChange={e => setAssignedTo(e.target.value)}
+                    value={assignedTo || 'none'}
+                    onChange={e => setAssignedTo(e.target.value === 'none' ? null : e.target.value)}
                 >
-                    <option value={null}>No Assignment</option>
+                    <option value='none'>No Assignment</option>
                     {users.length > 0 ? (
                         users.map((user) => (
                             <option key={user._id} value={user._id}>

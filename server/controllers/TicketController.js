@@ -8,6 +8,7 @@ const asyncHandler = require('express-async-handler');
 const addTicket = asyncHandler(async (req, res) => {
     try {
         const { title, description, assignedBy, assignedTo, type, status, priority, project } = req.body;
+
         const ticket = new Ticket({
             title,
             description,
@@ -18,23 +19,28 @@ const addTicket = asyncHandler(async (req, res) => {
             priority,
             project
         });
-        console.log("Assigned to: ", assignedTo); // debug print
 
-        if (assignedTo) {
-            console.log("Incrementing tickets for user ID: ", assignedTo); // debug print
-            await User.findByIdAndUpdate(assignedTo, { $inc: { totalAssignedTickets: 1 } });
+        // Validate ticket first
+        const validationError = ticket.validateSync();
+        if (validationError) {
+            return res.status(400).json({ message: 'Validation error', error: validationError });
         }
+
+        // If ticket is valid and assignedTo is provided, increment user's ticket count
+        if (assignedTo && title !== '') {
+            const updatedUser = await User.findByIdAndUpdate(assignedTo, { $inc: { totalAssignedTickets: 1 } }, { new: true });
+            if (!updatedUser) {
+                throw new Error("User not found, could not increment tickets");
+            }
+        }
+
+        // Now save the ticket
         await ticket.save();
         res.status(201).json({ message: 'Ticket created' });
+
     } catch (error) {
-        if (error.name === 'ValidationError') {
-            console.log(error);
-            res.status(400).json({ message: 'Error validating ticket', error: error.message });
-        } else if (error.name === 'MongoError') {
-            res.status(500).json({ message: 'Error saving ticket to database', error: error.message });
-        } else {
-            res.status(500).json({ message: 'Unknown server error', error: error.message });
-        }
+        console.error('Error creating ticket:', error);
+        res.status(500).json({ message: 'Error creating ticket', error: error.message });
     }
 });
 

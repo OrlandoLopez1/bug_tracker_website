@@ -1,11 +1,25 @@
 .accordion-container {
     width: 90%;
+    flex: 1;
 
 }
 
 .accordion-item {
     margin-bottom: 10px;
 }
+
+.accordion-content {
+    display: inline;
+    justify-content: space-between;
+    align-items: start; /* or "center" if you want the buttons to be vertically centered */
+}
+
+.accordion-buttons {
+    display: flex;
+    gap: 10px; /* adjust as needed */
+    justify-content: right;
+}
+
 
 .content-container {
     display: flex;
@@ -22,6 +36,4 @@
     flex: 0 0 200px;
 }
 
-.accordion-container {
-    flex: 1;
-}
+
