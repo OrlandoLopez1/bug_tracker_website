@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 function ProjectPage() {
     const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
+    const [editingProjectId, setEditingProjectId] = useState(null);  // new state variable
+    const [editedProjectId, setEditedProjectId] = useState(null);  // new state variable
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
 
@@ -29,11 +31,11 @@ function ProjectPage() {
         if (!token) {
             navigate('/login');
         }
-    }, [navigate, token]);
+    }, [navigate, token, ]);
 
     const handleEditProject = (project) => {
-        console.log("EDIT CLICKED", project);
-    }
+        setEditingProjectId(project._id);  // when Edit button is clicked, set this project as being edited
+    };
 
     const handleDeleteProject = (project) => {
         console.log("delete clicked", project);
@@ -54,6 +56,21 @@ function ProjectPage() {
             // You could show an error message to the user here.
         }
     }
+
+    const handleUpdateProject = async (updatedProject) => {
+        try {
+            const response = await updateProject(updatedProject, token);
+            setProjects(prevProjects =>
+                prevProjects.map(p => p._id === updatedProject._id ? updatedProject : p)
+            );
+            setEditingProjectId(null); // Turn off edit mode when the update is successful
+        } catch (error) {
+            console.error('Failed to update project:', error);
+        }
+    };
+
+
+
     return (
         <div>
             <CustomNavbar/>
@@ -74,7 +91,12 @@ function ProjectPage() {
                                             <button onClick={() => handleEditProject(project)}>Edit</button>
                                             <button onClick={() => handleDeleteProject(project)}>Delete</button>
                                         </div>
-                                        <AccordionBody project={project} />
+                                        <AccordionBody
+                                            project={project}
+                                            isEditing={editingProjectId === project._id}
+                                            setIsEditing={setEditingProjectId}
+                                            onUpdateProject={handleUpdateProject}
+                                        />
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
@@ -82,10 +104,9 @@ function ProjectPage() {
                     </Accordion>
                 </div>
             </div>
-
         </div>
-
     );
+
 }
 
 export default ProjectPage;

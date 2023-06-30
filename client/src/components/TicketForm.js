@@ -80,7 +80,7 @@ function SubmitterFields() {
 }
 
 function ProjectManagerFields({user, setUser, users, priority, setPriority, assignedTo, setAssignedTo, assignedBy, setAssignedBy}) {
-    // form fields specific to project manager role
+
     return (
         <>
             <Form.Group>

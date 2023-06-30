@@ -4,6 +4,7 @@ import { addProject } from '../controllers/ProjectController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 import { useNavigate } from 'react-router-dom';
+import {getAllUsers} from "../controllers/UserController";
 // todo make it not make my eyes bleed, eventually; Idea, remove the tabs and make it a menu that shows up in front
 // of the projects and makes a shadow.
 function CreateProjectForm() {
@@ -13,6 +14,7 @@ function CreateProjectForm() {
     const [priority, setPriority] = useState('medium');
     const [currentStatus, setCurrentStatus] = useState('Planning'); // new
     const [username, setUsername] = useState(null);
+    const [projectManagers, setProjectManagers] = useState([]);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const handleSubmit = async (event) => {
@@ -30,16 +32,35 @@ function CreateProjectForm() {
         }
     };
 
-    useEffect(() => {
-        const usernameFromStorage = localStorage.getItem('username');
+    const fetchAndSetProjectManagers = async () => {
+        try {
+            const data = await getAllUsers(token);
 
-        if (usernameFromStorage) {
-            setUsername(usernameFromStorage);
+            // filter the data for project managers only
+            const projectManagers = data.filter(user => user.role === 'projectmanager');
+
+            if (projectManagers.length > 0) {
+                setProjectManagers(projectManagers[0]._id);
+            }
+            setProjectManagers(projectManagers);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
         }
+    }
+
+
+
+
+    useEffect(() => {
         if (!token) {
             navigate('/login');
         }
+        else{
+        fetchAndSetProjectManagers().then();
+        }
+
     }, [navigate, token]);
+
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -69,10 +90,21 @@ function CreateProjectForm() {
                     <Form.Group>
                         <Form.Label>Project Manager</Form.Label>
                         <Form.Control
-                            type="text"
-                            value={projectManager}
-                            onChange={e => setProjectManager(e.target.value)}
-                        />
+                            as="select"
+                            value={projectManager || 'none'}
+                            onChange={e => setProjectManager(e.target.value === 'none' ? null : e.target.value)}
+                        >
+                            <option value='none'>No Assignment</option>
+                            {projectManagers.length > 0 ? (
+                                projectManagers.map((user) => (
+                                    <option key={user._id} value={user._id}>
+                                        {user.firstName} {user.lastName}
+                                    </option>
+                                ))
+                            ) : (
+                                <option>No users available</option>
+                            )}
+                        </Form.Control>
                     </Form.Group>
 
                     <Form.Group>
