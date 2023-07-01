@@ -25,7 +25,14 @@ function CreateProjectForm() {
         event.preventDefault();
         try {
             const project =
-                { name, projectDescription, projectManager, priority, currentStatus, deadline };
+                {
+                    name,
+                    projectDescription,
+                    projectManager,
+                    priority,
+                    currentStatus,
+                    deadline: deadline ? deadline.toISOString() : null
+                };
             const data = await addProject(project, token);
             setName('');
             setProjectDescription('');

@@ -14,7 +14,8 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [projectDescription, setProjectDescription] = useState(project.projectDescription);
     const [projectManager, setProjectManager] = useState(project.projectManager);
     const [startDate, setStartDate] = useState(project.startDate ? new Date(project.startDate) : new Date());
-    const [deadline, setDeadline] = useState(project.deadline ? new Date(project.deadline) : new Date());
+    const [deadline, setDeadline] = useState(project.deadline ? new Date(project.deadline) : null);
+
 
     const [priority, setPriority] = useState(project.priority);
     const [currentStatus, setCurrentStatus] = useState(project.currentStatus);
@@ -44,9 +45,9 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             priority,
             currentStatus,
             startDate: startDate.toISOString(),
-            deadline: deadline.toISOString()
+            deadline: deadline ? deadline.toISOString() : null
         };
-        if(deadline < startDate){
+        if(deadline && deadline < startDate){
             alert("Deadline should not be before start date");
             return;
         }
@@ -142,11 +143,11 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                 <div className="date-row">
                     <Form.Group style={{ marginRight: '2rem',  }}>
                         <Form.Label>Start Date</Form.Label>
-                        <ReactDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                        <ReactDatePicker value = {startDate} selected={startDate} onChange={(date) => setStartDate(date)} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Deadline</Form.Label>
-                        <ReactDatePicker selected={deadline} onChange={(date) => setDeadline(date)} />
+                        <ReactDatePicker value = {deadline} selected={deadline} onChange={(date) => setDeadline(date)} />
                     </Form.Group>
                 </div>
                     <div className="accordion-buttons">
@@ -172,7 +173,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
 
                 <div className="item">
                     <p className="header">Deadline:</p>
-                    <p>{new Date(project.deadline).toLocaleDateString()}</p>
+                    <p>{project.deadline ? new Date(project.deadline).toLocaleDateString() : "None"}</p>
                 </div>
 
                 <div className="item">
