@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
-import { Accordion } from 'react-bootstrap';
+import { Accordion, Button } from 'react-bootstrap';
 import './ProjectPage.css';
 import AccordionBody from './AccordionBody';
 import {fetchProjects, deleteProject, updateProject} from "../controllers/ProjectController";
 import { useNavigate } from 'react-router-dom';
+import Modal from 'react-modal';
+import projectForm from "./ProjectForm";
+import ProjectForm from "./ProjectForm";
+Modal.setAppElement('#root');
 
 function ProjectPage() {
     const [username, setUsername] = useState(null);
@@ -14,6 +18,9 @@ function ProjectPage() {
     const [editedProjectId, setEditedProjectId] = useState(null);  // new state variable
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,7 +74,10 @@ function ProjectPage() {
         }
     };
 
-
+    const handleCreateProject = (newProject) => {
+        // Add the new project to the state so that it appears immediately in the UI
+        setProjects(prevProjects => [newProject, ...prevProjects]);
+    };
 
     return (
         <div>
@@ -77,6 +87,18 @@ function ProjectPage() {
                 <SideMenu />
                 <div className="accordion-container">
                     <h1>Projects</h1>
+                    <Button variant="primary" onClick={() => setModalIsOpen(true)}>Create New Project</Button>
+                    <Modal
+                        isOpen={modalIsOpen}
+                        onRequestClose={() => setModalIsOpen(false)}
+                        contentLabel="Create Project Form"
+                        className="custom-modal"
+                    >
+                        <ProjectForm
+                            onProjectCreated={handleCreateProject}
+                            closeForm={() => setModalIsOpen(false)}
+                        />
+                    </Modal>
                     <Accordion>
                         {projects.map((project, index) => (
                             <Accordion.Item eventKey={index.toString()} key={project._id} className="accordion-item">

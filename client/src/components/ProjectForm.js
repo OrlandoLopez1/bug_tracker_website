@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import {getAllUsers} from "../controllers/UserController";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "./ProjectForm.css";
 
 // todo make it not make my eyes bleed, eventually; Idea, remove the tabs and make it a menu that shows up in front
 // of the projects and makes a shadow.
-function CreateProjectForm() {
+function CreateProjectForm({closeForm, onProjectCreated}) {
     const [name, setName] = useState('');
     const [projectDescription, setProjectDescription] = useState('');
     const [projectManager, setProjectManager] = useState('');
@@ -77,9 +78,7 @@ function CreateProjectForm() {
 
     return (
         <Form onSubmit={handleSubmit}>
-            <CustomNavbar username={username} />
             <div className="main-content">
-                <SideMenu />
                 <div className="project-page-content">
                     <Form.Group>
                         <Form.Label>Project Name</Form.Label>
@@ -121,7 +120,7 @@ function CreateProjectForm() {
                     </Form.Group>
 
                     <Form.Group>
-                        <Form.Label>Priority</Form.Label>
+                        <Form.Label className="form-label">Priority</Form.Label>
                         <Form.Control
                             as="select"
                             value={priority}
@@ -149,9 +148,17 @@ function CreateProjectForm() {
                     </Form.Group>
                     <Form.Group style={{marginTop: '1rem'}}>
                         <Form.Label>Deadline</Form.Label>
-                        <ReactDatePicker selected={deadline} onChange={(date) => setDeadline(date)} />
+                        <div>
+                            {/*<ReactDatePicker selected={deadline} onChange={(date) => setDeadline(date)} />*/}
+                            <ReactDatePicker
+                                className="date-picker"
+                                selected={deadline}
+                                onChange={(date) => setDeadline(date)}
+                                wrapperClassName='date-picker-wrapper'
+                            />
+                        </div>
                     </Form.Group>
-                    <Button variant="primary" type="submit">Submit</Button>
+                    <Button variant="primary" type="submit" className='submit-button'>Submit</Button>
                 </div>
             </div>
         </Form>
