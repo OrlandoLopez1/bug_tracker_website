@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import './AccordionBody.css';
 import { fetchTicketsForProject } from '../controllers/TicketController';
 import { Form, Button } from 'react-bootstrap';
+import "react-datepicker/dist/react-datepicker.css";
+import ReactDatePicker from "react-datepicker";
 import TicketTable from "./TicketTable";
 import {updateProject} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
-//todo add edit date, things are not updating proprely
+//todo add edit date, align buttons to the right, maybe think of using one style for buttons?
 function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [tickets, setTickets] = useState([]);
     const [name, setName] = useState(project.name);
     const [projectDescription, setProjectDescription] = useState(project.projectDescription);
     const [projectManager, setProjectManager] = useState(project.projectManager);
+    const [startDate, setStartDate] = useState(project.startDate ? new Date(project.startDate) : new Date());
+    const [endDate, setEndDate] = useState(project.endDate ? new Date(project.endDate) : new Date());
+
     const [priority, setPriority] = useState(project.priority);
     const [currentStatus, setCurrentStatus] = useState(project.currentStatus);
     const [projectManagers, setProjectManagers] = useState([]);
@@ -37,9 +42,14 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             projectDescription,
             projectManager,
             priority,
-            currentStatus
+            currentStatus,
+            startDate,
+            endDate
         };
-
+        if(endDate < startDate){
+            alert("End date should not be before start date");
+            return;
+        }
         try {
             const response = await updateProject(updatedProject, token);
             setIsEditing(null);
@@ -53,19 +63,21 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const fetchAndSetProjectManagers = async () => {
         try {
             const data = await getAllUsers(token);
-
-            // filter the data for project managers only
             const projectManagers = data.filter(user => user.role === 'projectmanager');
-
+            setProjectManagers(projectManagers); // setProjectManagers once
             if (projectManagers.length > 0) {
-                setProjectManagers(projectManagers[0]._id);
+                setProjectManager(projectManagers[0]._id); // use setProjectManager instead
             }
-            setProjectManagers(projectManagers);
         } catch (error) {
             console.error('Failed to fetch users:', error);
         }
     }
-    fetchAndSetProjectManagers().then();
+
+
+    useEffect(() => {
+        fetchAndSetProjectManagers().then();
+    }, []);  // Empty dependency array - this effect will only run once
+
 
 
     if (isEditing) {
@@ -98,17 +110,8 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                             )}
                         </Form.Control>
                     </Form.Group>
-                    <div className="item">
-                        <p className="header">Start Date:</p>
-                        <p>{project.startDate}</p>
-                    </div>
 
-                    <div className="item">
-                        <p className="header">End Date:</p>
-                        <p>{project.endDate}</p>
-                    </div>
-
-                    <Form.Group>
+                <Form.Group>
                         <Form.Label>Priority</Form.Label>
                         <Form.Control
                             as="select"
@@ -135,8 +138,21 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                             <option value="Completed">Completed</option>
                         </Form.Control>
                     </Form.Group>
-                    <Button variant="primary" type="button" onClick={handleSave}>Save</Button>
-                    <Button variant="secondary" type="button" onClick={() => setIsEditing(null)}>Cancel</Button>
+
+                <div className="date-row">
+                    <Form.Group style={{ marginRight: '2rem',  }}>
+                        <Form.Label>Start Date</Form.Label>
+                        <ReactDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>End Date</Form.Label>
+                        <ReactDatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+                    </Form.Group>
+                </div>
+                    <div className="accordion-buttons">
+                        <button variant="primary" type="button" onClick={handleSave}>Save</button>
+                        <button variant="secondary" type="button" onClick={() => setIsEditing(null)}>Cancel</button>
+                    </div>
         </Form>
         );
     }
@@ -151,12 +167,12 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
 
                 <div className="item">
                     <p className="header">Start Date:</p>
-                    <p>{project.startDate}</p>
+                    <p>{new Date(project.startDate).toLocaleDateString()}</p>
                 </div>
 
                 <div className="item">
                     <p className="header">End Date:</p>
-                    <p>{project.endDate}</p>
+                    <p>{new Date(project.endDate).toLocaleDateString()}</p>
                 </div>
 
                 <div className="item">

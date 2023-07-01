@@ -1,7 +1,7 @@
 .horizontal-container {
     display: flex;
-    flex-wrap: nowrap; /* Prevents wrapping to the next line. */
-    overflow-x: auto; /* Adds scroll bar if items overflow. */
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 .description-item {
@@ -20,4 +20,16 @@
 .header {
     font-weight: bold;
     margin-right: 5px;
+}
+
+/*.date-row {*/
+/*    display: flex;*/
+/*    border: 1px solid red;*/
+/*}*/
+
+.date-row {
+    display: flex;
+    margin-top: 1rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }

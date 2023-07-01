@@ -18,20 +18,18 @@ function ProjectPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const projectData =  await fetchProjects(token);
+                const projectData = await fetchProjects(token);
                 setProjects(projectData);
-
             } catch (error) {
                 console.error('Failed to fetch projects:', error);
             }
         };
 
-        fetchData().then();
-        setProjects(projects);
+        fetchData();
         if (!token) {
             navigate('/login');
         }
-    }, [navigate, token, ]);
+    }, [navigate, token]);
 
     const handleEditProject = (project) => {
         setEditingProjectId(project._id);  // when Edit button is clicked, set this project as being edited
