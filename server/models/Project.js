@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//todo consider adding deadline
 const ProjectSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -15,6 +15,13 @@ const ProjectSchema = new mongoose.Schema({
     startDate: {
         type: Date,
         default: Date.now
+    },
+    endDate: {
+        type: Date,
+        default: null
+    },
+    deadline: {
+        type: Date,
     },
     priority: {
         type: String,

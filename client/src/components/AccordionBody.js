@@ -14,14 +14,14 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [projectDescription, setProjectDescription] = useState(project.projectDescription);
     const [projectManager, setProjectManager] = useState(project.projectManager);
     const [startDate, setStartDate] = useState(project.startDate ? new Date(project.startDate) : new Date());
-    const [endDate, setEndDate] = useState(project.endDate ? new Date(project.endDate) : new Date());
+    const [deadline, setDeadline] = useState(project.deadline ? new Date(project.deadline) : new Date());
 
     const [priority, setPriority] = useState(project.priority);
     const [currentStatus, setCurrentStatus] = useState(project.currentStatus);
     const [projectManagers, setProjectManagers] = useState([]);
     const token = localStorage.getItem('accessToken');
 
-    //todo date picker
+
 
 
     useEffect(() => {
@@ -37,17 +37,17 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
 
     const handleSave = async () => {
         const updatedProject = {
-            _id: project._id, // include project id
+            _id: project._id,
             name,
             projectDescription,
             projectManager,
             priority,
             currentStatus,
-            startDate,
-            endDate
+            startDate: startDate.toISOString(),
+            deadline: deadline.toISOString()
         };
-        if(endDate < startDate){
-            alert("End date should not be before start date");
+        if(deadline < startDate){
+            alert("Deadline should not be before start date");
             return;
         }
         try {
@@ -145,8 +145,8 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                         <ReactDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>End Date</Form.Label>
-                        <ReactDatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+                        <Form.Label>Deadline</Form.Label>
+                        <ReactDatePicker selected={deadline} onChange={(date) => setDeadline(date)} />
                     </Form.Group>
                 </div>
                     <div className="accordion-buttons">
@@ -171,8 +171,8 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                 </div>
 
                 <div className="item">
-                    <p className="header">End Date:</p>
-                    <p>{new Date(project.endDate).toLocaleDateString()}</p>
+                    <p className="header">Deadline:</p>
+                    <p>{new Date(project.deadline).toLocaleDateString()}</p>
                 </div>
 
                 <div className="item">

@@ -8,13 +8,14 @@ const asyncHandler = require('express-async-handler');
 // @access Private
 const addProject = asyncHandler(async (req, res) => {
     try {
-        const { name, projectDescription, projectManager, priority, currentStatus } = req.body;
+        const { name, projectDescription, projectManager, priority, currentStatus, deadline } = req.body;
         const project = new Project({
             name,
             projectDescription,
             projectManager,
             priority,
-            currentStatus
+            currentStatus,
+            deadline,
         });
         await project.save();
         res.status(201).json({ message: 'Project created' });

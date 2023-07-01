@@ -5,6 +5,9 @@ import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 import { useNavigate } from 'react-router-dom';
 import {getAllUsers} from "../controllers/UserController";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 // todo make it not make my eyes bleed, eventually; Idea, remove the tabs and make it a menu that shows up in front
 // of the projects and makes a shadow.
 function CreateProjectForm() {
@@ -15,18 +18,21 @@ function CreateProjectForm() {
     const [currentStatus, setCurrentStatus] = useState('Planning'); // new
     const [username, setUsername] = useState(null);
     const [projectManagers, setProjectManagers] = useState([]);
+    const [deadline, setDeadline] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const project = { name, projectDescription, projectManager, priority, currentStatus };
+            const project =
+                { name, projectDescription, projectManager, priority, currentStatus, deadline };
             const data = await addProject(project, token);
             setName('');
             setProjectDescription('');
             setProjectManager('');
             setPriority('medium');
             setCurrentStatus('Planning');
+            setDeadline(null);
         } catch (error) {
             console.error("Failed to create project:", error);
         }
@@ -133,6 +139,10 @@ function CreateProjectForm() {
                             <option value="Stalled">Stalled</option>
                             <option value="Completed">Completed</option>
                         </Form.Control>
+                    </Form.Group>
+                    <Form.Group style={{marginTop: '1rem'}}>
+                        <Form.Label>Deadline</Form.Label>
+                        <ReactDatePicker selected={deadline} onChange={(date) => setDeadline(date)} />
                     </Form.Group>
                     <Button variant="primary" type="submit">Submit</Button>
                 </div>
