@@ -77,6 +77,8 @@ function ProjectPage() {
     const handleCreateProject = (newProject) => {
         // Add the new project to the state so that it appears immediately in the UI
         setProjects(prevProjects => [newProject, ...prevProjects]);
+        setModalIsOpen(false);
+
     };
 
     return (
@@ -85,43 +87,53 @@ function ProjectPage() {
 
             <div className="main-content">
                 <SideMenu />
-                <div className="accordion-container">
-                    <h1>Projects</h1>
-                    <Button variant="primary" onClick={() => setModalIsOpen(true)}>Create New Project</Button>
-                    <Modal
-                        isOpen={modalIsOpen}
-                        onRequestClose={() => setModalIsOpen(false)}
-                        contentLabel="Create Project Form"
-                        className="custom-modal"
-                    >
-                        <ProjectForm
-                            onProjectCreated={handleCreateProject}
-                            closeForm={() => setModalIsOpen(false)}
-                        />
-                    </Modal>
-                    <Accordion>
-                        {projects.map((project, index) => (
-                            <Accordion.Item eventKey={index.toString()} key={project._id} className="accordion-item">
-                                <Accordion.Header>
-                                    {project.name}
-                                </Accordion.Header>
-                                <Accordion.Body>
-                                    <div className="accordion-content">
-                                        <div className="accordion-buttons">
-                                            <button onClick={() => handleEditProject(project)}>Edit</button>
-                                            <button onClick={() => handleDeleteProject(project)}>Delete</button>
-                                        </div>
-                                        <AccordionBody
-                                            project={project}
-                                            isEditing={editingProjectId === project._id}
-                                            setIsEditing={setEditingProjectId}
-                                            onUpdateProject={handleUpdateProject}
-                                        />
-                                    </div>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        ))}
-                    </Accordion>
+                <div className="outside-container">
+                        <Button style={{marginLeft: '4%', marginTop: '3%', background: '#73c2fb', border: 'none'}}variant="primary" onClick={() => setModalIsOpen(true)}>Add +</Button>
+                        <div className="accordion-container">
+                            <div className="overlapping-title">
+                                <div className="title-text">
+                                    Projects
+                                </div>
+                                <div className="title-desc-text">
+                                        All your projects
+                                </div>
+
+                            </div>
+                            <Modal
+                                isOpen={modalIsOpen}
+                                onRequestClose={() => setModalIsOpen(false)}
+                                contentLabel="Create Project Form"
+                                className="custom-modal"
+                            >
+                                <ProjectForm
+                                    onProjectCreated={handleCreateProject}
+                                    closeForm={() => setModalIsOpen(false)}
+                                />
+                            </Modal>
+                            <Accordion>
+                                {projects.map((project, index) => (
+                                    <Accordion.Item eventKey={index.toString()} key={project._id} className="accordion-item">
+                                        <Accordion.Header>
+                                            {project.name}
+                                        </Accordion.Header>
+                                        <Accordion.Body>
+                                            <div className="accordion-content">
+                                                <div className="accordion-buttons">
+                                                    <button onClick={() => handleEditProject(project)}>Edit</button>
+                                                    <button onClick={() => handleDeleteProject(project)}>Delete</button>
+                                                </div>
+                                                <AccordionBody
+                                                    project={project}
+                                                    isEditing={editingProjectId === project._id}
+                                                    setIsEditing={setEditingProjectId}
+                                                    onUpdateProject={handleUpdateProject}
+                                                />
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                ))}
+                            </Accordion>
+                        </div>
                 </div>
             </div>
         </div>

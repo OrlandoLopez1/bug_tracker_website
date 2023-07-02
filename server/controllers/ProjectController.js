@@ -18,7 +18,8 @@ const addProject = asyncHandler(async (req, res) => {
             deadline,
         });
         await project.save();
-        res.status(201).json({ message: 'Project created' });
+
+        res.status(201).json(project);
     } catch (error) {
         res.status(500).json({ message: 'Error creating project', error: error.message });
     }
