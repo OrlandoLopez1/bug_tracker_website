@@ -17,8 +17,9 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
     const [projectManager, setProjectManager] = useState('');
     const [priority, setPriority] = useState('medium');
     const [currentStatus, setCurrentStatus] = useState('Planning'); // new
-    const [username, setUsername] = useState(null);
     const [projectManagers, setProjectManagers] = useState([]);
+    const [assignableUsers, setAssignableUsers] = useState([]);  // State variable for all users
+    const [selectedUsers, setSelectedUsers] = useState([]);  // State variable for selected users
     const [deadline, setDeadline] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -32,15 +33,18 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
                     projectManager,
                     priority,
                     currentStatus,
+                    users: selectedUsers,
                     deadline: deadline ? deadline.toISOString() : null
                 };
-            const data = await addProject(project, token);
+            const data = await addProject(project, token)
+            onProjectCreated(data);
             setName('');
             setProjectDescription('');
             setProjectManager('');
             setPriority('medium');
             setCurrentStatus('Planning');
             setDeadline(null);
+            closeForm();
         } catch (error) {
             console.error("Failed to create project:", error);
         }
@@ -61,6 +65,21 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
             console.error('Failed to fetch users:', error);
         }
     }
+    const fetchAndSetUsers = async () => {
+        try {
+            const data = await getAllUsers(token);
+
+            // filter the data for project managers only
+            const assignableUsers = data.filter(user => user.role === 'submitter' || user.role === 'developer');
+
+            if (assignableUsers.length > 0) {
+                setAssignableUsers(assignableUsers[0]._id);
+            }
+            setAssignableUsers(assignableUsers);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        }
+    }
 
 
 
@@ -71,9 +90,10 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
         }
         else{
         fetchAndSetProjectManagers().then();
+        fetchAndSetUsers().then();
         }
 
-    }, [navigate, token]);
+    }, [fetchAndSetProjectManagers, fetchAndSetUsers, navigate, token]);
 
 
     return (
@@ -158,6 +178,27 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
                             />
                         </div>
                     </Form.Group>
+                    {/*todo make sure to properly add users in database*/}
+                    <Form.Group>
+                        <Form.Label>Users</Form.Label>
+                        {assignableUsers.map(user => (
+                            <Form.Check
+                                type='checkbox'
+                                id={`checkbox-${user._id}`}
+                                label={user.username}
+                                value={user._id}
+                                checked={selectedUsers.includes(user._id)}
+                                onChange={e => {
+                                    if (e.target.checked) {
+                                        setSelectedUsers([...selectedUsers, e.target.value]);
+                                    } else {
+                                        setSelectedUsers(selectedUsers.filter(userId => userId !== e.target.value));
+                                    }
+                                }}
+                            />
+                        ))}
+                    </Form.Group>
+
                     <Button variant="primary" type="submit" className='submit-button'>Submit</Button>
                 </div>
             </div>

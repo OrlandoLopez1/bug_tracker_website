@@ -14,16 +14,7 @@ router.route('/:id')
     .patch(projectController.updateProject)
     .delete(projectController.deleteProject);
 
-module.exports = router;
+router.route('/:id/users')
+    .get(projectController.getUsersForProject);
 
-// const permit = (...allowedRoles) => {
-//     return (req, res, next) => {
-//         if (!req.roles || !allowedRoles.includes(req.roles)) {
-//             return res.status(403).json({ message: 'Forbidden' });
-//         }
-//         next();
-//     }
-// }
-//
-// would look something like this:
-// .patch(verifyJWT, permit('admin', 'project manager'), projectController.updateProject)
+module.exports = router;

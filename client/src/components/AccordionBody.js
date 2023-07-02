@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './AccordionBody.css';
 import { fetchTicketsForProject } from '../controllers/TicketController';
+import { fetchUsersForProject } from '../controllers/ProjectController';
 import { Form, Button } from 'react-bootstrap';
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import TicketTable from "./TicketTable";
+import UserTable from "./UserTable";
 import {updateProject} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
 //todo add edit date, align buttons to the right, maybe think of using one style for buttons?
 function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [tickets, setTickets] = useState([]);
+    const [users, setUsers] = useState([]);
     const [name, setName] = useState(project.name);
     const [projectDescription, setProjectDescription] = useState(project.projectDescription);
     const [projectManager, setProjectManager] = useState(project.projectManager);
     const [startDate, setStartDate] = useState(project.startDate ? new Date(project.startDate) : new Date());
     const [deadline, setDeadline] = useState(project.deadline ? new Date(project.deadline) : null);
-
-
     const [priority, setPriority] = useState(project.priority);
     const [currentStatus, setCurrentStatus] = useState(project.currentStatus);
     const [projectManagers, setProjectManagers] = useState([]);
@@ -32,6 +33,15 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             setTickets(fetchedTickets);
         };
         fetchAndSetTickets();
+    }, [project]);
+
+    useEffect(() => {
+        const fetchAndSetUsers = async () => {
+            const token = localStorage.getItem('accessToken');
+            const fetchedUsers = await fetchUsersForProject(project._id, token);
+            setUsers(fetchedUsers);
+        };
+        fetchAndSetUsers();
     }, [project]);
 
 
@@ -79,6 +89,9 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
         fetchAndSetProjectManagers().then();
     }, []);  // Empty dependency array - this effect will only run once
 
+    useEffect(() => {
+
+    }, [])
 
 
     if (isEditing) {
@@ -151,8 +164,8 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                     </Form.Group>
                 </div>
                     <div className="accordion-buttons">
-                        <button variant="primary" type="button" onClick={handleSave}>Save</button>
                         <button variant="secondary" type="button" onClick={() => setIsEditing(null)}>Cancel</button>
+                        <button variant="primary" type="button" onClick={handleSave}>Save</button>
                     </div>
         </Form>
         );
@@ -190,7 +203,10 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             <div>
                 <h3>Tickets:</h3>
                 <TicketTable tickets={tickets} projectID={project._id} />
-
+            </div>
+            <div>
+                <h3>Users:</h3>
+                <UserTable  users={users} projectID={project._id} />
             </div>
         </div>
     );

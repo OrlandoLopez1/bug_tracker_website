@@ -8,13 +8,14 @@ const asyncHandler = require('express-async-handler');
 // @access Private
 const addProject = asyncHandler(async (req, res) => {
     try {
-        const { name, projectDescription, projectManager, priority, currentStatus, deadline } = req.body;
+        const { name, projectDescription, projectManager, priority, currentStatus, users, deadline } = req.body;
         const project = new Project({
             name,
             projectDescription,
             projectManager,
             priority,
             currentStatus,
+            users,
             deadline,
         });
         await project.save();
@@ -94,11 +95,28 @@ const deleteProject = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc Get all users associated with a specific project
+// @route GET /projects/:id/users
+// @access Private
+const getUsersForProject = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const project = await Project.findById(id).populate('users');
+        if (!project) {
+            return res.status(404).json({ message: 'Cannot find project' });
+        }
+        res.json(project.users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting users for project', error: error.message });
+    }
+});
+
 
 module.exports = {
     addProject,
     getProject,
     getProjects,
     updateProject,
-    deleteProject
+    deleteProject,
+    getUsersForProject
 };

@@ -34,6 +34,12 @@ const ProjectSchema = new mongoose.Schema({
         default: 'Planning'
     },
 
+    users: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ]
 });
 
 module.exports = mongoose.model('Project', ProjectSchema);
