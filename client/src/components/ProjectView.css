@@ -1,4 +1,22 @@
-.project-details-row1 {
-    grid-template-columns: 1fr;
-    border: 1px solid red;
+.project-details-section {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between; /* Adds space around items */
+    overflow-x: auto;
+}
+
+.project-details-left {
+    flex: 1; /* Takes up 1 fraction of the space */
+    padding: 10px; /* Adds some space around the content */
+}
+
+.project-details-right {
+    flex: 1; /* Takes up 1 fraction of the space */
+    padding: 10px; /* Adds some space around the content */
+}
+
+.horizontal-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }

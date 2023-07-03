@@ -1,3 +1,4 @@
+import './ProjectView.css'
 import './ProjectPage.css'
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
@@ -6,32 +7,43 @@ import Modal from 'react-modal';
 import ProjectForm from "./ProjectForm";
 import React, {useEffect, useState} from "react";
 import {deleteProject, fetchProject, updateProject} from "../controllers/ProjectController";
+import {fetchUser} from "../controllers/UserController";
 import ProjectPage from "./ProjectPage";
 Modal.setAppElement('#root');
 
 
 function ProjectView() {
-    const { id } = useParams();
+    const {id} = useParams();
     const [project, setProject] = useState([]);
+    const [projectManager, setProjectManager] = useState(null);
     const [editingProjectId, setEditingProjectId] = useState(null);  // new state variable
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
     useEffect(() => {
+        if (!token) {
+            navigate('/login');
+        }
         const fetchData = async () => {
             try {
                 const projectData = await fetchProject(id, token);
                 setProject(projectData);
+                if (projectData.projectManager) {
+                    const managerData = await fetchUser(projectData.projectManager, token);
+                    setProjectManager(managerData);
+                }
+                setLoading(false);
             } catch (error) {
-                console.error('Failed to fetch project:', error);
+                console.error('Failed to fetch project or manager:', error);
             }
         };
 
         fetchData();
-        if (!token) {
-            navigate('/login');
-        }
     }, [navigate, token]);
+
 
     const handleEditProject = (project) => {
         setEditingProjectId(project._id);  // when Edit button is clicked, set this project as being edited
@@ -63,34 +75,60 @@ function ProjectView() {
         }
     };
 
+    if (loading) {
+        return <p>Loading...</p>
+    } else {
+        return (
+            <div>
+                <CustomNavbar/>
 
-    return (
-        <div>
-            <CustomNavbar/>
+                <div className="main-content">
+                    <SideMenu/>
+                    <div className="outside-container">
+                        <div className="accordion-container">
+                            <div className="overlapping-title">
+                                <div className="title-text">
+                                    {project.name}
+                                </div>
+                                <div className="title-desc-text">
+                                    Back | Edit
+                                </div>
+                            </div>
+                            <div className='project-details-section'>
+                                <div className="project-details-left">
+                                    <div>
+                                        Project Manager: {projectManager ?
+                                        `${projectManager.firstName} ${projectManager.lastName}`  : 'N/A'}
+                                    </div>
+                                    <div>
+                                        Status: {project.currentStatus}
+                                    </div>
+                                    <div>
+                                        Priority: {project.priority}
+                                    </div>
+                                    <div>
+                                        Start: {new Date(project.startDate).toLocaleDateString("en-US")}
+                                    </div>
+                                    <div>
+                                        Deadline: {new Date(project.deadline).toLocaleDateString("en-US")}
+                                    </div>
+                                    <div>
 
-            <div className="main-content">
-                <SideMenu />
-                <div className="outside-container">
-                    <div className="accordion-container">
-                        <div className="overlapping-title">
-                            <div className="title-text">
-                                {project.name}
-                            </div>
-                            <div className="title-desc-text">
-                                Back | Edit
-                            </div>
-                        </div>
-                        <div className="project-details-row1">
-                            <div>
-                                <h1>Description:</h1>
-                                <p>{project.projectDescription}</p>
+                                    </div>
+                                </div>
+                                <div className="project-details-right">
+                                    <div>
+                                        <p>{project.projectDescription}</p>
+                                    </div>
+                                    {/* Add other project description details here */}
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-
-    )}
+        )
+    }
+}
 export default ProjectView;

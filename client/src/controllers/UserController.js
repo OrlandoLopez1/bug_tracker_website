@@ -1,3 +1,20 @@
+export async function fetchUser(id, token) {
+    const response = await fetch(`http://localhost:5000/users/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+
 export async function getAllUsers(token) {
     const response = await fetch('http://localhost:5000/users', {
         headers: {
@@ -54,5 +71,7 @@ export async function deleteUser(userId, token) {
     }
     return response.json();
 }
+
+
 
 
