@@ -20,7 +20,7 @@ function SideMenu() {
             dropdown: [
                 { name: 'View', path: '/projectpage' },
                 { name: 'Add', path: '/projectform' },
-                { name: 'Edit' }
+                { name: 'Edit', path: '/projectview' }
             ]
         },
         {

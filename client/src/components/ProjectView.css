@@ -1,0 +1,4 @@
+.project-details-row1 {
+    grid-template-columns: 1fr;
+    border: 1px solid red;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import "./UserTable.css";
-
+//todo maybe have different tables based on what info is needed
 function UserTable({users}) {
     return (
         <table className="table">

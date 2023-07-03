@@ -7,16 +7,13 @@ import AccordionBody from './AccordionBody';
 import {fetchProjects, deleteProject, updateProject} from "../controllers/ProjectController";
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import projectForm from "./ProjectForm";
 import ProjectForm from "./ProjectForm";
 Modal.setAppElement('#root');
 
-//todo block projectes off by planning, finished, etc
+//todo block projects off by planning, finished, etc
 function ProjectPage() {
-    const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);
     const [editingProjectId, setEditingProjectId] = useState(null);  // new state variable
-    const [editedProjectId, setEditedProjectId] = useState(null);  // new state variable
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -54,12 +51,10 @@ function ProjectPage() {
         try {
             deleteProject(project._id, token);
 
-            // After deletion, you should remove the project from your local state
-            // so the UI updates immediately. You could filter out the deleted project:
             setProjects(prevProjects => prevProjects.filter(p => p._id !== project._id));
         } catch (err) {
             console.error("Failed to delete project:", err);
-            // You could show an error message to the user here.
+            alert("Failed to delete project");
         }
     }
 
@@ -120,6 +115,7 @@ function ProjectPage() {
                                         <Accordion.Body>
                                             <div className="accordion-content">
                                                 <div className="accordion-buttons">
+                                                    <button onClick={() => navigate(`/projectview/${project._id}`)}>View</button>
                                                     <button onClick={() => handleEditProject(project)}>Edit</button>
                                                     <button onClick={() => handleDeleteProject(project)}>Delete</button>
                                                 </div>
