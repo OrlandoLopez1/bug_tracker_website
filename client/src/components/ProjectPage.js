@@ -11,6 +11,7 @@ import projectForm from "./ProjectForm";
 import ProjectForm from "./ProjectForm";
 Modal.setAppElement('#root');
 
+//todo block projectes off by planning, finished, etc
 function ProjectPage() {
     const [username, setUsername] = useState(null);
     const [projects, setProjects] = useState([]);

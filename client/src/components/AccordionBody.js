@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import './AccordionBody.css';
 import { fetchTicketsForProject } from '../controllers/TicketController';
 import { fetchUsersForProject } from '../controllers/ProjectController';
@@ -9,7 +9,7 @@ import TicketTable from "./TicketTable";
 import UserTable from "./UserTable";
 import {updateProject} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
-//todo add edit date, align buttons to the right, maybe think of using one style for buttons?
+//todo update edit mode to include addition and removal of users
 function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [tickets, setTickets] = useState([]);
     const [users, setUsers] = useState([]);
@@ -21,6 +21,8 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [priority, setPriority] = useState(project.priority);
     const [currentStatus, setCurrentStatus] = useState(project.currentStatus);
     const [projectManagers, setProjectManagers] = useState([]);
+    const [assignableUsers, setAssignableUsers] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
     const token = localStorage.getItem('accessToken');
 
 
@@ -40,6 +42,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             const token = localStorage.getItem('accessToken');
             const fetchedUsers = await fetchUsersForProject(project._id, token);
             setUsers(fetchedUsers);
+            setSelectedUsers(fetchedUsers.map(user => user._id));
         };
         fetchAndSetUsers();
     }, [project]);
@@ -55,6 +58,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             priority,
             currentStatus,
             startDate: startDate.toISOString(),
+            users: selectedUsers,
             deadline: deadline ? deadline.toISOString() : null
         };
         if(deadline && deadline < startDate){
@@ -71,7 +75,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     };
 
 
-    const fetchAndSetProjectManagers = async () => {
+    const fetchAndSetProjectManagers = useCallback(async () => {
         try {
             const data = await getAllUsers(token);
             const projectManagers = data.filter(user => user.role === 'projectmanager');
@@ -82,16 +86,30 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
         } catch (error) {
             console.error('Failed to fetch users:', error);
         }
-    }
+    }, [token]);
 
+
+    const fetchAndSetAssignalbleUsers = useCallback(async () => {
+        try {
+            const data = await getAllUsers(token);
+
+            // filter the data for project managers only
+            const assignableUsers = data.filter(user => user.role === 'submitter' || user.role === 'developer');
+
+            if (assignableUsers.length > 0) {
+                setAssignableUsers(assignableUsers[0]._id);
+            }
+            setAssignableUsers(assignableUsers);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        }
+    }, [token]);
 
     useEffect(() => {
         fetchAndSetProjectManagers().then();
-    }, []);  // Empty dependency array - this effect will only run once
+        fetchAndSetAssignalbleUsers().then();
+    }, [fetchAndSetProjectManagers, fetchAndSetAssignalbleUsers, token]);  // Empty dependency array - this effect will only run once
 
-    useEffect(() => {
-
-    }, [])
 
 
     if (isEditing) {
@@ -152,7 +170,25 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                             <option value="Completed">Completed</option>
                         </Form.Control>
                     </Form.Group>
-
+                <Form.Group>
+                    <Form.Label>Users</Form.Label>
+                    {assignableUsers.map(user => (
+                        <Form.Check
+                            type='checkbox'
+                            id={`checkbox-${user._id}`}
+                            label={user.username}
+                            value={user._id}
+                            checked={selectedUsers.includes(user._id)}
+                            onChange={e => {
+                                if (e.target.checked) {
+                                    setSelectedUsers(prevUsers => [...prevUsers, user._id]);  // Add the user's ID if it's checked
+                                } else {
+                                    setSelectedUsers(prevUsers => prevUsers.filter(id => id !== user._id));  // Remove the user's ID if it's unchecked
+                                }
+                            }}
+                        />
+                    ))}
+                </Form.Group>
                 <div className="date-row">
                     <Form.Group style={{ marginRight: '2rem',  }}>
                         <Form.Label>Start Date</Form.Label>

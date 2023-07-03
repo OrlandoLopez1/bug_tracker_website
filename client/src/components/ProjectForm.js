@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { addProject } from '../controllers/ProjectController'
 import CustomNavbar from "./CustomNavbar";
@@ -16,10 +16,10 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
     const [projectDescription, setProjectDescription] = useState('');
     const [projectManager, setProjectManager] = useState('');
     const [priority, setPriority] = useState('medium');
-    const [currentStatus, setCurrentStatus] = useState('Planning'); // new
+    const [currentStatus, setCurrentStatus] = useState('Planning')
     const [projectManagers, setProjectManagers] = useState([]);
-    const [assignableUsers, setAssignableUsers] = useState([]);  // State variable for all users
-    const [selectedUsers, setSelectedUsers] = useState([]);  // State variable for selected users
+    const [assignableUsers, setAssignableUsers] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
     const [deadline, setDeadline] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -50,7 +50,7 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
         }
     };
 
-    const fetchAndSetProjectManagers = async () => {
+    const fetchAndSetProjectManagers = useCallback(async () => {
         try {
             const data = await getAllUsers(token);
 
@@ -64,8 +64,10 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
         } catch (error) {
             console.error('Failed to fetch users:', error);
         }
-    }
-    const fetchAndSetUsers = async () => {
+        }, [token]);
+
+
+    const fetchAndSetUsers = useCallback(async () => {
         try {
             const data = await getAllUsers(token);
 
@@ -79,7 +81,7 @@ function CreateProjectForm({closeForm, onProjectCreated}) {
         } catch (error) {
             console.error('Failed to fetch users:', error);
         }
-    }
+    }, [token]);
 
 
 

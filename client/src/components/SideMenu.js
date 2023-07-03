@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import {fetchUserData, getAllUsers} from '../controllers/UserController';
 import './SideMenu.css';
-
+//todo fix issue where side menu is changing size
 function SideMenu() {
     const [openDropdowns, setOpenDropdowns] = useState([]);
     const navigate = useNavigate();
