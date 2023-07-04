@@ -72,8 +72,6 @@ function Dashboard() {
             try {
                 const userData = await getAllUsers(token);
                 setUsers(userData);
-                console.log("USERDATA")
-                console.log(userData);
             }
             catch (error){
                 console.error('Failed to fetch Users:', error);

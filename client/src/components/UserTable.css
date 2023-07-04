@@ -7,19 +7,40 @@
 
 .table-username {
     color: #aaadb7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.table-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.test {
+    border: blue solid 1px;
+    overflow: hidden;
+    max-width: 45%;
 }
 
 /* UserTable.css */
 .table {
     border-collapse: collapse;
     width: 100%;
+    overflow: hidden;
 }
 
 /*todo style nicely*/
 
 .table th,
 .table td {
-    padding: 0px; /* Adjust the padding value to your desired spacing */
+    padding: 2px;
     text-align: left;
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid #ddd;
 }
+
+.table-container {
+    overflow: auto;
+    border: red 1px solid;
+}
+
