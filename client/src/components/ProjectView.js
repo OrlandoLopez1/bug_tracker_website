@@ -6,9 +6,10 @@ import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
 import ProjectForm from "./ProjectForm";
 import React, {useEffect, useState} from "react";
-import {deleteProject, fetchProject, updateProject} from "../controllers/ProjectController";
+import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "../controllers/ProjectController";
 import {fetchUser} from "../controllers/UserController";
 import ProjectPage from "./ProjectPage";
+import ProjectViewUserTable from "./UserTable";
 Modal.setAppElement('#root');
 
 
@@ -16,6 +17,7 @@ function ProjectView() {
     const {id} = useParams();
     const [project, setProject] = useState([]);
     const [projectManager, setProjectManager] = useState(null);
+    const [users, setUsers] = useState(null);
     const [editingProjectId, setEditingProjectId] = useState(null);  // new state variable
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -35,12 +37,15 @@ function ProjectView() {
                     const managerData = await fetchUser(projectData.projectManager, token);
                     setProjectManager(managerData);
                 }
+                if (projectData.users && Array.isArray(projectData.users)) {
+                    const usersData = await fetchUsersForProject(id, token);
+                    setProject(curProject => ({ ...curProject, users: usersData }));
+                }
                 setLoading(false);
             } catch (error) {
                 console.error('Failed to fetch project or manager:', error);
             }
         };
-
         fetchData();
     }, [navigate, token]);
 
@@ -135,7 +140,10 @@ function ProjectView() {
                                     <div className="title-desc-text">
                                         Add | Edit | Remove
                                     </div>
+
                                 </div>
+                                <ProjectViewUserTable users={project.users} />
+
                             </div>
                             <div className="project-details-bottom-container">
                                 <div className="bottom-overlapping-title">
