@@ -85,8 +85,8 @@ function ProjectView() {
                 <div className="main-content">
                     <SideMenu/>
                     <div className="outside-container">
-                        <div className="accordion-container">
-                            <div className="overlapping-title">
+                        <div className="project-details-top-container">
+                            <div className="top-overlapping-title">
                                 <div className="title-text">
                                     {project.name}
                                 </div>
@@ -120,9 +120,32 @@ function ProjectView() {
                                     <div>
                                         <p>{project.projectDescription}</p>
                                     </div>
-                                    {/* Add other project description details here */}
                                 </div>
 
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                        <div className="second-row">
+                            <div className="project-details-bottom-container">
+                                <div className="bottom-overlapping-title">
+                                    <div className="title-text">
+                                        Assigned Users
+                                    </div>
+                                    <div className="title-desc-text">
+                                        Add | Edit | Remove
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="project-details-bottom-container">
+                                <div className="bottom-overlapping-title">
+                                    <div className="title-text">
+                                        Tickets
+                                    </div>
+                                    <div className="title-desc-text">
+                                        Add | Edit | Remove
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
