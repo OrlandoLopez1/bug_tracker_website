@@ -10,6 +10,7 @@ import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "
 import {fetchUser} from "../controllers/UserController";
 import ProjectViewUserTable from "./UserTable";
 import TicketTable from "./TicketTable";
+import {fetchTicketsForProject} from "../controllers/TicketController";
 Modal.setAppElement('#root');
 
 //todo make it so that somethere appears in the place of an empty table
@@ -41,7 +42,8 @@ function ProjectView() {
                 }
                 if (projectData.users && Array.isArray(projectData.users)) {
                     const usersData = await fetchUsersForProject(id, token);
-                    setProject(curProject => ({ ...curProject, users: usersData }));
+                    const ticketData = await fetchTicketsForProject(id, token);
+                    setProject(curProject => ({ ...curProject, users: usersData, tickets: ticketData }));
                 }
                 setLoading(false);
             } catch (error) {
@@ -160,7 +162,7 @@ function ProjectView() {
                                     </div>
                                     <div className="outside-container">
                                         <div className="content">
-                                            <TicketTable projectID={project._id} />
+                                            <TicketTable tickets={project.tickets} projectID={project._id}></TicketTable>
                                         </div>
                                     </div>
                                 </div>

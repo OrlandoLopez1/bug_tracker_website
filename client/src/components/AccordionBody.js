@@ -32,6 +32,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
         const fetchAndSetTickets = async () => {
             const token = localStorage.getItem('accessToken');
             const fetchedTickets = await fetchTicketsForProject(project._id, token);
+            console.log("Fetched tickets: ", fetchedTickets);
             setTickets(fetchedTickets);
         };
         fetchAndSetTickets();
@@ -238,6 +239,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             </div>
             <div>
                 <h3>Tickets:</h3>
+                {console.log(project)}
                 <TicketTable tickets={tickets} projectID={project._id} />
             </div>
             <div>
