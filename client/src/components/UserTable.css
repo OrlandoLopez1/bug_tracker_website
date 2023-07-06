@@ -1,46 +1,48 @@
-.table-profile-pic {
-    height: 32px;
-    margin-right: 10px;
-    border-radius: 50%;
-    object-fit: cover;
-}
+/*.table-profile-pic {*/
+/*    height: 32px;*/
+/*    margin-right: 10px;*/
+/*    border-radius: 50%;*/
+/*    object-fit: cover;*/
+/*}*/
 
-.table-username {
-    color: #aaadb7;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.table-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+/*.table-username {*/
+/*    color: #aaadb7;*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+/*.table-name {*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
 
-.test {
-    border: blue solid 1px;
-    overflow: hidden;
-    max-width: 45%;
-}
+/*.test {*/
+/*    border: blue solid 1px;*/
+/*    overflow: hidden;*/
+/*    max-width: 45%;*/
+/*    min-width: 45%;*/
+/*}*/
 
-/* UserTable.css */
-.table {
-    border-collapse: collapse;
-    width: 100%;
-    overflow: hidden;
-}
+/*!* UserTable.css *!*/
+/*.table {*/
+/*    margin-top: 50px;*/
+/*    border-collapse: collapse;*/
+/*    width: 100%;*/
+/*    overflow: hidden;*/
+/*}*/
 
-/*todo style nicely*/
+/*!*todo style nicely*!*/
 
-.table th,
-.table td {
-    padding: 2px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
+/*.table th,*/
+/*.table td {*/
+/*    padding: 2px;*/
+/*    text-align: left;*/
+/*    border-bottom: 1px solid #ddd;*/
+/*}*/
 
-.table-container {
-    overflow: auto;
-    border: red 1px solid;
-}
+/*.table-container {*/
+/*    overflow: auto;*/
+/*    border: blue 1px solid;*/
+/*}*/
 

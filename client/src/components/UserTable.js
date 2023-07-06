@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./UserTable.css";
 import {Pagination, Table} from 'react-bootstrap';
 export function UserTable({users}) {
@@ -36,7 +36,7 @@ export function UserTable({users}) {
     );
 }
 
-export function ProjectViewUserTable({users}) {
+export function ProjectViewUserTable({users, className}) {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
@@ -44,12 +44,15 @@ export function ProjectViewUserTable({users}) {
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
+    // If less than usersPerPage users exist, create an array of empty users to fill the rest of the table
+    const emptyRows = Array(usersPerPage - currentUsers.length).fill(null);
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     return (
-        <div className="table-container">
+        <div className={`table-container ${className}`}>
             <Table className="table">
                 <thead>
                 <tr>
@@ -63,10 +66,17 @@ export function ProjectViewUserTable({users}) {
                     <tr key={user._id}>
                         <td>
                             <span className="table-name">{user.firstName} {user.lastName}</span>
-                            <span className="table-username">{' (' + user.username + ')'}</span>
                         </td>
                         <td>{user.email}</td>
                         <td>{user.role}</td>
+                    </tr>
+                ))}
+                {/* Render empty rows */}
+                {emptyRows.map((_, index) => (
+                    <tr key={`empty-${index}`}>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
                     </tr>
                 ))}
                 </tbody>
@@ -85,5 +95,6 @@ export function ProjectViewUserTable({users}) {
         </div>
     );
 }
+
 
 export default ProjectViewUserTable;

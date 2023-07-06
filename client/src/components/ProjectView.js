@@ -1,5 +1,5 @@
 import './ProjectView.css'
-import './ProjectPage.css'
+// import './ProjectPage.css'
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -10,6 +10,7 @@ import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "
 import {fetchUser} from "../controllers/UserController";
 import ProjectPage from "./ProjectPage";
 import ProjectViewUserTable from "./UserTable";
+import './testing.css'
 Modal.setAppElement('#root');
 
 
@@ -86,75 +87,93 @@ function ProjectView() {
         return (
             <div>
                 <CustomNavbar/>
-
                 <div className="main-content">
                     <SideMenu/>
-                    <div className="outside-container">
-                        <div className="project-details-top-container">
-                            <div className="top-overlapping-title">
-                                <div className="title-text">
-                                    {project.name}
-                                </div>
-                                <div className="title-desc-text">
-                                    Back | Edit
-                                </div>
+                    <div className="outside-container top-container">
+                        <div className="overlapping-title">
+                            <div className="title-text">
+                                {project.name}
                             </div>
-                            <div className='project-details-section'>
-                                <div className="project-details-left">
-                                    <div>
-                                        Project Manager: {projectManager ?
-                                        `${projectManager.firstName} ${projectManager.lastName}`  : 'N/A'}
-                                    </div>
-                                    <div>
-                                        Status: {project.currentStatus}
-                                    </div>
-                                    <div>
-                                        Priority: {project.priority}
-                                    </div>
-                                    <div>
-                                        Start: {new Date(project.startDate).toLocaleDateString("en-US")}
-                                    </div>
-                                    <div>
-                                        Deadline: {new Date(project.deadline).toLocaleDateString("en-US")}
-                                    </div>
-                                    <div>
-
-                                    </div>
-                                </div>
-                                <div className="project-details-right">
-                                    <div>
-                                        <p>{project.projectDescription}</p>
-                                    </div>
-                                </div>
-
+                            <div className="title-desc-text">
+                                Back | Edit
                             </div>
-                            <div>
+                        </div>
+                        <div className="outside-container">
+                            <div className="project-details-top-container">
+                                <div className='project-details-section'>
+                                    <div className="project-details-left">
+                                        <div>
+                                            Project Manager: {projectManager ?
+                                            `${projectManager.firstName} ${projectManager.lastName}`  : 'N/A'}
+                                        </div>
+                                        <div>
+                                            Status: {project.currentStatus}
+                                        </div>
+                                        <div>
+                                            Priority: {project.priority}
+                                        </div>
+                                        <div>
+                                            Start: {new Date(project.startDate).toLocaleDateString("en-US")}
+                                        </div>
+                                        <div>
+                                            Deadline: {new Date(project.deadline).toLocaleDateString("en-US")}
+                                        </div>
+                                        <div>
+
+                                        </div>
+                                    </div>
+                                    <div className="project-details-right">
+                                        <div>
+                                            <p>{project.projectDescription}</p>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                         <div className="second-row">
-                            <div className="project-details-bottom-container">
-                                <div className="bottom-overlapping-title">
-                                    <div className="title-text">
-                                        Assigned Users
+                            <div className="horizontal-container">
+                                <div className="common-parent1">
+                                    <div className="overlapping-title">
+                                        <div className="title-text">
+                                            {"The Name"}
+                                        </div>
+                                        <div className="title-desc-text">
+                                            Back | Edit
+                                        </div>
                                     </div>
-                                    <div className="title-desc-text">
-                                        Add | Edit | Remove
-                                    </div>
-
-                                </div>
-                                <ProjectViewUserTable users={project.users} />
-
-                            </div>
-                            <div className="project-details-bottom-container">
-                                <div className="bottom-overlapping-title">
-                                    <div className="title-text">
-                                        Tickets
-                                    </div>
-                                    <div className="title-desc-text">
-                                        Add | Edit | Remove
+                                    <div className="outside-container">
+                                        <div className="content">
+                                            <ProjectViewUserTable users={project.users} className="my-table"/>
+                                        </div>
                                     </div>
                                 </div>
+                                <div className="common-parent2">
+                                    <div className="overlapping-title">
+                                        <div className="title-text">
+                                            {"The Name"}
+                                        </div>
+                                        <div className="title-desc-text">
+                                            Back | Edit
+                                        </div>
+                                    </div>
+                                    <div className="outside-container">
+                                        <div className="content">
+                                            <ProjectViewUserTable users={project.users} className="my-table"/>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            {/*<div className="project-details-bottom-container">*/}
+                            {/*    <div className="bottom-overlapping-title">*/}
+                            {/*        <div className="title-text">*/}
+                            {/*            Tickets*/}
+                            {/*        </div>*/}
+                            {/*        <div className="title-desc-text">*/}
+                            {/*            Add | Edit | Remove*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
                         </div>
                     </div>
                 </div>
