@@ -11,6 +11,7 @@ import {fetchUser} from "../controllers/UserController";
 import ProjectViewUserTable from "./UserTable";
 Modal.setAppElement('#root');
 
+//todo make it so that somethere appears in the place of an empty table
 
 function ProjectView() {
     const {id} = useParams();
@@ -162,16 +163,6 @@ function ProjectView() {
                                     </div>
                                 </div>
                             </div>
-                            {/*<div className="project-details-bottom-container">*/}
-                            {/*    <div className="bottom-overlapping-title">*/}
-                            {/*        <div className="title-text">*/}
-                            {/*            Tickets*/}
-                            {/*        </div>*/}
-                            {/*        <div className="title-desc-text">*/}
-                            {/*            Add | Edit | Remove*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            {/*</div>*/}
                         </div>
                     </div>
                 </div>

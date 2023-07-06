@@ -7,7 +7,6 @@ import './testing.css'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 
-
 function Testing() {
     const [project, setProject] = useState([]);
     const token = localStorage.getItem('accessToken');

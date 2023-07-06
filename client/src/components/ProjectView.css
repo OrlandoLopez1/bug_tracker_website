@@ -63,13 +63,16 @@
 
 .common-parent1 {
     display: block;
-    width: 40%;
+    /*width: 40%;*/
+    min-width: 35vw;
+    max-width: 35vw;
     min-height: 60vh;
     max-height: 60vh;
 }
 .common-parent2 {
     display: block;
-    width: 60%;
+    min-width: 49.5vw;
+    max-width: 49.5vw;
     min-height: 60vh;
     max-height: 60vh;
 }
@@ -102,6 +105,7 @@
     margin: 4vh 2vh 1vh 2vh ;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    /*overflow-x: hidden;*/
 }
 
 
@@ -132,4 +136,6 @@
     white-space: nowrap;
 }
 
-
+/*.table-container{*/
+/*    overflow: auto;*/
+/*}*/

@@ -123,7 +123,7 @@
                                         <Accordion.Body>
                                             <div className="accordion-content">
                                                 <div className="accordion-buttons">
-                                                    <button onClick={() => navigate(`/testing/${project._id}`)}>View</button>
+                                                    <button onClick={() => navigate(`/projectview/${project._id}`)}>View</button>
                                                     <button onClick={() => handleEditProject(project)}>Edit</button>
                                                     <button onClick={() => handleDeleteProject(project)}>Delete</button>
                                                 </div>
