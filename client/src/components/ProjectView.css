@@ -81,16 +81,18 @@
     margin-right: auto;
 }
 
-.overlapping-title {
+.overlapping-title-view {
+    background-color: #000072;
     justify-content: center;
     padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     width: 70%;
     margin-top: 1vh;
-    margin-bottom: -9vh;
+    margin-bottom: -10.5vh;
     margin-left: auto;
     margin-right: auto;
     z-index: 1;
+    position: relative;
 }
 
 
@@ -104,7 +106,7 @@
 
 
 .table {
-    margin-top: 3vh;
+    margin-top: 6vh;
     display: block;
     overflow-x: scroll;
     height: calc(100% - 40px);

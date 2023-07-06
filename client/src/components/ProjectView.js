@@ -8,9 +8,7 @@ import ProjectForm from "./ProjectForm";
 import React, {useEffect, useState} from "react";
 import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "../controllers/ProjectController";
 import {fetchUser} from "../controllers/UserController";
-import ProjectPage from "./ProjectPage";
 import ProjectViewUserTable from "./UserTable";
-import './testing.css'
 Modal.setAppElement('#root');
 
 
@@ -90,7 +88,7 @@ function ProjectView() {
                 <div className="main-content">
                     <SideMenu/>
                     <div className="outside-container top-container">
-                        <div className="overlapping-title">
+                        <div className="overlapping-title-view">
                             <div className="title-text">
                                 {project.name}
                             </div>
@@ -134,7 +132,7 @@ function ProjectView() {
                         <div className="second-row">
                             <div className="horizontal-container">
                                 <div className="common-parent1">
-                                    <div className="overlapping-title">
+                                    <div className="overlapping-title-view">
                                         <div className="title-text">
                                             {"The Name"}
                                         </div>
@@ -149,7 +147,7 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="common-parent2">
-                                    <div className="overlapping-title">
+                                    <div className="overlapping-title-view">
                                         <div className="title-text">
                                             {"The Name"}
                                         </div>
