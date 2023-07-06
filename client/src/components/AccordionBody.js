@@ -108,7 +108,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     useEffect(() => {
         fetchAndSetProjectManagers().then();
         fetchAndSetAssignalbleUsers().then();
-    }, [fetchAndSetProjectManagers, fetchAndSetAssignalbleUsers, token]);  // Empty dependency array - this effect will only run once
+    }, [fetchAndSetProjectManagers, fetchAndSetAssignalbleUsers, token]);
 
 
 

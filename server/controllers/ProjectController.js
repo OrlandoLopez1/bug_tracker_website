@@ -8,15 +8,16 @@ const asyncHandler = require('express-async-handler');
 // @access Private
 const addProject = asyncHandler(async (req, res) => {
     try {
-        const { name, projectDescription, projectManager, priority, currentStatus, users, deadline } = req.body;
+        const { name, projectDescription, projectManager, priority, currentStatus, deadline, users, tickets } = req.body;
         const project = new Project({
             name,
             projectDescription,
             projectManager,
             priority,
             currentStatus,
-            users,
             deadline,
+            users,
+            tickets
         });
         await project.save();
 
@@ -112,11 +113,53 @@ const getUsersForProject = asyncHandler(async (req, res) => {
 });
 
 
+// @desc Get all tickets associated with a specific project
+// @route GET /projects/:id/tickets
+// @access Private
+const getTicketsForProject = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const project = await Project.findById(id).populate('tickets');
+        if (!project) {
+            return res.status(404).json({ message: 'Cannot find project' });
+        }
+        res.json(project.tickets);
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting tickets for project', error: error.message });
+    }
+});
+
+
+// @desc Add a new ticket to a specific project
+// @route PATCH /projects/:projectId/tickets/:ticketId
+// @access Private
+const addTicketToProject = asyncHandler(async (req, res) => {
+    const { projectId, ticketId } = req.params;
+    try {
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId,
+            { $push: { tickets: ticketId } },
+            { new: true }
+        );
+
+        if (!updatedProject) {
+            return res.status(404).json({ message: 'Cannot find project' });
+        }
+
+        res.json(updatedProject);
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding ticket to project', error: error.message });
+    }
+});
+
+
 module.exports = {
     addProject,
     getProject,
     getProjects,
     updateProject,
     deleteProject,
-    getUsersForProject
+    getUsersForProject,
+    getTicketsForProject,
+    addTicketToProject,
 };

@@ -9,9 +9,11 @@ import React, {useEffect, useState} from "react";
 import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "../controllers/ProjectController";
 import {fetchUser} from "../controllers/UserController";
 import ProjectViewUserTable from "./UserTable";
+import TicketTable from "./TicketTable";
 Modal.setAppElement('#root');
 
 //todo make it so that somethere appears in the place of an empty table
+//todo issue with container resizing
 
 function ProjectView() {
     const {id} = useParams();
@@ -158,7 +160,7 @@ function ProjectView() {
                                     </div>
                                     <div className="outside-container">
                                         <div className="content">
-                                            <ProjectViewUserTable users={project.users} className="my-table"/>
+                                            <TicketTable projectID={project._id} />
                                         </div>
                                     </div>
                                 </div>

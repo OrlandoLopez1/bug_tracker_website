@@ -35,14 +35,15 @@ const addTicket = asyncHandler(async (req, res) => {
         }
 
         // Now save the ticket
-        await ticket.save();
-        res.status(201).json({ message: 'Ticket created' });
+        const savedTicket = await ticket.save();
+        res.status(201).json({ message: 'Ticket created', ticket: savedTicket }); // Returning the created ticket
 
     } catch (error) {
         console.error('Error creating ticket:', error);
         res.status(500).json({ message: 'Error creating ticket', error: error.message });
     }
 });
+
 //todo might want to change to id instead of title not sure if titles are going to be unique
 
 // @desc Get a ticket by title

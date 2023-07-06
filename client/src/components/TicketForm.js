@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { createTicket } from '../controllers/TicketController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
-import {fetchProjects} from "../controllers/ProjectController";
+import {addTicketToProject, fetchProjects} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
@@ -157,9 +157,13 @@ function CreateTicketPage() {
         event.preventDefault();
         try {
             const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
-            console.log("PROJECT: ", project)
-            const data = await createTicket(ticket, token);
-            if (data) {  // Assuming the `createTicket` function returns something truthy on success
+            const createdTicket = await createTicket(ticket, token);
+            const ticketId = createdTicket.ticket._id;
+            console.log(ticketId);
+
+
+            if (ticketId) {
+                const updatedProject = await addTicketToProject(project, ticketId, token);
                 setTitle('');
                 setDescription('');
                 setAssignedBy(null);
@@ -171,6 +175,7 @@ function CreateTicketPage() {
         } catch (error) {
             console.error("Failed to create ticket:", error);
         }
+
     };
 
 

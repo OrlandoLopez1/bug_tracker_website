@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-//todo consider adding deadline
 const ProjectSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -33,11 +32,16 @@ const ProjectSchema = new mongoose.Schema({
         enum: ['Planning', 'In progress', 'Testing', 'Stalled', 'Completed'],
         default: 'Planning'
     },
-
     users: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
+        }
+    ],
+    tickets: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Ticket'
         }
     ]
 });

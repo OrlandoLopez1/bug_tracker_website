@@ -17,4 +17,11 @@ router.route('/:id')
 router.route('/:id/users')
     .get(projectController.getUsersForProject);
 
+router.route('/:id/tickets')
+    .get(projectController.getTicketsForProject);
+
+router.route('/:projectId/tickets/:ticketId')
+    .patch(projectController.addTicketToProject);
+
+
 module.exports = router;
