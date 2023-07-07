@@ -156,10 +156,10 @@ function ProjectView() {
                                 <div className="common-parent1">
                                     <div className="overlapping-title-view">
                                         <div className="title-text">
-                                            {"The Name"}
+                                            {"Users"}
                                         </div>
                                         <div className="title-desc-text">
-                                            Back | Edit
+                                            Add | Edit
                                         </div>
                                     </div>
                                     <div className="outside-container">
@@ -171,10 +171,10 @@ function ProjectView() {
                                 <div className="common-parent2">
                                     <div className="overlapping-title-view">
                                         <div className="title-text">
-                                            {"The Name"}
+                                            {"Tickets"}
                                         </div>
                                         <div className="title-desc-text">
-                                            Back | Edit
+                                            Add | Edit
                                         </div>
                                     </div>
                                     <div className="outside-container">

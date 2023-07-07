@@ -33,6 +33,7 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
     height: 30vh;
+    overflow: auto;
 }
 
 .top-container {
@@ -78,8 +79,7 @@
 }
 
 .outside-container {
-    display: flex;
-    flex-direction: column;
+    display: inline;
     margin-left: auto;
     margin-right: auto;
 }
@@ -96,6 +96,7 @@
     margin-right: auto;
     z-index: 1;
     position: relative;
+
 }
 
 
@@ -106,6 +107,7 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
     /*overflow-x: hidden;*/
+
 }
 
 
@@ -128,13 +130,22 @@
 
 .table th,
 .table td {
-    padding: 2px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+    /*padding: 2px;*/
+    /*text-align: left;*/
+    /*border-bottom: 1px solid #ddd;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+    /*white-space: nowrap;*/
+    padding: 8px; /* Add padding */
+    text-align: left; /* Align text to left */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 14px; /* Change font size */
+    /*border: 1px solid #ddd; !* Border between rows and columns *!*/
+    width: 100%;
 }
+
 
 /*.table-container{*/
 /*    overflow: auto;*/
