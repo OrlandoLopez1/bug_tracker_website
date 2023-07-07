@@ -27,7 +27,7 @@ function ProjectView() {
     const [loading, setLoading] = useState(true);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-
+//...
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -42,7 +42,24 @@ function ProjectView() {
                 }
                 if (projectData.users && Array.isArray(projectData.users)) {
                     const usersData = await fetchUsersForProject(id, token);
-                    const ticketData = await fetchTicketsForProject(id, token);
+                    let ticketData = await fetchTicketsForProject(id, token);
+
+                    if (ticketData.length === 0) {
+                        setProject(curProject => ({ ...curProject, users: usersData, tickets: [] }));
+                        return;
+                    }
+
+                    const ticketsPromises = ticketData.map(async (ticket) => {
+                        if (ticket.assignedTo) {
+                            const assignedUserData = await fetchUser(ticket.assignedTo, token);
+                            // Add assigned user data to the ticket
+                            return {...ticket, assignedTo: assignedUserData};
+                        }
+                        return ticket;
+                    });
+
+                    ticketData = await Promise.all(ticketsPromises);
+
                     setProject(curProject => ({ ...curProject, users: usersData, tickets: ticketData }));
                 }
                 setLoading(false);
@@ -54,6 +71,7 @@ function ProjectView() {
     }, [navigate, token]);
 
 
+
     const handleEditProject = (project) => {
         setEditingProjectId(project._id);  // when Edit button is clicked, set this project as being edited
     };
@@ -63,7 +81,7 @@ function ProjectView() {
         const confirmation = window.confirm(`Are you sure you want to delete project: ${project.name}?`);
 
         if (!confirmation) {
-            return;  // If the user cancels deletion, exit the function.
+            return;
         }
 
         try {
@@ -162,6 +180,8 @@ function ProjectView() {
                                     </div>
                                     <div className="outside-container">
                                         <div className="content">
+                                            {/*todo adjust css for tickettable*/}
+                                            {console.log(project.tickets)}
                                             <TicketTable tickets={project.tickets} projectID={project._id}></TicketTable>
                                         </div>
                                     </div>

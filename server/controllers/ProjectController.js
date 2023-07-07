@@ -117,17 +117,33 @@ const getUsersForProject = asyncHandler(async (req, res) => {
 // @route GET /projects/:id/tickets
 // @access Private
 const getTicketsForProject = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const projectId = req.params.id;  // assuming that the project ID is sent as a URL parameter
+
     try {
-        const project = await Project.findById(id).populate('tickets');
+        const project = await Project.findById(projectId).populate({
+            path: 'tickets',
+            model: 'Ticket',
+            populate: {
+                path: 'assignedTo',
+                model: 'User'
+            }
+        });
+
         if (!project) {
-            return res.status(404).json({ message: 'Cannot find project' });
+            res.status(404);
+            throw new Error('Project not found');
         }
+
         res.json(project.tickets);
     } catch (error) {
-        res.status(500).json({ message: 'Error getting tickets for project', error: error.message });
+        res.status(500).json({ error: error.toString() });
     }
 });
+
+
+
+
+
 
 
 // @desc Add a new ticket to a specific project

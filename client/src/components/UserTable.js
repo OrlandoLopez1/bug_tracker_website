@@ -1,40 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import "./UserTable.css";
 import {Pagination, Table} from 'react-bootstrap';
-export function UserTable({users}) {
 
-    return (
-        <div>
-            <Table className="table">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Tickets Assigned</th>
-                    <th scope="col">Tickets Completed</th>
-                    <th scope="col">Start Date</th>
-                </tr>
-                </thead>
-                <tbody>
-                {users.map((user) => (
-                    <tr key={user._id}>
-                        <td>
-                            <img src={"/defaultpfp.jpg"} alt="user" className="table-profile-pic"/>
-                            {user.firstName} {user.lastName}
-                            <span className="table-username">{" (" + user.username + ")"}</span>
-
-                        </td>
-                        <td>{user.totalAssignedTickets || 0}</td>
-                        <td>{user.totalCompletedTickets || 0}</td>
-                        <td>{new Date(user.createdAt).toLocaleDateString()}</td>
-                    </tr>
-                ))}
-
-                </tbody>
-            </Table>
-
-        </div>
-    );
-}
 
 export function ProjectViewUserTable({users, className}) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -71,7 +38,6 @@ export function ProjectViewUserTable({users, className}) {
                         <td>{user.role}</td>
                     </tr>
                 ))}
-                {/* Render empty rows */}
                 {emptyRows.map((_, index) => (
                     <tr key={`empty-${index}`}>
                         <td>&nbsp;</td>

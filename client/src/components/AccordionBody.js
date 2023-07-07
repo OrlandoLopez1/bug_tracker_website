@@ -8,7 +8,7 @@ import ReactDatePicker from "react-datepicker";
 import TicketTable from "./TicketTable";
 import UserTable from "./UserTable";
 import {updateProject} from "../controllers/ProjectController";
-import {getAllUsers} from "../controllers/UserController";
+import {fetchUser, getAllUsers} from "../controllers/UserController";
 //todo update edit mode to include addition and removal of users
 function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [tickets, setTickets] = useState([]);
@@ -23,6 +23,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [projectManagers, setProjectManagers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
+    const [assignedUsers, setAssignedUsers] = useState([]);  // New state variable
     const token = localStorage.getItem('accessToken');
 
 
@@ -32,9 +33,27 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
         const fetchAndSetTickets = async () => {
             const token = localStorage.getItem('accessToken');
             const fetchedTickets = await fetchTicketsForProject(project._id, token);
-            console.log("Fetched tickets: ", fetchedTickets);
-            setTickets(fetchedTickets);
+
+            // if no tickets were found for this project, fetchedTickets would be an empty array
+            if (fetchedTickets.length === 0) {
+                setTickets([]);
+                return;
+            }
+
+            // Fetch assigned user for each ticket
+            const ticketsPromises = fetchedTickets.map(async (ticket) => {
+                if (ticket.assignedTo) {
+                    const assignedUserData = await fetchUser(ticket.assignedTo, token);
+                    // Add assigned user data to the ticket
+                    return {...ticket, assignedTo: assignedUserData};
+                }
+                return ticket;
+            });
+
+            const ticketsWithUserData = await Promise.all(ticketsPromises);
+            setTickets(ticketsWithUserData);
         };
+
         fetchAndSetTickets();
     }, [project]);
 
@@ -213,7 +232,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             <div className="horizontal-container">
                 <div className="item">
                     <p className="header">Manager:</p>
-                    <p>{project.projectManager}</p>
+                    <p>{projectManager ? `${projectManager.firstName} ${projectManager.lastName}` : 'N/A'}</p>
                 </div>
 
                 <div className="item">
@@ -239,7 +258,6 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             </div>
             <div>
                 <h3>Tickets:</h3>
-                {console.log(project)}
                 <TicketTable tickets={tickets} projectID={project._id} />
             </div>
             <div>
