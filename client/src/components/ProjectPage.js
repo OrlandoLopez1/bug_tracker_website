@@ -97,7 +97,6 @@
                     </Modal>
                     <div className="outside-container">
                         <Button className="add-button" variant="primary" onClick={() => setModalIsOpen(true)}>Add +</Button>
-
                         <div className="overlapping-title-project-page">
                             <div className="title-text">
                                 Projects

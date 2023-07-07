@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Table, Pagination} from "react-bootstrap";
-
+//todo fix css for gods sake please
 function getPriorityColor(priority) {
     switch(priority) {
         case 'high':

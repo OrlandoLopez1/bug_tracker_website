@@ -5,9 +5,10 @@
 }
 
 .description-item {
-    display: flex;
-    flex-direction: column; /* Aligns .description-item contents vertically. */
-    margin-bottom: 10px;
+    /*display: flex;*/
+    /*flex-direction: column; !* Aligns .description-item contents vertically. *!*/
+    /*margin-bottom: 10px;*/
+    overflow: auto;
 }
 
 .item {

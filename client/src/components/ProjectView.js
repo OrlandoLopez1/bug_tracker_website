@@ -27,7 +27,6 @@ function ProjectView() {
     const [loading, setLoading] = useState(true);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-//...
     useEffect(() => {
         if (!token) {
             navigate('/login');

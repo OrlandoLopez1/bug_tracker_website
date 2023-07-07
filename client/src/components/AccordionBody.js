@@ -228,7 +228,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     }
     return (
         <div>
-            <p>{project.projectDescription}</p>
+            <p className="description-item">{project.projectDescription}</p>
             <div className="horizontal-container">
                 <div className="item">
                     <p className="header">Manager:</p>
