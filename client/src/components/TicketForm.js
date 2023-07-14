@@ -153,14 +153,48 @@ function CreateTicketPage() {
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [role, setRole] = useState(null)
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFileName, setSelectedFileName] = useState('No file selected')
+    const [isLoading, setIsLoading] = useState(false); // add this to your state
+    const [presignedUrl, setPresignedUrl] = useState(null);
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true); // disable form while submitting
         try {
-            const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
+            // Perform form validation
+            // Replace with your actual validation logic
+            const isValidForm = title && description && type && project;
+            if (!isValidForm) {
+                console.error('Invalid form fields');
+                return;  // Stop execution if the form is not valid
+            }
+
+            let attachmentLocation = null;
+
+            // First, upload the file to S3 if a file was selected
+            if (selectedFile) {
+                const response = await fetch(presignedUrl, {
+                    method: 'PUT',
+                    body: selectedFile,
+                    headers: {
+                        'Content-Type': selectedFile.type
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorResponse = await response.text();
+                    console.error('Failed to upload file to S3:', errorResponse);
+                    return;
+                } else {
+                    // If file upload was successful, the file location would be at the presigned URL (minus the query parameters)
+                    attachmentLocation = presignedUrl.split("?")[0];
+                }
+            }
+
+            // Continue with creating the ticket...
+            const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project, attachment: attachmentLocation };
             const createdTicket = await createTicket(ticket, token);
             const ticketId = createdTicket.ticket._id;
-            console.log(ticketId);
-
 
             if (ticketId) {
                 const updatedProject = await addTicketToProject(project, ticketId, token);
@@ -171,11 +205,31 @@ function CreateTicketPage() {
                 setType('bug');
                 setStatus('open');
                 setPriority('medium');
+                setSelectedFile(null);
+                setSelectedFileName('No file selected');
             }
         } catch (error) {
             console.error("Failed to create ticket:", error);
         }
+        setIsLoading(false); // enable form after submission is complete
+    };
 
+
+    const handleFileSelect = async (e) => {
+        setSelectedFile(e.target.files[0]);
+        setSelectedFileName(e.target.files[0].name);
+        console.log("HandleFileSelectReached")
+        try {
+            const response = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(e.target.files[0].name)}&filetype=${encodeURIComponent(e.target.files[0].type)}`);
+            if (!response.ok) {
+                throw new Error('Failed to get presigned URL');
+            }
+
+            const data = await response.json();
+            setPresignedUrl(data.url);
+        } catch (error) {
+            console.error('Failed to get presigned URL:', error);
+        }
     };
 
 
@@ -263,8 +317,20 @@ function CreateTicketPage() {
                             priority={priority}
                             setPriority={setPriority}
                         />}
+                    {/*todo modify the styling of this*/}
+                    <Form.Group>
+                        <Form.Label>Attachment</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept=".jpg,.jpeg,.png,.doc,.pdf" // adjust this string to limit which file types can be selected
+                            onChange={handleFileSelect}
+                        />
+                        <Form.Text>
+                            {selectedFileName}
+                        </Form.Text>
+                    </Form.Group>
 
-                    <Button variant="primary" type="submit">Submit</Button>
+                    <Button variant="primary" type="submit" disabled={isLoading}>Submit</Button>
                 </div>
             </div>
         </Form>

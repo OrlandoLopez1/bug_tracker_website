@@ -2,13 +2,13 @@ const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 
+
 // @desc Create a new ticket
 // @route POST /tickets
 // @access Private
 const addTicket = asyncHandler(async (req, res) => {
     try {
-        const { title, description, assignedBy, assignedTo, type, status, priority, project } = req.body;
-
+        const { title, description, assignedBy, assignedTo, type, status, priority, project, attachment } = req.body;
         const ticket = new Ticket({
             title,
             description,
@@ -17,7 +17,8 @@ const addTicket = asyncHandler(async (req, res) => {
             type,
             status,
             priority,
-            project
+            project,
+            attachments: attachment ? [attachment] : [] // If an attachment URL is provided, use it
         });
 
         // Validate ticket first
@@ -43,6 +44,7 @@ const addTicket = asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Error creating ticket', error: error.message });
     }
 });
+
 
 //todo might want to change to id instead of title not sure if titles are going to be unique
 

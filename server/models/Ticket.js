@@ -15,7 +15,9 @@ const ticketSchema = new mongoose.Schema({
     },
     status: { type: String, required: true, default: 'open' },
     priority: { type: String, required: true, default: 'medium' },
-    project: { type: Schema.Types.ObjectId, ref: 'Project' }
+    project: { type: Schema.Types.ObjectId, ref: 'Project' },
+    attachments: { type: [String], default: [] },
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Ticket', ticketSchema);

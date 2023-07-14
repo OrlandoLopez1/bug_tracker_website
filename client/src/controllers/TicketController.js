@@ -14,16 +14,20 @@ export async function createTicket(ticket, token) {
     const response = await fetch('http://localhost:5000/tickets', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(ticket)
     });
+
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
+
     return await response.json();
 }
+
+
 
 export async function fetchTicketsForProject(projectId, token) {
     const response = await fetch(`http://localhost:5000/tickets/project/${projectId}`, {

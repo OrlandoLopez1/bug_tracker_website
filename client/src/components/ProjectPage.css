@@ -33,6 +33,7 @@
     overflow: auto;
     min-width: 79vw;
     max-width: 79vw;
+    min-height: 75vh;
 }
 
 .accordion-content {
