@@ -1,5 +1,6 @@
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
+import './TicketView.css'
 import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
 import React, {useEffect, useState} from "react";
@@ -8,6 +9,19 @@ import {deleteTicket, fetchTicket, fetchTicketsForProject, updateTicket} from ".
 import {fetchUser} from "../controllers/UserController";
 Modal.setAppElement('#root');
 
+
+function getPriorityColor(priority) {
+    switch(priority) {
+        case 'high':
+            return '#FFD6C9';
+        case 'medium':
+            return '#FEFFD6';
+        case 'low':
+            return '#CAF2C2';
+        default:
+            return 'white';
+    }
+}
 function TicketView() {
     const {id} = useParams();
     const [ticket, setTicket] = useState([]);
@@ -79,7 +93,7 @@ function TicketView() {
                 <CustomNavbar/>
                 <div className="main-content">
                     <SideMenu/>
-                    <div className="outside-container top-container">
+                    <div className="outside-container">
                         <div className="overlapping-title-view">
                             <div className="title-text">
                                 {ticket.title}
@@ -88,24 +102,35 @@ function TicketView() {
                                 Back | Edit
                             </div>
                         </div>
-                        <div className="outside-container">
                             <div className="ticket-details-top-container">
                                 <div className='ticket-details-section'>
-                                    <div className="ticketx`-details-left">
+                                    <div className="ticket-details-left">
                                         <div>
                                             Assigned to: {assignedUser ?
                                             `${assignedUser.firstName} ${assignedUser.lastName}`  : 'N/A'}
                                         </div>
+                                        <div>
+                                            <div>Type: {ticket.type}</div>
+                                            <div>Priority:&nbsp;
+                                                <span
+                                                    style={{
+                                                        backgroundColor: getPriorityColor(ticket.priority),
+                                                        padding: "2px",
+                                                        borderRadius: "2px"
+                                                    }}
+                                                >{ticket.priority}</span>
+                                            </div>
+                                            <div>Status: {ticket.status}</div>
+                                            <div>Created: {new Date(ticket.createdAt).toLocaleString()}</div>
+                                        </div>
                                     </div>
                                     <div className="ticket-details-right">
                                         <div>
-                                            <p>{ticket.ticketDescription}</p>
+                                            <p>{ticket.description}</p>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>

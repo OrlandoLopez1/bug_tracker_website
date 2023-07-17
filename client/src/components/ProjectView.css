@@ -1,9 +1,5 @@
-/*todo fix this mess for gods sake*/
-
-
 .main-content {
     display: flex;
-    /*justify-content: space-between;*/
     width: 100vw;
 }
 
@@ -11,7 +7,6 @@
     display: flex;
     flex-direction: column;
     padding-top: 5vh;
-    /*width: 85vw*/
 }
 
 .project-details-top-container {
@@ -20,12 +15,8 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
     height: 30vh;
-    /*overflow: hidden;*/
-
-    /*border: green solid;*/
     width: 81vw;
     margin-left: 2vw;
-    /*margin-top: 5vh*/
 }
 
 
@@ -48,7 +39,6 @@
 .project-details-right {
     flex: 1;
     padding: 10px;
-    /*border: solid blue;*/
     overflow: auto;
 }
 
@@ -66,9 +56,6 @@
 
 .horizontal-container {
     display: flex;
-    /*justify-content: space-between;*/
-    /*width: 100%;*/
-    /*border: red     solid;*/
     margin-top: 5vh;
 }
 
@@ -110,7 +97,6 @@
 .content {
     background: white;
     padding: 3vh;
-    /*margin: 4vh 1vw 1vh 1vw ;*/
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
 
@@ -128,7 +114,6 @@
 }
 
 ::-webkit-scrollbar {
-    /*width: 8px;*/
     display: none;
 }
 
