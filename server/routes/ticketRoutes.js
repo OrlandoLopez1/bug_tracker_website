@@ -9,10 +9,10 @@ router.route('/')
     .get(ticketController.getTickets)
     .post(ticketController.addTicket);
 
-router.route('/:title')
-    .get(ticketController.getTicket);
-
 router.route('/project/:projectId')
     .get(ticketController.getTicketsForProject);
 
+router.route('/:id')
+    .get(ticketController.getTicket)
+    .put(ticketController.updateTicketAttachment);
 module.exports = router;

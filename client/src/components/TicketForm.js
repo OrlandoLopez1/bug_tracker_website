@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { createTicket } from '../controllers/TicketController'
+import { createTicket, attachFileToTicket} from '../controllers/TicketController'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 import {addTicketToProject, fetchProjects} from "../controllers/ProjectController";
@@ -157,22 +157,35 @@ function CreateTicketPage() {
     const [selectedFileName, setSelectedFileName] = useState('No file selected')
     const [isLoading, setIsLoading] = useState(false); // add this to your state
     const [presignedUrl, setPresignedUrl] = useState(null);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsLoading(true); // disable form while submitting
+        setIsLoading(true);
+
         try {
-            // Perform form validation
-            // Replace with your actual validation logic
             const isValidForm = title && description && type && project;
             if (!isValidForm) {
                 console.error('Invalid form fields');
-                return;  // Stop execution if the form is not valid
+                return;
             }
 
-            let attachmentLocation = null;
+            // First, create the ticket without the attachment...
+            const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
+            const createdTicket = await createTicket(ticket, token);
+            const ticketId = createdTicket.ticket._id;
 
-            // First, upload the file to S3 if a file was selected
-            if (selectedFile) {
+            if (ticketId && selectedFile) {
+                // If ticket was created successfully and a file is selected, upload the file
+                // Get the presigned URL immediately before uploading the file
+                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.name)}&filetype=${encodeURIComponent(selectedFile.type)}`);
+                if (!presignResponse.ok) {
+                    alert("Could not upload file")
+                    throw new Error('Failed to get presigned URL');
+                }
+
+                const presignData = await presignResponse.json();
+                const presignedUrl = presignData.url;
+
                 const response = await fetch(presignedUrl, {
                     method: 'PUT',
                     body: selectedFile,
@@ -184,53 +197,39 @@ function CreateTicketPage() {
                 if (!response.ok) {
                     const errorResponse = await response.text();
                     console.error('Failed to upload file to S3:', errorResponse);
-                    return;
+                    throw new Error('Failed to upload file to S3');
                 } else {
                     // If file upload was successful, the file location would be at the presigned URL (minus the query parameters)
-                    attachmentLocation = presignedUrl.split("?")[0];
+                    const attachmentLocation = presignedUrl.split("?")[0];
+
+                    await attachFileToTicket(ticketId, attachmentLocation, token);
                 }
             }
 
-            // Continue with creating the ticket...
-            const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project, attachment: attachmentLocation };
-            const createdTicket = await createTicket(ticket, token);
-            const ticketId = createdTicket.ticket._id;
-
-            if (ticketId) {
-                const updatedProject = await addTicketToProject(project, ticketId, token);
-                setTitle('');
-                setDescription('');
-                setAssignedBy(null);
-                setAssignedTo(null);
-                setType('bug');
-                setStatus('open');
-                setPriority('medium');
-                setSelectedFile(null);
-                setSelectedFileName('No file selected');
-            }
+            // Reset form fields
+            setTitle('');
+            setDescription('');
+            setAssignedBy(null);
+            setAssignedTo(null);
+            setType('bug');
+            setStatus('open');
+            setPriority('medium');
+            setSelectedFile(null);
+            setSelectedFileName('No file selected');
         } catch (error) {
             console.error("Failed to create ticket:", error);
         }
-        setIsLoading(false); // enable form after submission is complete
+        setIsLoading(false);
     };
 
 
-    const handleFileSelect = async (e) => {
+
+
+    const handleFileSelect = (e) => {
         setSelectedFile(e.target.files[0]);
         setSelectedFileName(e.target.files[0].name);
-        console.log("HandleFileSelectReached")
-        try {
-            const response = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(e.target.files[0].name)}&filetype=${encodeURIComponent(e.target.files[0].type)}`);
-            if (!response.ok) {
-                throw new Error('Failed to get presigned URL');
-            }
-
-            const data = await response.json();
-            setPresignedUrl(data.url);
-        } catch (error) {
-            console.error('Failed to get presigned URL:', error);
-        }
     };
+
 
 
     useEffect(() => {

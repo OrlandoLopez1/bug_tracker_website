@@ -1,6 +1,8 @@
 const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
+const Project = require("../models/Project");
+const {deleteFile} = require("../s3utils");
 
 
 // @desc Create a new ticket
@@ -46,19 +48,95 @@ const addTicket = asyncHandler(async (req, res) => {
 });
 
 
-//todo might want to change to id instead of title not sure if titles are going to be unique
-
-// @desc Get a ticket by title
-// @route GET /tickets/:title
+// @desc Get a specific ticket by id
+// @route GET /tickets/:id
 // @access Private
 const getTicket = asyncHandler(async (req, res) => {
-    const { title } = req.query;
-    const ticket = await Ticket.findOne({ title: title });
+    const { id } = req.params;
+    const ticket = await Ticket.findById(id);
     if (!ticket) {
         return res.status(404).json({ message: 'Cannot find ticket' });
     }
     res.json(ticket);
 });
+
+
+// @desc Update a specific ticket
+// @route PATCH /tickets/:id
+// @access Private
+const updateProject = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedTicket = await Ticket.findByIdAndUpdate(id, req.body, { new: true });
+        res.json(updatedTicket);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating ticket', error: error.message });
+    }
+});
+
+
+
+// @desc Delete a specific ticket
+// @route DELETE /tickets/:id
+// @access Private
+//todo verify that the value of tickets assigned gets incremented
+const deleteTicket = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const ticket = await Ticket.findById(id)
+        console.log("(delete)Ticket: ", ticket)
+        if (!ticket) {
+            return res.status(404).json({ message: "Ticket not found" });
+        }
+        await User.findByIdAndUpdate(ticket.assignedTo, { $inc: { totalAssignedTickets: -1 } }, { new: true });
+
+
+        const { attachments } = ticket;
+        for (const attachmentUrl of attachments) {
+            const fileName = attachmentUrl.substring(attachmentUrl.lastIndexOf("/") + 1);
+
+            try {
+                await deleteFile(process.env.AWS_S3_BUCKET, fileName);
+            } catch (err) {
+                console.log(`Failed to delete file ${fileName} from S3: ${err}`);
+                return res.status(500).json({ message: `Failed to delete file ${fileName} from S3` });
+            }
+        }
+
+        await Ticket.findByIdAndRemove(id);
+        console.log(`Deleted ticket ${id}`);
+
+        res.json({ message: 'Ticket deleted' });
+    } catch (error) {
+        console.error('Error deleting ticket:', error);
+        res.status(500).json({ message: 'Error deleting dicket', error: error.message });
+    }
+});
+
+
+
+const updateTicketAttachment = asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const { attachment } = req.body;
+
+    if (!attachment) {
+        return res.status(400).json({ message: 'No attachment URL provided' });
+    }
+
+    const ticket = await Ticket.findById(id);
+    if (!ticket) {
+        return res.status(404).json({ message: 'No ticket found with the provided ID' });
+    }
+
+    ticket.attachments.push(attachment);
+
+    await ticket.save();
+
+    res.json({ message: 'Attachment successfully added to ticket', ticket });
+});
+
+//todo might want to change to id instead of title not sure if titles are going to be unique
+
 
 // @desc Get all tickets
 // @route GET /tickets
@@ -79,6 +157,7 @@ const getTicketsForProject = asyncHandler(async (req, res) => {
 
 module.exports = {
     addTicket,
+    updateTicketAttachment,
     getTicket,
     getTickets,
     getTicketsForProject

@@ -1,5 +1,4 @@
 import './ProjectView.css'
-// import './ProjectPage.css'
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -13,8 +12,10 @@ import TicketTable from "./TicketTable";
 import {fetchTicketsForProject} from "../controllers/TicketController";
 Modal.setAppElement('#root');
 
-//todo make it so that somethere appears in the place of an empty table
+//todo make it so that something appears in the place of an empty table
 //todo issue with container resizing
+//todo outside container is not extending with the accordions opening
+//todo add pagination
 
 function ProjectView() {
     const {id} = useParams();
@@ -45,7 +46,6 @@ function ProjectView() {
 
                     if (ticketData.length === 0) {
                         setProject(curProject => ({ ...curProject, users: usersData, tickets: [] }));
-                        return;
                     }
 
                     const ticketsPromises = ticketData.map(async (ticket) => {
@@ -109,7 +109,7 @@ function ProjectView() {
                 <CustomNavbar/>
                 <div className="main-content">
                     <SideMenu/>
-                    <div className="outside-container top-container">
+                    <div className="outside-container">
                         <div className="overlapping-title-view">
                             <div className="title-text">
                                 {project.name}
@@ -118,7 +118,6 @@ function ProjectView() {
                                 Back | Edit
                             </div>
                         </div>
-                        <div className="outside-container">
                             <div className="project-details-top-container">
                                 <div className='project-details-section'>
                                     <div className="project-details-left">
@@ -150,8 +149,6 @@ function ProjectView() {
 
                                 </div>
                             </div>
-                        </div>
-                        <div className="second-row">
                             <div className="horizontal-container">
                                 <div className="common-parent1">
                                     <div className="overlapping-title-view">
@@ -162,11 +159,9 @@ function ProjectView() {
                                             Add | Edit
                                         </div>
                                     </div>
-                                    <div className="outside-container">
                                         <div className="content">
                                             <ProjectViewUserTable users={project.users} className="my-table"/>
                                         </div>
-                                    </div>
                                 </div>
                                 <div className="common-parent2">
                                     <div className="overlapping-title-view">
@@ -177,16 +172,13 @@ function ProjectView() {
                                             Add | Edit
                                         </div>
                                     </div>
-                                    <div className="outside-container">
                                         <div className="content">
                                             {/*todo adjust css for tickettable*/}
                                             {console.log(project.tickets)}
                                             <TicketTable tickets={project.tickets} projectID={project._id}></TicketTable>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>

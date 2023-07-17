@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import {Table, Pagination} from "react-bootstrap";
 //todo fix css for gods sake please
+import "./TicketTable.css";
+
 function getPriorityColor(priority) {
     switch(priority) {
         case 'high':
@@ -47,7 +50,8 @@ function TicketTable({ tickets, projectID }) {
                 <tbody>
                 {currentTickets.map((ticket) => (
                     <tr key={ticket._id}>
-                        <td>{ticket.title}</td>
+                        <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
+
                         <td>{ticket.type}</td>
                         <td>{ticket.assignedTo ? `${ticket.assignedTo.firstName} ${ticket.assignedTo.lastName}` : 'N/A'}</td>
                         <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>

@@ -1,0 +1,9 @@
+.ticket-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.ticket-link:hover {
+    color: inherit;
+    text-decoration: underline;
+}
