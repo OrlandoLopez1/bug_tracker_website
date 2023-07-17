@@ -2,6 +2,8 @@ const Ticket = require('../models/Ticket');
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 const Project = require("../models/Project");
+const Attachment = require('../models/Attachment');
+const Comment = require('../models/Comment');
 const {deleteFile} = require("../s3utils");
 
 
@@ -20,7 +22,7 @@ const addTicket = asyncHandler(async (req, res) => {
             status,
             priority,
             project,
-            attachments: attachment ? [attachment] : [] // If an attachment URL is provided, use it
+            attachments: attachment ? [attachment] : []
         });
 
         // Validate ticket first
@@ -115,6 +117,9 @@ const deleteTicket = asyncHandler(async (req, res) => {
 
 
 
+// Import the Attachment model at the top of your file
+
+
 const updateTicketAttachment = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const { attachment } = req.body;
@@ -128,14 +133,18 @@ const updateTicketAttachment = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: 'No ticket found with the provided ID' });
     }
 
-    ticket.attachments.push(attachment);
+    // Create a new Attachment document
+    const createdAttachment = await Attachment.create(attachment);
+
+    // Add the ObjectId of the created Attachment to the ticket's attachments array
+    ticket.attachments.push(createdAttachment._id);
 
     await ticket.save();
 
     res.json({ message: 'Attachment successfully added to ticket', ticket });
 });
 
-//todo might want to change to id instead of title not sure if titles are going to be unique
+
 
 
 // @desc Get all tickets

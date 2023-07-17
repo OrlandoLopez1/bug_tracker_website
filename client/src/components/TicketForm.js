@@ -152,7 +152,8 @@ function CreateTicketPage() {
     const [users, setUsers] = useState([]);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
-    const [role, setRole] = useState(null)
+    const [curUserId, setCurUserId] = useState(null);
+    const [role, setRole] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFileName, setSelectedFileName] = useState('No file selected')
     const [isLoading, setIsLoading] = useState(false); // add this to your state
@@ -177,8 +178,7 @@ function CreateTicketPage() {
             if (ticketId && selectedFile) {
                 // If ticket was created successfully and a file is selected, upload the file
                 // Get the presigned URL immediately before uploading the file
-                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.name)}&filetype=${encodeURIComponent(selectedFile.type)}`);
-                if (!presignResponse.ok) {
+                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.filename)}&filetype=${encodeURIComponent(selectedFile.file.type)}`);                if (!presignResponse.ok) {
                     alert("Could not upload file")
                     throw new Error('Failed to get presigned URL');
                 }
@@ -188,9 +188,9 @@ function CreateTicketPage() {
 
                 const response = await fetch(presignedUrl, {
                     method: 'PUT',
-                    body: selectedFile,
+                    body: selectedFile.file, // selectedFile is now an object, so use selectedFile.file to access the file
                     headers: {
-                        'Content-Type': selectedFile.type
+                        'Content-Type': selectedFile.file.type // Access the file's type via selectedFile.file.type
                     }
                 });
 
@@ -202,7 +202,12 @@ function CreateTicketPage() {
                     // If file upload was successful, the file location would be at the presigned URL (minus the query parameters)
                     const attachmentLocation = presignedUrl.split("?")[0];
 
-                    await attachFileToTicket(ticketId, attachmentLocation, token);
+                    const attachment = {
+                        filename: selectedFile.filename,
+                        path: attachmentLocation,
+                        uploader: selectedFile.uploader
+                        };
+                    await attachFileToTicket(ticketId, attachment, token);
                 }
             }
 
@@ -226,8 +231,16 @@ function CreateTicketPage() {
 
 
     const handleFileSelect = (e) => {
-        setSelectedFile(e.target.files[0]);
-        setSelectedFileName(e.target.files[0].name);
+        // setSelectedFile(e.target.files[0]);
+        // setSelectedFileName(e.target.files[0].name);
+        const file = e.target.files[0];
+        const attachment = {
+            file,
+            filename: file.name,
+            uploader:  curUserId
+        };
+        setSelectedFile(attachment);
+        setSelectedFileName(file.name);
     };
 
 
@@ -268,9 +281,10 @@ function CreateTicketPage() {
         else{
             const decodedToken = jwtDecode(token);
             const role = decodedToken.UserInfo.role;
+            const curUserId = decodedToken.UserInfo.id;
+            setCurUserId(curUserId);
             setRole(role);
         }
-
 
     }, [navigate, token]);
 

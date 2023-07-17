@@ -79,14 +79,14 @@ export async function deleteTicket(id, token) {
 }
 
 
-export async function attachFileToTicket(id, fileUrl, token) {
+export async function attachFileToTicket(id, attachment, token) {
     const response = await fetch(`http://localhost:5000/tickets/${id}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ attachment: fileUrl })  // assuming your API expects a field named "attachment"
+        body: JSON.stringify({ attachment })  // attachment is now an object
     });
 
     if (!response.ok) {
