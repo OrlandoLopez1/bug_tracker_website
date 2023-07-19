@@ -64,11 +64,18 @@ function CommentSection() {
                 />
                 <button
                     type="button"
-                    className={(textareaFocused || submitFocused) ? 'show-button' : 'hide-button'}
-                    onClick={() => {setTextareaFocused(false); setNewComment(''); }}
+                    className={textareaFocused || submitFocused ? 'show-button' : 'hide-button'}
+                    onClick={() => {
+                        setTextareaFocused(false);
+                        setNewComment('');
+                    }}
+                    onFocus={() => setSubmitFocused(true)}
+                    onBlur={() => setTimeout(() => setSubmitFocused(false), 0)}
                 >
                     Cancel
                 </button>
+
+
                 <button
                     type="submit"
                     id='submit'
