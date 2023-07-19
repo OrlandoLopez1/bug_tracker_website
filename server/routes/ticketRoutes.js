@@ -14,5 +14,11 @@ router.route('/project/:projectId')
 
 router.route('/:id')
     .get(ticketController.getTicket)
-    .put(ticketController.updateTicketAttachment);
+
+router.route('/:id/attachment')
+    .put(ticketController.updateTicketAttachment)
+
+router.route('/:id/comment')
+    .put(ticketController.addComment);
+
 module.exports = router;

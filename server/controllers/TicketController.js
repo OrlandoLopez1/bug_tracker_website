@@ -116,10 +116,6 @@ const deleteTicket = asyncHandler(async (req, res) => {
 });
 
 
-
-// Import the Attachment model at the top of your file
-
-
 const updateTicketAttachment = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const { attachment } = req.body;
@@ -145,6 +141,43 @@ const updateTicketAttachment = asyncHandler(async (req, res) => {
 });
 
 
+// @desc Add a comment to a ticket
+// @route POST /comments
+// @access Private
+const addComment = asyncHandler(async (req, res) => {
+    console.log('Received request in addComment: ', req.body);  // Log the received request body
+
+    const { uploader, content, ticket } = req.body.comment;
+
+
+    if (!content) {
+        console.log('No comment content provided');
+        return res.status(400).json({ message: 'No comment provided' });
+    }
+
+    console.log('Attempting to find ticket: ', ticket);
+    const ticketDoc = await Ticket.findById(ticket);
+    if (!ticketDoc) {
+        console.log('Could not find ticket: ', ticket);
+        return res.status(404).json({ message: 'No ticket found with provided ID' });
+    }
+
+    console.log('Creating comment with uploader: ', uploader, ', content: ', content, ', ticket: ', ticket);
+    const commentDoc = await Comment.create({
+        uploader: uploader,
+        content: content,
+        ticket: ticket,
+    });
+
+    console.log('Pushing comment ID to ticket comments: ', commentDoc._id);
+    ticketDoc.comments.push(commentDoc._id);
+
+    console.log('Saving modified ticket');
+    await ticketDoc.save();
+
+    console.log('Returning response: ', { message: 'Comment added', comment: commentDoc });
+    res.status(201).json({ message: 'Comment added', comment: commentDoc });
+});
 
 
 // @desc Get all tickets
@@ -167,6 +200,7 @@ const getTicketsForProject = asyncHandler(async (req, res) => {
 module.exports = {
     addTicket,
     updateTicketAttachment,
+    addComment,
     getTicket,
     getTickets,
     getTicketsForProject

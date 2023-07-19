@@ -7,6 +7,9 @@ import React, {useEffect, useState} from "react";
 import TicketTable from "./TicketTable";
 import {deleteTicket, fetchTicket, fetchTicketsForProject, updateTicket} from "../controllers/TicketController";
 import {fetchUser} from "../controllers/UserController";
+import ProjectViewUserTable from "./UserTable";
+import CommentSection from "./CommentSection";
+import {fetchCommentsForTicket} from "../controllers/CommentController";
 Modal.setAppElement('#root');
 
 
@@ -26,6 +29,7 @@ function TicketView() {
     const {id} = useParams();
     const [ticket, setTicket] = useState([]);
     const [assignedUser, setAssignedUser] = useState(null);
+    const [comments, setComments] = useState(null);
     const [editingTicketId, setEditingTicketId] = useState(null);  // new state variable
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -44,6 +48,10 @@ function TicketView() {
                 if (ticketData.assignedTo) {
                     const userData = await fetchUser(ticketData.assignedTo, token);
                     setAssignedUser(userData);
+                }
+                if (ticketData.comments) {
+                    const commentData = await fetchCommentsForTicket(ticketData._id, token);
+                    setComments(commentData);
                 }
                 setLoading(false);
             } catch (error) {
@@ -131,6 +139,34 @@ function TicketView() {
                                     </div>
                                 </div>
                             </div>
+                        <div className="horizontal-container">
+                            <div className="common-parent1">
+                                <div className="overlapping-title-view">
+                                    <div className="title-text">
+                                        {"Attachments"}
+                                    </div>
+                                    <div className="title-desc-text">
+                                        Add | Edit
+                                    </div>
+                                </div>
+                                <div className="content">
+                                    <p>Placeholder</p>
+                                </div>
+                            </div>
+                            <div className="common-parent2">
+                                <div className="overlapping-title-view">
+                                    <div className="title-text">
+                                        {"Comments"}
+                                    </div>
+                                    <div className="title-desc-text">
+                                        Add | Edit
+                                    </div>
+                                </div>
+                                <div className="content">
+                                    <CommentSection comments={comments}></CommentSection>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

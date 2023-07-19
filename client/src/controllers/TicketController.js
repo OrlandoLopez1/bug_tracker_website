@@ -80,13 +80,39 @@ export async function deleteTicket(id, token) {
 
 
 export async function attachFileToTicket(id, attachment, token) {
-    const response = await fetch(`http://localhost:5000/tickets/${id}`, {
+    const response = await fetch(`http://localhost:5000/tickets/${id}/attachment`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ attachment })  // attachment is now an object
+        body: JSON.stringify({ attachment })
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+
+export async function addCommentToTicket(uploaderId, comment, id, token) {
+    const commentObj = {
+        uploader: uploaderId,
+        content: comment,
+        ticket: id,
+    };
+    console.log("commentObj");
+    console.log(commentObj);
+
+    const response = await fetch(`http://localhost:5000/tickets/${id}/comment`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({comment: commentObj}) // send the comment object, not just the text
     });
 
     if (!response.ok) {
