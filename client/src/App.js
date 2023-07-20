@@ -32,7 +32,7 @@ function App() {
                     <Route path="/projectPage" element={<ProjectPage />} />
                     <Route path="/projectView/:id" element={<ProjectView />} />
                     <Route path="/testing/:id" element={<Testing/>} />
-                    <Route path="/ticketView/:id" element={<TicketView />} />
+                    <Route path="/ticketView/:ticketId" element={<TicketView />} />
 
                 </Routes>
             </div>

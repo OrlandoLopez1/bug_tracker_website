@@ -24,7 +24,8 @@ const addAttachment = asyncHandler(async (req, res) => {
 const getAttachmentsForTicket = asyncHandler(async (req, res) => {
     const { ticketId } = req.params;
     const attachments = await Attachment.find({ ticket: ticketId });
-
+    console.log(`Fetching attachments for ticket: ${ticketId}`);
+    console.log(attachments);
     res.json(attachments);
 });
 

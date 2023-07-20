@@ -30,7 +30,7 @@ app.use('/users', verifyJWT, require('./routes/userRoutes'))
 app.use('/tickets', verifyJWT, require('./routes/ticketRoutes'))
 app.use('/projects', verifyJWT, require('./routes/projectRoutes'))
 app.use('/comments', verifyJWT, require('./routes/commentRoutes'))
-// app.use('/attachments', verifyJWT, require('./routes/attachmentRoutes'))
+app.use('/attachments', verifyJWT, require('./routes/attachmentRoutes'))
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');

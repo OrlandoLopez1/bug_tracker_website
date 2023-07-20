@@ -1,5 +1,5 @@
-export async function fetchTicket(id, token) {
-    const response = await fetch(`http://localhost:5000/tickets/${id}`, {
+export async function fetchTicket(ticketId, token) {
+    const response = await fetch(`http://localhost:5000/tickets/${ticketId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -45,8 +45,8 @@ export async function createTicket(ticket, token) {
 }
 
 
-export async function updateTicket(id, ticket, token) {
-    const response = await fetch(`http://localhost:5000/tickets/${id}`, {
+export async function updateTicket(ticketId, ticket, token) {
+    const response = await fetch(`http://localhost:5000/tickets/${ticketId}`, {
         method: 'PATCH',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -62,8 +62,8 @@ export async function updateTicket(id, ticket, token) {
     return await response.json();
 }
 
-export async function deleteTicket(id, token) {
-    const response = await fetch(`http://localhost:5000/tickets/${id}`, {
+export async function deleteTicket(ticketId, token) {
+    const response = await fetch(`http://localhost:5000/tickets/${ticketId}`, {
         method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
@@ -79,8 +79,8 @@ export async function deleteTicket(id, token) {
 }
 
 
-export async function attachFileToTicket(id, attachment, token) {
-    const response = await fetch(`http://localhost:5000/tickets/${id}/attachment`, {
+export async function attachFileToTicket(ticketId, attachment, token) {
+    const response = await fetch(`http://localhost:5000/tickets/${ticketId}/attachment`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -97,16 +97,15 @@ export async function attachFileToTicket(id, attachment, token) {
 }
 
 
-export async function addCommentToTicket(uploaderId, comment, id, token) {
+export async function addCommentToTicket(uploaderId, comment, ticketId, token) {
     const commentObj = {
-        uploader: uploaderId,
+        uploader: uploaderId.curUserId,  // Extract the string ObjectId from the object
         content: comment,
-        ticket: id,
+        ticket: ticketId,
     };
-    console.log("commentObj");
-    console.log(commentObj);
 
-    const response = await fetch(`http://localhost:5000/tickets/${id}/comment`, {
+
+    const response = await fetch(`http://localhost:5000/tickets/${ticketId}/comment`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,

@@ -178,7 +178,8 @@ function CreateTicketPage() {
             if (ticketId && selectedFile) {
                 // If ticket was created successfully and a file is selected, upload the file
                 // Get the presigned URL immediately before uploading the file
-                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.filename)}&filetype=${encodeURIComponent(selectedFile.file.type)}`);                if (!presignResponse.ok) {
+                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.filename)}&filetype=${encodeURIComponent(selectedFile.file.type)}`);
+                if (!presignResponse.ok) {
                     alert("Could not upload file")
                     throw new Error('Failed to get presigned URL');
                 }
@@ -205,7 +206,8 @@ function CreateTicketPage() {
                     const attachment = {
                         filename: selectedFile.filename,
                         path: attachmentLocation,
-                        uploader: selectedFile.uploader
+                        uploader: selectedFile.uploader,
+                        ticket: ticketId
                         };
                     await attachFileToTicket(ticketId, attachment, token);
                 }
@@ -231,8 +233,6 @@ function CreateTicketPage() {
 
 
     const handleFileSelect = (e) => {
-        // setSelectedFile(e.target.files[0]);
-        // setSelectedFileName(e.target.files[0].name);
         const file = e.target.files[0];
         const attachment = {
             file,

@@ -12,13 +12,13 @@ router.route('/')
 router.route('/project/:projectId')
     .get(ticketController.getTicketsForProject);
 
-router.route('/:id')
+router.route('/:ticketId')
     .get(ticketController.getTicket)
 
-router.route('/:id/attachment')
+router.route('/:ticketId/attachment')
     .put(ticketController.updateTicketAttachment)
 
-router.route('/:id/comment')
+router.route('/:ticketId/comment')
     .put(ticketController.addComment);
 
 module.exports = router;

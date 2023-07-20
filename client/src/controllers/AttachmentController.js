@@ -19,7 +19,9 @@ export async function addAttachmentToTicket(attachment, token) {
 export async function fetchAttachmentsForTicket(ticketId, token) {
     const response = await fetch(`http://localhost:5000/attachments/ticket/${ticketId}`, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+
         }
     });
 

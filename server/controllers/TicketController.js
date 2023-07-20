@@ -51,11 +51,11 @@ const addTicket = asyncHandler(async (req, res) => {
 
 
 // @desc Get a specific ticket by id
-// @route GET /tickets/:id
+// @route GET /tickets/:ticketId
 // @access Private
 const getTicket = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const ticket = await Ticket.findById(id);
+    const {ticketId} = req.params;
+    const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
         return res.status(404).json({ message: 'Cannot find ticket' });
     }
@@ -64,10 +64,10 @@ const getTicket = asyncHandler(async (req, res) => {
 
 
 // @desc Update a specific ticket
-// @route PATCH /tickets/:id
+// @route PATCH /tickets/:ticketId
 // @access Private
 const updateProject = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const {ticketId} = req.params;
     try {
         const updatedTicket = await Ticket.findByIdAndUpdate(id, req.body, { new: true });
         res.json(updatedTicket);
@@ -79,13 +79,13 @@ const updateProject = asyncHandler(async (req, res) => {
 
 
 // @desc Delete a specific ticket
-// @route DELETE /tickets/:id
+// @route DELETE /tickets/:ticketId
 // @access Private
 //todo verify that the value of tickets assigned gets incremented
 const deleteTicket = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const {ticketId} = req.params;
     try {
-        const ticket = await Ticket.findById(id)
+        const ticket = await Ticket.findById(ticketId)
         console.log("(delete)Ticket: ", ticket)
         if (!ticket) {
             return res.status(404).json({ message: "Ticket not found" });
@@ -105,8 +105,8 @@ const deleteTicket = asyncHandler(async (req, res) => {
             }
         }
 
-        await Ticket.findByIdAndRemove(id);
-        console.log(`Deleted ticket ${id}`);
+        await Ticket.findByIdAndRemove(ticketId);
+        console.log(`Deleted ticket ${ticketId}`);
 
         res.json({ message: 'Ticket deleted' });
     } catch (error) {
@@ -117,14 +117,14 @@ const deleteTicket = asyncHandler(async (req, res) => {
 
 
 const updateTicketAttachment = asyncHandler(async (req, res) => {
-    const id = req.params.id;
+    const ticketId = req.params.ticketId;
     const { attachment } = req.body;
 
     if (!attachment) {
         return res.status(400).json({ message: 'No attachment URL provided' });
     }
 
-    const ticket = await Ticket.findById(id);
+    const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
         return res.status(404).json({ message: 'No ticket found with the provided ID' });
     }

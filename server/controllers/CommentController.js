@@ -100,7 +100,7 @@ const addReplyToComment = asyncHandler(async (req, res) => {
         throw new Error('Comment not found');
     }
 });
-
+//todo find comment addition error
 // @desc Upvote a comment
 // @route POST /comments/:id/upvote
 // @access Private

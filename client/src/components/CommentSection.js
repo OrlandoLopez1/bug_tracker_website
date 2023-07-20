@@ -5,28 +5,26 @@ import {addCommentToTicket, fetchTicket} from "../controllers/TicketController";
 import {fetchUser} from "../controllers/UserController";
 import {useNavigate, useParams} from "react-router-dom";
 import jwtDecode from "jwt-decode";
-
-function CommentSection() {
+//todo issue with cancel button
+function CommentSection(curUserId) {
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState([]);
     const [textareaFocused, setTextareaFocused] = useState(false);
     const [submitFocused, setSubmitFocused] = useState(false);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
-    const [curUserId, setCurUserId] = useState(null);
-    const { id } = useParams();
+    // const [curUserId, setCurUserId] = useState(null);
+    const { ticketId } = useParams();
 
     useEffect(() => {
         if (!token) {
             navigate('/login');
         }
-        const decodedToken = jwtDecode(token);
-        const curUserId = decodedToken.UserInfo.id;
-        setCurUserId(curUserId);
+
 
         // Fetch comments on component mount
-        fetchCommentsForTicket(id, token).then(setComments).catch(console.error);
-    }, [navigate, token, id]);
+        fetchCommentsForTicket(ticketId, token).then(setComments).catch(console.error);
+    }, [navigate, token, ticketId]);
 
 
 
@@ -39,11 +37,10 @@ function CommentSection() {
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await addCommentToTicket(curUserId, newComment, id, token);
+            const response = await addCommentToTicket(curUserId, newComment, ticketId, token);
             setNewComment(''); // clear the input
             setTextareaFocused(false); // hide buttons
 
-            // add new comment to the list of comments
             setComments(prevComments => [...prevComments, response.comment]);
         } catch (error) {
             console.error('Failed to post comment:', error);
@@ -86,7 +83,7 @@ function CommentSection() {
                     Comment
                 </button>            </form>
             {comments && comments.length > 0 ? (
-                comments.map(comment => <Comment comment={comment} key={comment.id} />)
+                comments.map(comment => <Comment comment={comment} key={comment.id} curUserId={curUserId} token={token} />)
             ) : (
                 <p>No comments</p>
             )}
@@ -96,7 +93,7 @@ function CommentSection() {
 
 
 
-function Comment({ comment }) {
+function Comment({ comment, curUserId, token }) {
     return (
         <div className="comment">
             <div className="author-thumbnail">
@@ -113,8 +110,8 @@ function Comment({ comment }) {
                     <p>{comment.content}</p>
                 </div>
                 <div className="comment-actions">
-                    <button onClick={() => upvoteComment(comment._id)}>Upvote ({comment.upvotes.length})</button>
-                    <button onClick={() => replyToComment(comment._id)}>Reply</button>
+                    <button onClick={() => upvoteComment(comment._id, curUserId, token)}>Upvote ({comment.upvotes.length})</button>
+                    <button onClick={() => replyToComment(comment._id, curUserId, token)}>Reply</button>
                 </div>
             </div>
             <div className="replies">
