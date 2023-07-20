@@ -88,6 +88,7 @@ function TicketView() {
 
     const handleFileUpload = async () => {
         setIsLoading(true);
+        let uploadSuccessful = false;
 
         try {
             if (selectedFile) {
@@ -101,7 +102,7 @@ function TicketView() {
 
                 const response = await fetch(presignedUrl, {
                     method: 'PUT',
-                    body: selectedFile.file, // selectedFile.file is the file
+                    body: selectedFile.file,
                     headers: {
                         'Content-Type': selectedFile.file.type
                     }
@@ -121,16 +122,24 @@ function TicketView() {
                         ticket: ticketId
                     };
                     const addedAttachment = await attachFileToTicket(ticketId, attachment, token);
-                    setAttachments([...attachments, addedAttachment.attachment]);
-                    setSelectedFile(null);
-                    setSelectedFileName('No file selected');
+
+                    // If the upload is successful, fetch the updated list of attachments
+                    const attachmentData = await fetchAttachmentsForTicket(ticketId, token);
+                    console.log("Fetched attachments:", attachmentData);
+                    setAttachments(attachmentData);
+
+                    uploadSuccessful = true;
                 }
             }
         } catch (error) {
             console.error('Failed to upload file:', error);
+        } finally {
+            setSelectedFile(null);
+            setSelectedFileName('No file selected');
+            setIsLoading(false);
         }
 
-        setIsLoading(false);
+        return uploadSuccessful;
     };
 
 

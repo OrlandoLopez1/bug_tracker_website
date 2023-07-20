@@ -1,10 +1,9 @@
 import './AttachmentSection.css'
 import AddAttachment from './AddAttachment';
-
+//todo on submit reset file selection
 function AttachmentSection({ curUserId, attachments, selectedFile, setSelectedFile, selectedFileName, setSelectedFileName, handleFileUpload, isLoading }) {
     return (
         <div className="attachments">
-            <h2>Attachments</h2>
             {console.log("attachemts")}
             {console.log(attachments)}
             {attachments && attachments.length > 0 ? (

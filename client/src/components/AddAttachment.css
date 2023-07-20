@@ -18,3 +18,8 @@
 .ticket-page-content .form-text {
     margin-top: 10px;
 }
+
+.add-attachment-button {
+    margin-top: 10px;
+    float: right;
+}
