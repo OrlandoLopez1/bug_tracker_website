@@ -46,6 +46,7 @@ function TicketView() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [attachments, setAttachments] = useState([]);
     const [curUserId, setCurUserId] = useState(null);
+    const [curUser, setCurUser] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFileName, setSelectedFileName] = useState('No file selected');
     const [isLoading, setIsLoading] = useState(false);
@@ -77,6 +78,8 @@ function TicketView() {
                 const decodedToken = jwtDecode(token);
                 const curUserId = decodedToken.UserInfo.id;
                 setCurUserId(curUserId);
+                const fetchedUser = await fetchUser(curUserId, token)
+                setCurUser(fetchedUser);
                 setLoading(false);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -125,7 +128,6 @@ function TicketView() {
 
                     // If the upload is successful, fetch the updated list of attachments
                     const attachmentData = await fetchAttachmentsForTicket(ticketId, token);
-                    console.log("Fetched attachments:", attachmentData);
                     setAttachments(attachmentData);
 
                     uploadSuccessful = true;
@@ -263,7 +265,7 @@ function TicketView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <CommentSection curUserId={curUserId}></CommentSection>
+                                    <CommentSection curUserObject={curUser}></CommentSection>
                                 </div>
                             </div>
                         </div>

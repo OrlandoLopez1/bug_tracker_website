@@ -6,7 +6,7 @@ import {fetchUser} from "../controllers/UserController";
 import {useNavigate, useParams} from "react-router-dom";
 import jwtDecode from "jwt-decode";
 //todo issue with cancel button
-function CommentSection(curUserId) {
+function CommentSection(curUserObject) {
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState([]);
     const [textareaFocused, setTextareaFocused] = useState(false);
@@ -37,11 +37,13 @@ function CommentSection(curUserId) {
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await addCommentToTicket(curUserId, newComment, ticketId, token);
+            console.log(curUserObject.curUserObject._id)
+            const response = await addCommentToTicket(curUserObject.curUserObject._id, newComment, ticketId, token);
             setNewComment(''); // clear the input
             setTextareaFocused(false); // hide buttons
-
             setComments(prevComments => [...prevComments, response.comment]);
+            console.log("response.comment");
+            console.log(response.comment);
         } catch (error) {
             console.error('Failed to post comment:', error);
         }
@@ -83,7 +85,7 @@ function CommentSection(curUserId) {
                     Comment
                 </button>            </form>
             {comments && comments.length > 0 ? (
-                comments.map(comment => <Comment comment={comment} key={comment.id} curUserId={curUserId} token={token} />)
+                comments.map(comment => <Comment comment={comment} key={comment.id} curUserObject={curUserObject} token={token} />)
             ) : (
                 <p>No comments</p>
             )}
@@ -93,16 +95,17 @@ function CommentSection(curUserId) {
 
 
 
-function Comment({ comment, curUserId, token }) {
+function Comment({ comment, curUserObject, token }) {
     return (
         <div className="comment">
             <div className="author-thumbnail">
-                <img src={"/defaultpfp.jpg"} alt={comment.uploader.username} />
+                <img src={"/defaultpfp.jpg"} alt={curUserObject.curUserObject.username} />
             </div>
             <div className="comment-main">
                 <div className="comment-header">
                     <h3>
-                        <a href={`/channel/${comment.uploader._id}`}>{comment.uploader.username}</a>
+                        {/*{console.log("uploader: ", comment.uploader)}*/}
+                        <a href={`/channel/${curUserObject.curUserObject._id}`}>{curUserObject.curUserObject.username}</a>
                     </h3>
                     <span>{comment.postedAt}</span>
                 </div>
@@ -110,8 +113,8 @@ function Comment({ comment, curUserId, token }) {
                     <p>{comment.content}</p>
                 </div>
                 <div className="comment-actions">
-                    <button onClick={() => upvoteComment(comment._id, curUserId, token)}>Upvote ({comment.upvotes.length})</button>
-                    <button onClick={() => replyToComment(comment._id, curUserId, token)}>Reply</button>
+                    <button onClick={() => upvoteComment(comment._id, curUserObject.curUserObject._id, token)}>Upvote ({comment.upvotes.length})</button>
+                    <button onClick={() => replyToComment(comment._id, curUserObject.curUserObject._id, token)}>Reply</button>
                 </div>
             </div>
             <div className="replies">
