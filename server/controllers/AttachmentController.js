@@ -1,22 +1,8 @@
+const AWS = require('aws-sdk');
 const Attachment = require('../models/Attachment');
 const asyncHandler = require('express-async-handler');
+const s3 = new AWS.S3({/*...Your configuration here...*/})
 
-// @desc Add an attachment to a ticket
-// @route POST /attachments
-// @access Private
-const addAttachment = asyncHandler(async (req, res) => {
-    const { filename, path, uploader, ticket } = req.body;
-    const attachment = new Attachment({
-        filename,
-        path,
-        uploader,
-        ticket,
-    });
-
-    const savedAttachment = await attachment.save();
-
-    res.status(201).json({ message: 'Attachment added', attachment: savedAttachment });
-});
 
 // @desc Get attachments for a specific ticket
 // @route GET /attachments/ticket/:ticketId
@@ -29,7 +15,80 @@ const getAttachmentsForTicket = asyncHandler(async (req, res) => {
     res.json(attachments);
 });
 
+
+// @desc Get a presigned URL for uploading an attachment to S3
+// @route GET /attachments/presign
+// @access Private
+const getPresignedUrlPut = asyncHandler(async (req, res) => {
+    const key = req.query.filename;
+    const fileType = req.query.filetype;
+
+    const params = {
+        Bucket: 'bugtracker-file-uploads',
+        Key: key,
+        Expires: 60,
+        ContentType: fileType,
+        ACL: 'private'
+    };
+
+    s3.getSignedUrl('putObject', params, function(err, url) {
+        if(err){
+            console.log(err);
+            res.status(500).json({error: "Failed to generate presigned URL"});
+        } else {
+            res.status(200).json({url: url});
+        }
+    });
+});
+
+// @desc Get a presigned URL for reading an attachment from S3
+// @route GET /attachments/presign-get
+// @access Private
+const getPresignedUrlGet = asyncHandler(async (req, res) => {
+    console.log('getPresignedUrlGet route hit');  // Debugging log statement
+    const key = req.query.filename;
+
+    const params = {
+        Bucket: 'bugtracker-file-uploads',
+        Key: key,
+        Expires: 60,
+    };
+
+    s3.getSignedUrl('getObject', params, function(err, url) {
+        if(err){
+            console.log(err);
+            res.status(500).json({error: "Failed to generate presigned URL"});
+        } else {
+            res.status(200).json({url: url});
+        }
+    });
+});
+
+// @desc Get a presigned URL for deleting an attachment from S3
+// @route GET /attachments/presign-delete
+// @access Private
+const getPresignedUrlDelete = asyncHandler(async (req, res) => {
+    const key = req.query.filename;
+
+    const params = {
+        Bucket: 'bugtracker-file-uploads',
+        Key: key,
+        Expires: 60,
+    };
+
+    s3.getSignedUrl('deleteObject', params, function(err, url) {
+        if(err){
+            console.log(err);
+            res.status(500).json({error: "Failed to generate presigned URL"});
+        } else {
+            res.status(200).json({url: url});
+        }
+    });
+});
+
 module.exports = {
-    addAttachment,
-    getAttachmentsForTicket
+    getAttachmentsForTicket,
+    getPresignedUrlPut,
+    getPresignedUrlGet,
+    getPresignedUrlDelete
 };

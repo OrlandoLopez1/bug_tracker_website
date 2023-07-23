@@ -67,6 +67,7 @@ function CommentSection(curUserObject) {
                     onClick={() => {
                         setTextareaFocused(false);
                         setNewComment('');
+                        setSubmitFocused(false);
                     }}
                     onFocus={() => setSubmitFocused(true)}
                     onBlur={() => setTimeout(() => setSubmitFocused(false), 0)}

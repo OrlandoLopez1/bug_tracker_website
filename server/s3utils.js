@@ -54,4 +54,4 @@ async function testS3Connection() {
 }
 
 testS3Connection();
-module.exports = { uploadFile, getFile, deleteFile };
+module.exports = { uploadFile, getFile, deleteFile, s3 };

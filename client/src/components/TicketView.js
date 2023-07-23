@@ -4,6 +4,7 @@ import './TicketView.css'
 import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
 import React, {useEffect, useState} from "react";
+import {fetchAttachmentsForTicket, addAttachmentToTicket, getPresignedUrl} from "../controllers/AttachmentController";
 import TicketTable from "./TicketTable";
 import {
     attachFileToTicket,
@@ -18,7 +19,6 @@ import CommentSection from "./CommentSection";
 import {fetchCommentsForTicket} from "../controllers/CommentController";
 import AttachmentSection from "./AttachmentSection";
 import jwtDecode from "jwt-decode";
-import {fetchAttachmentsForTicket, addAttachmentToTicket} from "../controllers/AttachmentController";
 Modal.setAppElement('#root');
 
 
@@ -95,12 +95,8 @@ function TicketView() {
 
         try {
             if (selectedFile) {
-                // Get the presigned URL immediately before uploading the file
-                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.filename)}&filetype=${encodeURIComponent(selectedFile.file.type)}`);
-                if (!presignResponse.ok) {
-                    throw new Error('Failed to get presigned URL');
-                }
-                const presignData = await presignResponse.json();
+                // Get the presigned URL from the server immediately before uploading the file
+                const presignData = await getPresignedUrl(selectedFile.filename, selectedFile.file.type, token);
                 const presignedUrl = presignData.url;
 
                 const response = await fetch(presignedUrl, {
@@ -124,7 +120,7 @@ function TicketView() {
                         uploader: curUserId,
                         ticket: ticketId
                     };
-                    const addedAttachment = await attachFileToTicket(ticketId, attachment, token);
+                    await attachFileToTicket(ticketId, attachment, token);
 
                     // If the upload is successful, fetch the updated list of attachments
                     const attachmentData = await fetchAttachmentsForTicket(ticketId, token);
@@ -152,6 +148,7 @@ function TicketView() {
             filename: file.name,
             uploader:  curUserId
         };
+        console.log(`fileselect: ${attachment}`)
         setSelectedFile(attachment);
         setSelectedFileName(file.name);
     };
@@ -186,6 +183,7 @@ function TicketView() {
             console.error('Failed to update ticket:', error);
         }
     };
+
 
     if (loading) {
         return <p>Loading...</p>
@@ -253,6 +251,7 @@ function TicketView() {
                                         setSelectedFileName={setSelectedFileName}
                                         handleFileUpload={handleFileUpload}
                                         isLoading={isLoading}
+                                        token={token}
                                     />                                </div>
                             </div>
                             <div className="common-parent2">
