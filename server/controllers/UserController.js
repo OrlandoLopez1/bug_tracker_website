@@ -2,6 +2,20 @@ const User = require('../models/User')
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
+
+// @desc Get a specific user by id
+// @route GET /users/:id
+// @access Private
+const getUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+        return res.status(404).json({ message: 'Cannot find user' });
+    }
+    res.json(user);
+});
+
+
 // @desc Get all users
 // @route GET /users
 // @access Private
@@ -116,6 +130,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
+    getUser,
     getAllUsers,
     createNewUser,
     updateUser,

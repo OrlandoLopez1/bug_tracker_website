@@ -60,6 +60,7 @@ const login = asyncHandler(async (req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
+                "id": foundUser._id,
                 "email": foundUser.email,
                 "username": foundUser.username,
                 "role": foundUser.role
@@ -107,7 +108,7 @@ const refresh = (req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         asyncHandler(async (err, decoded) => {
             if (err) {
-                return res.status(403).json({ message: 'Forbidden' })
+                return res.status(403).json({ message: 'Forbidden, Refresh token issue' })
             }
 
 

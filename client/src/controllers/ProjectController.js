@@ -1,3 +1,19 @@
+export async function fetchProject(id, token) {
+    const response = await fetch(`http://localhost:5000/projects/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function fetchProjects(token) {
     const response = await fetch("http://localhost:5000/projects", {
         method: "GET",
@@ -35,7 +51,7 @@ export async function addProject(project, token) {
 
 export async function updateProject(project, token) {
     const response = await fetch(`http://localhost:5000/projects/${project._id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
@@ -65,4 +81,55 @@ export async function deleteProject(projectId, token) {
 
     return await response.json();
 }
+
+export async function fetchUsersForProject(projectId, token) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/users`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+
+export async function fetchTicketsForProject(projectId, token) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/tickets   `, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+
+export async function addTicketToProject(projectId, ticketId, token) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/tickets/${ticketId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 

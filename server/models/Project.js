@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const ProjectSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -8,7 +7,6 @@ const ProjectSchema = new mongoose.Schema({
     },
     projectDescription: {
         type: String,
-        required: true
     },
     projectManager: {
         type: String
@@ -16,6 +14,13 @@ const ProjectSchema = new mongoose.Schema({
     startDate: {
         type: Date,
         default: Date.now
+    },
+    endDate: {
+        type: Date,
+        default: null
+    },
+    deadline: {
+        type: Date,
     },
     priority: {
         type: String,
@@ -27,7 +32,18 @@ const ProjectSchema = new mongoose.Schema({
         enum: ['Planning', 'In progress', 'Testing', 'Stalled', 'Completed'],
         default: 'Planning'
     },
-
+    users: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    tickets: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Ticket'
+        }
+    ]
 });
 
 module.exports = mongoose.model('Project', ProjectSchema);

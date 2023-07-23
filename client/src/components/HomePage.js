@@ -18,10 +18,6 @@ function HomePage() {
             <CustomNavbar username={username} />
 
             <SideMenu />
-            <div>
-                <h1>Welcome to the Bug Tracker</h1>
-                {/* More content... */}
-            </div>
         </div>
     );
 }

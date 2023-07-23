@@ -16,7 +16,8 @@ function TicketPage() {
             try {
                 const ticketsData =  await fetchTickets(token);
                 setTickets(ticketsData);
-            } catch (error) {
+            }
+            catch (error) {
                 console.error('Failed to fetch tickets:', error);
             }
         };

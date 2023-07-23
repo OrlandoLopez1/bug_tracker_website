@@ -1,11 +1,60 @@
-.accordion-container {
-    width: 90%;
+.add-button {
+    margin-left: 4%;
+    margin-Top: 3%;
+    background: #73c2fb;
+    border: none;
+    max-width: 70px;
+    min-width: 70px;
+}
+
+.add-button:hover {
+    margin-left: 4%;
+    margin-Top: 3%;
+    background: #73c2fb;
+    border: none;
+    max-width: 70px;
+    min-width: 70px;
 
 }
+
+
+.accordion-container {
+    flex: 1;
+    background: white;
+    padding: 2vh 1vw 2vh 1vw;
+    /*margin: 3vh 2vw 5vh 2vw ;*/
+    margin-top: 3vh;
+    margin-bottom: 5vh;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    z-index: 0;
+    overflow: auto;
+    min-width: 79vw;
+    max-width: 79vw;
+    min-height: 75vh;
+}
+
+.accordion-content {
+    display: inline;
+    justify-content: space-between;
+    align-items: start;
+}
+
 
 .accordion-item {
-    margin-bottom: 10px;
+    /*background-color: red;*/
+    /*flex-wrap: wrap;*/
+    overflow: auto;
 }
+
+.accordion-buttons {
+    display: flex;
+    gap: 10px; /* adjust as needed */
+    justify-content: right;
+}
+
 
 .content-container {
     display: flex;
@@ -18,10 +67,95 @@
     flex: 1;
 }
 
+
 .SideMenu {
     flex: 0 0 200px;
 }
 
-.accordion-container {
-    flex: 1;
+.custom-modal {
+    /* remove the transform property */
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 20%;
+    background: #eaeef3;
+    border-radius: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    z-index: 1000;
+    max-height: 90vh;
+    min-height: 90vh;
+    overflow-y: auto;
+
+}
+
+.ReactModal__Overlay {
+    z-index: 1000;
+}
+
+.modal-content {
+    padding: 20px; /* adjust this value as needed */
+}
+
+
+.outside-container {
+    display: flex;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    background: #eaeef3;
+    width: 100%;
+    height: 100vh; /* Add this if you also want vertical centering */
+
+}
+
+/*}.outside-container {*/
+/*    display: block;*/
+/*    background: #eaeef3;*/
+/*    width: 100%;*/
+/*}*/
+
+.top-item {
+    padding-top: 8vh;
+}
+.overlapping-title-project-page {
+    background-color: #000072;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    width: 70%;
+    margin-top: 1vh;
+    margin-bottom: -9.5vh;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+    position: relative;
+}
+
+
+.title-text {
+    font-size: 18px;
+    color: white;
+    font-weight: bold;
+}
+.title-desc-text {
+    font-size: 12px;
+    color: white;
+    padding-left: 5px;
+}
+
+.project-description-class {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.root {
+    position: relative;
 }
