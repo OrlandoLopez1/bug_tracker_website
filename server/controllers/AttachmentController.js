@@ -45,7 +45,6 @@ const getPresignedUrlPut = asyncHandler(async (req, res) => {
 // @route GET /attachments/presign-get
 // @access Private
 const getPresignedUrlGet = asyncHandler(async (req, res) => {
-    console.log('getPresignedUrlGet route hit');  // Debugging log statement
     const key = req.query.filename;
 
     const params = {

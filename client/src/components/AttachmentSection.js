@@ -1,7 +1,7 @@
 import './AttachmentSection.css';
 import AddAttachment from './AddAttachment';
 import { fetchPresignedUrl } from '../controllers/AttachmentController';
-
+//todo pagination, delete functionality
 function AttachmentSection({ curUserId, attachments, selectedFile, setSelectedFile, selectedFileName, setSelectedFileName, handleFileUpload, isLoading, token }) {
 
     const handleImageClick = async (event, filename) => {
