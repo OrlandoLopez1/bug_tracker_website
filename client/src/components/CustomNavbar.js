@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Navbar, Dropdown} from 'react-bootstrap';
-import {logoutUser, getUserInfo} from "../controllers/AuthController";
+import {Nav, Navbar, Dropdown} from 'react-bootstrap';
 import "./CustomNavbar.css";
 import jwtDecode from "jwt-decode";
-
+import {loginUser, logoutUser} from "../controllers/AuthController";
 import { useNavigate } from 'react-router-dom';
 
 function CustomNavbar() {
@@ -13,16 +12,12 @@ function CustomNavbar() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function fetchUserInfo() {
-            try {
-                const userInfo = await getUserInfo();
-                setUserName(userInfo.username);
-            } catch (error) {
-                console.error("Failed to fetch user info:", error);
-            }
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            const username = decodedToken.UserInfo.username;
+            setUserName(username);
         }
-        fetchUserInfo();
-    }, []);
+    }, [token]);
 
 
     const handleLogout = async (e) => {
@@ -63,6 +58,8 @@ function CustomNavbar() {
             </Navbar.Collapse>
         </Navbar>
     );
+
+
 }
 
 export default CustomNavbar;

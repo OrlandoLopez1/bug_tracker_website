@@ -5,6 +5,9 @@ const verifyJWT = require('../middleware/verifyJWT');
 
 router.use(verifyJWT);
 
+router.route('/:id')
+    .delete(attachmentController.deleteAttachment);
+
 router.route('/ticket/:ticketId')
     .get(attachmentController.getAttachmentsForTicket);
 

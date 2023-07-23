@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const Attachment = require('../models/Attachment');
+const Ticket = require('../models/Ticket');
 const asyncHandler = require('express-async-handler');
 const s3 = new AWS.S3({/*...Your configuration here...*/})
 
@@ -85,9 +86,51 @@ const getPresignedUrlDelete = asyncHandler(async (req, res) => {
     });
 });
 
+
+// @desc Delete an attachment from S3 and database
+// @route DELETE /attachments/:id
+// @access Private
+const deleteAttachment = asyncHandler(async (req, res) => {
+    const attachmentId = req.params.id;
+    const attachment = await Attachment.findById(attachmentId);
+
+    if (!attachment) {
+        res.status(404);
+        throw new Error('Attachment not found');
+    }
+
+    // Delete the file from the S3 bucket
+    const params = {
+        Bucket: 'bugtracker-file-uploads',
+        Key: attachment.filename,
+    };
+
+    s3.deleteObject(params, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+            res.status(500).json({error: "Failed to delete attachment from S3"});
+        } else {
+            console.log(data);
+        }
+    });
+
+    // Delete the attachment from the database
+    // console.log()
+    // Find the related ticket and remove the attachment reference from it
+    await Ticket.updateOne(
+        { _id: attachment.ticket },
+        { $pull: { attachments: attachmentId } }
+    );
+    await Attachment.findByIdAndDelete(attachmentId);
+
+    res.status(200).json({ message: 'Attachment deleted successfully' });
+});
+
+
 module.exports = {
     getAttachmentsForTicket,
     getPresignedUrlPut,
     getPresignedUrlGet,
-    getPresignedUrlDelete
+    getPresignedUrlDelete,
+    deleteAttachment
 };

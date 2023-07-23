@@ -54,3 +54,19 @@ export const fetchPresignedUrl = async (filename, token) => {
     return presignData.url  ;
 };
 
+
+export async function deleteAttachment(attachmentId, token) {
+    const response = await fetch(`http://localhost:5000/attachments/${attachmentId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+

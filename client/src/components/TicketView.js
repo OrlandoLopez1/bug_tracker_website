@@ -50,6 +50,7 @@ function TicketView() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFileName, setSelectedFileName] = useState('No file selected');
     const [isLoading, setIsLoading] = useState(false);
+    const [isEditingAttachments, setIsEditingAttachments] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -87,6 +88,11 @@ function TicketView() {
         };
         fetchData();
     }, [navigate, token]);
+
+    useEffect(() => {
+        // This will cause a re-render when 'isEditingAttachments' changes
+        console.log("button clicked")
+    }, [isEditingAttachments]);
 
 
     const handleFileUpload = async () => {
@@ -238,13 +244,16 @@ function TicketView() {
                                         {"Attachments"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | Edit
+                                        Add | <button className="edit-button" onClick={() => setIsEditingAttachments(!isEditingAttachments)}>Edit</button>
                                     </div>
+
                                 </div>
                                 <div className="content">
                                     <AttachmentSection
                                         curUserId={curUserId}
                                         attachments={attachments}
+                                        setAttachments={setAttachments}
+                                        ticketId={ticketId}
                                         selectedFile={selectedFile}
                                         setSelectedFile={setSelectedFile}
                                         selectedFileName={selectedFileName}
@@ -252,7 +261,11 @@ function TicketView() {
                                         handleFileUpload={handleFileUpload}
                                         isLoading={isLoading}
                                         token={token}
-                                    />                                </div>
+                                        isEditingAttachments={isEditingAttachments}
+                                        setIsEditingAttachments={setIsEditingAttachments}
+                                    />
+
+                                </div>
                             </div>
                             <div className="common-parent2">
                                 <div className="overlapping-title-view">

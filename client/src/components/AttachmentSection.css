@@ -19,3 +19,27 @@
     color: #0056b3;
     text-decoration: underline;
 }
+
+.attachment-and-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.attachment-and-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.attachment-and-checkbox input[type="checkbox"],
+.attachment-and-checkbox a {
+    margin: 0;
+    padding: 0 0 0 5px;
+}
+
+.delete-attachment-buttons{
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+    margin-top: 10px
+}
+
