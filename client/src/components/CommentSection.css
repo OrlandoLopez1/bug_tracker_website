@@ -120,3 +120,27 @@
 .show-button {
     display: inline;
 }
+
+.comment-and-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.comment-and-checkbox input[type="checkbox"],
+.comment-and-checkbox a {
+    margin: 0;
+    padding: 0 0 0 5px;
+}
+
+.delete-comment-buttons{
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+    margin-top: 10px
+}
+
+.big-checkbox {
+    transform: scale(1.5);
+    background-color: red;
+    margin-right: 100px;
+}

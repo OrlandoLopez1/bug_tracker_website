@@ -25,11 +25,6 @@
     align-items: center;
 }
 
-.attachment-and-checkbox {
-    display: flex;
-    align-items: center;
-}
-
 .attachment-and-checkbox input[type="checkbox"],
 .attachment-and-checkbox a {
     margin: 0;

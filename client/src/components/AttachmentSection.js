@@ -29,11 +29,11 @@ function AttachmentSection({ curUserId, attachments, setAttachments, ticketId, s
             }
         } else {
             // Not in edit mode, clicking an attachment attempts to display it
-            await handleImageClick(attachment.filename);
+            await handleFileClick(attachment.filename);
         }
     };
 
-    const handleImageClick = async (filename) => {
+    const handleFileClick = async (filename) => {
         try {
             const url = await fetchPresignedUrl(filename, token);
             // Open the image in a new browser tab
@@ -63,6 +63,7 @@ function AttachmentSection({ curUserId, attachments, setAttachments, ticketId, s
 
 
     const handleCheckboxClick = (event, attachment) => {
+        //prevents download from happening on checkbox click
         event.stopPropagation();
         if (selectedAttachments.includes(attachment._id)) {
             setSelectedAttachments(selectedAttachments.filter(id => id !== attachment._id));

@@ -51,6 +51,8 @@ function TicketView() {
     const [selectedFileName, setSelectedFileName] = useState('No file selected');
     const [isLoading, setIsLoading] = useState(false);
     const [isEditingAttachments, setIsEditingAttachments] = useState(false);
+    const [isEditingComments, setIsEditingComments] = useState(false);
+
 
     useEffect(() => {
         if (!token) {
@@ -92,7 +94,7 @@ function TicketView() {
     useEffect(() => {
         // This will cause a re-render when 'isEditingAttachments' changes
         console.log("button clicked")
-    }, [isEditingAttachments]);
+    }, [isEditingAttachments, isEditingComments]);
 
 
     const handleFileUpload = async () => {
@@ -273,11 +275,14 @@ function TicketView() {
                                         {"Comments"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | Edit
+                                        Add | <button className="edit-button" onClick={() => setIsEditingComments(!isEditingComments)}>Edit</button>
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <CommentSection curUserObject={curUser}></CommentSection>
+                                    <CommentSection
+                                        curUserObject={curUser}
+                                        isEditingComments={isEditingComments}
+                                    ></CommentSection>
                                 </div>
                             </div>
                         </div>

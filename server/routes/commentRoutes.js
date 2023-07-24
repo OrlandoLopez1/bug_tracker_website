@@ -8,7 +8,7 @@ router.use(verifyJWT);
 router.route('/')
     .post(commentController.addComment);
 
-router.route('/:id')
+router.route('/:commentId')
     .get(commentController.getComment)
     .put(commentController.updateComment)
     .delete(commentController.deleteComment);
@@ -16,10 +16,10 @@ router.route('/:id')
 router.route('/ticket/:ticketId')
     .get(commentController.getCommentsForTicket);
 
-router.route('/:id/reply')
+router.route('/:commentId/reply')
     .post(commentController.addReplyToComment);
 
-router.route('/:id/upvote')
+router.route('/:commentId/upvote')
     .post(commentController.upvoteComment);
 
 module.exports = router;

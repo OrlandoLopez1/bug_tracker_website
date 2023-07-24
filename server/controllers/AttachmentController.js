@@ -115,7 +115,6 @@ const deleteAttachment = asyncHandler(async (req, res) => {
     });
 
     // Delete the attachment from the database
-    // console.log()
     // Find the related ticket and remove the attachment reference from it
     await Ticket.updateOne(
         { _id: attachment.ticket },

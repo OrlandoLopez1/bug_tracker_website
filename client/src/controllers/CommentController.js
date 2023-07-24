@@ -1,5 +1,5 @@
-export async function fetchComment(id, token) {
-    const response = await fetch(`http://localhost:5000/comments/${id}`, {
+export async function fetchComment(commentId, token) {
+    const response = await fetch(`http://localhost:5000/comments/${commentId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -50,8 +50,8 @@ export async function fetchCommentsForTicket(ticketId, token) {
 }
 
 
-export async function updateComment(id, content, token) {
-    const response = await fetch(`http://localhost:5000/comments/${id}`, {
+export async function updateComment(commentId, content, token) {
+    const response = await fetch(`http://localhost:5000/comments/${commentId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -67,8 +67,8 @@ export async function updateComment(id, content, token) {
     return await response.json();
 }
 
-export async function deleteComment(id, token) {
-    const response = await fetch(`http://localhost:5000/comments/${id}`, {
+export async function deleteComment(commentId, token) {
+    const response = await fetch(`http://localhost:5000/comments/${commentId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -82,8 +82,8 @@ export async function deleteComment(id, token) {
     return await response.json();
 }
 
-export async function replyToComment(id, reply, token) {
-    const response = await fetch(`http://localhost:5000/comments/${id}/reply`, {
+export async function replyToComment(commentId, reply, token) {
+    const response = await fetch(`http://localhost:5000/comments/${commentId}/reply`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -99,8 +99,8 @@ export async function replyToComment(id, reply, token) {
     return await response.json();
 }
 
-export async function upvoteComment(id, user, token) {
-    const response = await fetch(`http://localhost:5000/comments/${id}/upvote`, {
+export async function upvoteComment(commentId, user, token) {
+    const response = await fetch(`http://localhost:5000/comments/${commentId}/upvote`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
