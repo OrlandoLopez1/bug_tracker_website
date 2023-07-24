@@ -1,12 +1,17 @@
-.main-content {
+.main-content-tv {
     display: flex;
     width: 100vw;
+    background: red;
+    margin-top: 60px;
 }
 
-.outside-container {
+.outside-container-tv {
     display: flex;
     flex-direction: column;
     padding-top: 5vh;
+    background: #eaeef3;
+
+    /*height: 100vh; !* Add this if you also want vertical centering *!*/
 }
 
 .ticket-details-top-container {
@@ -54,13 +59,15 @@
     padding-left: 5px;
 }
 
-.horizontal-container {
+.horizontal-container-tv {
     display: flex;
     margin-top: 5vh;
+    /*flex-wrap: nowrap;*/
+    /*overflow-y: auto;*/
 }
 
 
-.common-parent1 {
+.common-parent1-tv {
     box-sizing: border-box;
     display: block;
     min-height: 60vh;
@@ -69,7 +76,7 @@
     margin-left: 2vw;
     margin-right: 1vw;
 }
-.common-parent2 {
+.common-parent2-tv {
     box-sizing: border-box;
     display: block;
     width: 47vw;
@@ -77,6 +84,7 @@
     max-height: 60vh;
     margin-right: 2vw;
     margin-left: 1vw;
+    overflow: auto;
 }
 
 .overlapping-title-view {
@@ -94,10 +102,33 @@
 }
 
 
-.content {
+.content1-tv {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    overflow: auto;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-left: 3vh;
+    padding-right: 3vh;
+    min-height: 40vh;
+
+    /*padding-top: 10vh;*/
+
+
+}
+
+.content2-tv {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    overflow: auto;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-left: 3vh;
+    padding-right: 3vh;
+    min-height: 40vh;
+
     /*padding-top: 10vh;*/
 
 

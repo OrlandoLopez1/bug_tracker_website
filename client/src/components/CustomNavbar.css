@@ -1,7 +1,14 @@
 .custom-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* high value to ensure navbar is on top of other elements */
     padding: 0 1.5rem !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+    height: 60px;
 }
+
 
 .profile-pic {
     height: 32px;

@@ -199,9 +199,9 @@ function TicketView() {
         return (
             <div>
                 <CustomNavbar/>
-                <div className="main-content">
+                <div className="main-content-tv">
                     <SideMenu/>
-                    <div className="outside-container">
+                    <div className="outside-container-tv">
                         <div className="overlapping-title-view">
                             <div className="title-text">
                                 {ticket.title}
@@ -239,8 +239,8 @@ function TicketView() {
                                     </div>
                                 </div>
                             </div>
-                        <div className="horizontal-container">
-                            <div className="common-parent1">
+                        <div className="horizontal-container-tv">
+                            <div className="common-parent1-tv">
                                 <div className="overlapping-title-view">
                                     <div className="title-text">
                                         {"Attachments"}
@@ -250,7 +250,7 @@ function TicketView() {
                                     </div>
 
                                 </div>
-                                <div className="content">
+                                <div className="content1-tv">
                                     <AttachmentSection
                                         curUserId={curUserId}
                                         attachments={attachments}
@@ -269,7 +269,7 @@ function TicketView() {
 
                                 </div>
                             </div>
-                            <div className="common-parent2">
+                            <div className="common-parent2-tv">
                                 <div className="overlapping-title-view">
                                     <div className="title-text">
                                         {"Comments"}
@@ -278,7 +278,7 @@ function TicketView() {
                                         Add | <button className="edit-button" onClick={() => setIsEditingComments(!isEditingComments)}>Edit</button>
                                     </div>
                                 </div>
-                                <div className="content">
+                                <div className="content2-tv">
                                     <CommentSection
                                         curUserObject={curUser}
                                         isEditingComments={isEditingComments}
