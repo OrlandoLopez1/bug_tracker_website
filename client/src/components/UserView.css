@@ -13,14 +13,18 @@
 
 }
 
-.user-details-top-container {
+.user-details-container {
+    display: block;
+    border: green solid;
     background: white;
     padding: 3vh;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
-    height: 30vh;
+    height: 80vh;
     width: 81vw;
     margin-left: 2vw;
+    overflow: auto;
+
 }
 
 
@@ -34,6 +38,30 @@
 
 
 }
+.user-profile-picture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+
+
+.user-name-role {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-name-role h2{
+    margin: 0;
+}
+
+/*.user-profile-picture-container > div {*/
+/*    !* Your styles here *!*/
+/*    margin-left: auto;*/
+/*    margin-right: auto;*/
+/*}*/
 
 .user-details-left {
     flex: 1;

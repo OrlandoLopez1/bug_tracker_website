@@ -126,10 +126,36 @@ const deleteUser = asyncHandler(async (req, res) => {
     res.json(reply)
 })
 
+// @desc Get user projects
+// @route GET /users/:id/projects
+// @access Private
+const getUserProjects = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const user = await User.findById(userId).populate('projects');
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user.projects);
+});
+
+// @desc Get user tickets
+// @route GET /users/:id/tickets
+// @access Private
+const getUserTickets = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const user = await User.findById(userId).populate('tickets');
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user.tickets);
+});
+
 module.exports = {
     getUser,
     getAllUsers,
     createNewUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserProjects,
+    getUserTickets
 }

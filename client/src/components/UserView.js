@@ -5,16 +5,18 @@ import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
 import React, {useEffect, useState} from "react";
 import jwtDecode from "jwt-decode";
-import {fetchUser} from "../controllers/UserController";
+import {fetchUser, fetchUserProjects} from "../controllers/UserController";
 Modal.setAppElement('#root');
 
 
 function UserView() {
     const {userId} = useParams();
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState(null);
+    const [projects, setProjects] = useState([]);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -22,19 +24,18 @@ function UserView() {
 
         const fetchData = async () => {
             try {
-                console.log("reached")
-                console.log("userId: ", userId)
                 const userData = await fetchUser(userId, token);
+                const userProjects = await fetchUserProjects(userId, token);
                 setUser(userData);
-                console.log("UD: ", userData);
-                const decodedToken = jwtDecode(token);
+                setProjects(userProjects);
                 setLoading(false);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             }
         };
+
         fetchData();
-    }, [navigate, token]);
+    }, [navigate, token, userId]);
 
     if (loading) {
         return <p>Loading...</p>
@@ -45,16 +46,18 @@ function UserView() {
                 <div className="main-content-uv">
                     <SideMenu/>
                     <div className="outside-container-uv">
-                        <div className="overlapping-title-view">
-                            <div className="title-text">
-                                {user.title}
+                        <div className='user-details-container'>
+                            <div className="user-profile-picture-container">
+                                <img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture"/>
+                                <div className="user-name-role">
+                                    <h2>{`${user.firstName} ${user.lastName}`}</h2>
+                                    <p>{user.role}</p>
+                                </div>
                             </div>
-                            <div className="title-desc-text">
-                                Back | Edit
-                            </div>
-                        </div>
-                        <div className='user-details-top-container'>
                             <div className='user-details-section'>
+
+
+
                                 <div className="user-details-left">
                                     <div>
                                         <div>Email: {user.email}</div>
@@ -63,7 +66,12 @@ function UserView() {
                                 </div>
                                 <div className="user-details-right">
                                     <div>
-                                        <p>List of Projects here</p>
+                                        <p>Projects:</p>
+                                        <ul>
+                                            {projects && projects.map((project) => (
+                                                <li key={project._id}>{project.name}</li>
+                                            ))}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

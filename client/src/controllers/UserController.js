@@ -72,6 +72,34 @@ export async function deleteUser(userId, token) {
     return response.json();
 }
 
+export async function fetchUserProjects(userId, token) {
+    const response = await fetch(`http://localhost:5000/users/${userId}/projects`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
 
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
+    return await response.json();
+}
 
+export async function fetchUserTickets(userId, token) {
+    const response = await fetch(`http://localhost:5000/users/${userId}/tickets`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
