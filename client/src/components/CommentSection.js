@@ -201,10 +201,7 @@ function Comment({ comment, curUserObject, token }) {
                 <div className="comment-content">
                     <p>{comment.content}</p>
                 </div>
-                <div className="comment-actions">
-                    <button onClick={() => upvoteComment(comment._id, curUserObject._id, token)}>Upvote ({comment.upvotes.length})</button>
-                    <button onClick={() => replyToComment(comment._id, curUserObject._id, token)}>Reply</button>
-                </div>
+
             </div>
             <div className="replies">
                 {comment.replies.map(reply => (

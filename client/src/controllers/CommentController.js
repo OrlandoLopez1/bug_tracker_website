@@ -81,37 +81,3 @@ export async function deleteComment(commentId, token) {
 
     return await response.json();
 }
-
-export async function replyToComment(commentId, reply, token) {
-    const response = await fetch(`http://localhost:5000/comments/${commentId}/reply`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(reply)
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
-export async function upvoteComment(commentId, user, token) {
-    const response = await fetch(`http://localhost:5000/comments/${commentId}/upvote`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ user })
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-}

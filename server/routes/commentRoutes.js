@@ -16,10 +16,4 @@ router.route('/:commentId')
 router.route('/ticket/:ticketId')
     .get(commentController.getCommentsForTicket);
 
-router.route('/:commentId/reply')
-    .post(commentController.addReplyToComment);
-
-router.route('/:commentId/upvote')
-    .post(commentController.upvoteComment);
-
 module.exports = router;

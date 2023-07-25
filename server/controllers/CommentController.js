@@ -83,49 +83,7 @@ const deleteComment = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Comment deleted successfully' });
 });
 
-// @desc Add a reply to a comment
-// @route POST /comments/:id/reply
-// @access Private
-const addReplyToComment = asyncHandler(async (req, res) => {
-    const { uploader, content } = req.body;
-    const parentComment = await Comment.findById(req.params.commentId);
 
-    if (parentComment) {
-        const reply = new Comment({
-            uploader,
-            content,
-            ticket: parentComment.ticket
-        });
-        await reply.save();
-
-        parentComment.replies.push(reply._id);
-        await parentComment.save();
-
-        res.status(201).json(reply);
-    } else {
-        res.status(404);
-        throw new Error('Comment not found');
-    }
-});
-//todo find comment addition error
-// @desc Upvote a comment
-// @route POST /comments/:id/upvote
-// @access Private
-const upvoteComment = asyncHandler(async (req, res) => {
-    const { user } = req.body;
-    const comment = await Comment.findById(req.params.commentId);
-
-    if (comment) {
-        if (!comment.upvotes.includes(user)) {
-            comment.upvotes.push(user);
-            await comment.save();
-        }
-        res.status(200).json(comment);
-    } else {
-        res.status(404);
-        throw new Error('Comment not found');
-    }
-});
 
 module.exports = {
     addComment,
@@ -133,6 +91,4 @@ module.exports = {
     getCommentsForTicket,
     updateComment,
     deleteComment,
-    addReplyToComment,
-    upvoteComment
 };
