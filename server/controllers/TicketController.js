@@ -33,9 +33,16 @@ const addTicket = asyncHandler(async (req, res) => {
 
         // If ticket is valid and assignedTo is provided, increment user's ticket count
         if (assignedTo && title !== '') {
-            const updatedUser = await User.findByIdAndUpdate(assignedTo, { $inc: { totalAssignedTickets: 1 } }, { new: true });
+            const updatedUser = await User.findByIdAndUpdate(
+                assignedTo,
+                {
+                    $push: { tickets: ticket._id }
+                },
+                { new: true }
+            );
+
             if (!updatedUser) {
-                throw new Error("User not found, could not increment tickets");
+                throw new Error("User not found, could not add ticket to user");
             }
         }
 
@@ -66,10 +73,25 @@ const getTicket = asyncHandler(async (req, res) => {
 // @desc Update a specific ticket
 // @route PATCH /tickets/:ticketId
 // @access Private
-const updateProject = asyncHandler(async (req, res) => {
+const updateTicket = asyncHandler(async (req, res) => {
     const {ticketId} = req.params;
     try {
-        const updatedTicket = await Ticket.findByIdAndUpdate(id, req.body, { new: true });
+        const oldTicket = await Ticket.findById(ticketId);
+        const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, req.body, { new: true });
+
+        // Check if the assigned user has changed
+        const oldAssignedUser = oldTicket.assignedTo;
+        const newAssignedUser = updatedTicket.assignedTo;
+        if (newAssignedUser !== oldAssignedUser) {
+            // Add this ticket to the tickets array of the new assigned user
+            await User.findByIdAndUpdate(newAssignedUser, { $push: { tickets: updatedTicket._id } }, { new: true });
+
+            // If there was an old assigned user, remove this ticket from their tickets array
+            if (oldAssignedUser) {
+                await User.findByIdAndUpdate(oldAssignedUser, { $pull: { tickets: updatedTicket._id } }, { new: true });
+            }
+        }
+
         res.json(updatedTicket);
     } catch (error) {
         res.status(500).json({ message: 'Error updating ticket', error: error.message });
@@ -90,7 +112,7 @@ const deleteTicket = asyncHandler(async (req, res) => {
         if (!ticket) {
             return res.status(404).json({ message: "Ticket not found" });
         }
-        await User.findByIdAndUpdate(ticket.assignedTo, { $inc: { totalAssignedTickets: -1 } }, { new: true });
+        await User.findByIdAndUpdate(ticket.assignedTo, { $pull: { tickets: ticketId } }, { new: true });
 
 
         const { attachments } = ticket;
@@ -191,6 +213,7 @@ const getTickets = asyncHandler(async (req, res) => {
 // @desc Get tickets for a specific project
 // @route GET /tickets/project/:projectId
 // @access Private
+//todo fix this
 const getTicketsForProject = asyncHandler(async (req, res) => {
     const { projectId } = req.params;
     const tickets = await Ticket.find({ project: projectId });
@@ -200,6 +223,7 @@ const getTicketsForProject = asyncHandler(async (req, res) => {
 module.exports = {
     addTicket,
     updateTicketAttachment,
+    updateTicket,
     addComment,
     getTicket,
     getTickets,

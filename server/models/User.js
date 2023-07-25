@@ -10,8 +10,6 @@ const userSchema = new mongoose.Schema({
     role: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    totalAssignedTickets: { type: Number, default: 0 },
-    totalCompletedTickets: { type: Number, default: 0 },
     projects: [
         {
             type: mongoose.Schema.Types.ObjectId,

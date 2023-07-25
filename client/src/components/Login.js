@@ -9,12 +9,10 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("submit clicked");
         try {
             const data = await loginUser(email, password);
             if (data.accessToken) {
                 localStorage.setItem('accessToken', data.accessToken);
-                console.log(data, "userLogin");
                 navigate("/homepage");
                 alert("Login Successful");
             } else {

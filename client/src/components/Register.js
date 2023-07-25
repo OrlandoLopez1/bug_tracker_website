@@ -24,7 +24,6 @@ export default function Register() {
             role
         };
         const data = await registerUser(userData);
-        console.log(data, "userRegister");
         if (data.message === 'User created') {
             alert("Registration Successful");
         } else {

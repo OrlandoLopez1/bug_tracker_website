@@ -161,6 +161,7 @@ function CreateTicketPage() {
     const [isLoading, setIsLoading] = useState(false); // add this to your state
     const [presignedUrl, setPresignedUrl] = useState(null);
 
+    // creates tickets first then sends attachment
     const handleSubmit = async (event) => {
         setIsLoading(true);
 

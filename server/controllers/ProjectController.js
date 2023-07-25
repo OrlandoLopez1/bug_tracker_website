@@ -19,14 +19,23 @@ const addProject = asyncHandler(async (req, res) => {
             users,
             tickets
         });
-        await project.save();
+        const savedProject = await project.save();
 
-        res.status(201).json(project);
+        // Add this project to the project array of each user
+        if (users && users.length > 0) {
+            for (let userId of users) {
+                await User.findByIdAndUpdate(userId, { $push: { projects: savedProject._id } }, { new: true });
+            }
+        }
+        if (projectManager) {
+            await User.findByIdAndUpdate(projectManager, { $push: { projects: savedProject._id } }, { new: true });
+        }
+
+        res.status(201).json(savedProject);
     } catch (error) {
         res.status(500).json({ message: 'Error creating project', error: error.message });
     }
 });
-
 // @desc Get a specific project by id
 // @route GET /projects/:id
 // @access Private
@@ -57,7 +66,19 @@ const getProjects = asyncHandler(async (req, res) => {
 const updateProject = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
+        const oldProject = await Project.findById(id);
         const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true });
+
+        // Find any new users that were added
+        const oldUsers = oldProject.users;
+        const newUsers = updatedProject.users;
+        const addedUsers = newUsers.filter(user => !oldUsers.includes(user));
+
+        // Add this project to the project array of each added user
+        for (let userId of addedUsers) {
+            await User.findByIdAndUpdate(userId, { $push: { projects: updatedProject._id } }, { new: true });
+        }
+
         res.json(updatedProject);
     } catch (error) {
         res.status(500).json({ message: 'Error updating project', error: error.message });
@@ -73,18 +94,21 @@ const deleteProject = asyncHandler(async (req, res) => {
         const tickets = await Ticket.find({ project: id });
         console.log(`Found ${tickets.length} tickets associated with project ${id}`);
 
-        const usersPromises = tickets.map(async (ticket) => {
-            console.log(`Decrementing ticket count for user ${ticket.assignedTo}`);
-            const updatedUser = await User.findByIdAndUpdate(ticket.assignedTo, { $inc: { totalAssignedTickets: -1 } }, { new: true });
-            console.log('Updated user:', updatedUser);
-            return updatedUser;
-        });
-
-        // Wait for all user updates to complete
-        await Promise.all(usersPromises);
-
         const deletedTicketsResult = await Ticket.deleteMany({project: id});
         console.log(`Deleted ${deletedTicketsResult.deletedCount} tickets`);
+
+        const project = await Project.findById(id);
+        // Find all users associated with the project and remove the project from their projects array
+        await User.updateMany(
+            { _id: { $in: project.users } },
+            { $pull: { projects: project._id } }
+        );
+        if (project.projectManager){
+            await User.findByIdAndUpdate(
+                project.projectManager,
+                {$pull: {projects: project._id}}
+                )
+        }
 
         await Project.findByIdAndRemove(id);
         console.log(`Deleted project ${id}`);
