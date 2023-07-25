@@ -7,8 +7,8 @@ const bcrypt = require('bcrypt')
 // @route GET /users/:id
 // @access Private
 const getUser = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const user = await User.findById(id);
+    const { userId } = req.params;
+    const user = await User.findById(userId);
     if (!user) {
         return res.status(404).json({ message: 'Cannot find user' });
     }
@@ -68,15 +68,15 @@ const createNewUser = asyncHandler(async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateUser = asyncHandler(async (req, res) => {
-    const { id, username, role, password } = req.body
+    const { userId, username, role, password } = req.body
 
     // Confirm data
-    if (!id || !username || !role) {
+    if (!userId || !username || !role) {
         return res.status(400).json({ message: 'All fields except password are required' })
     }
 
     // Does the user exist to update?
-    const user = await User.findById(id).exec()
+    const user = await User.findById(userId).exec()
 
     if (!user) {
         return res.status(400).json({ message: 'User not found' })
@@ -86,7 +86,7 @@ const updateUser = asyncHandler(async (req, res) => {
     const duplicate = await User.findOne({ username }).lean().exec()
 
     // Allow updates to the original user
-    if (duplicate && duplicate?._id.toString() !== id) {
+    if (duplicate && duplicate?._id.toString() !== userId) {
         return res.status(409).json({ message: 'Duplicate username' })
     }
 
@@ -106,17 +106,14 @@ const updateUser = asyncHandler(async (req, res) => {
 // @desc Delete a user
 // @route DELETE /users
 // @access Private
-//todo adjust
 const deleteUser = asyncHandler(async (req, res) => {
-    const { id } = req.body
+    const { userId } = req.body
 
-    // Confirm data
-    if (!id) {
+    if (!userId) {
         return res.status(400).json({ message: 'User ID Required' })
     }
 
-    // Does the user exist to delete?
-    const user = await User.findById(id).exec()
+    const user = await User.findById(userId).exec()
 
     if (!user) {
         return res.status(400).json({ message: 'User not found' })

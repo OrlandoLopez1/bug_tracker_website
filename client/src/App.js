@@ -8,6 +8,7 @@ import HomePage from "./components/HomePage";
 import TicketForm from "./components/TicketForm";
 import TicketPage from "./components/TicketPage";
 import TicketView from "./components/TicketView";
+import UserView from "./components/UserView";
 import  ProjectPage from "./components/ProjectPage";
 import  ProjectForm from "./components/ProjectForm";
 import  ProjectView from "./components/ProjectView";
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/projectView/:id" element={<ProjectView />} />
                     <Route path="/testing/:id" element={<Testing/>} />
                     <Route path="/ticketView/:ticketId" element={<TicketView />} />
+                    <Route path="/userView/:userId" element={<UserView />} />
 
                 </Routes>
             </div>

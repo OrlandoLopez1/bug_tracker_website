@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import "./UserTable.css";
 import {Pagination, Table} from 'react-bootstrap';
+import {Link} from "react-router-dom";
 
 
 export function ProjectViewUserTable({users, className}) {
@@ -32,7 +33,7 @@ export function ProjectViewUserTable({users, className}) {
                 {currentUsers.map((user) => (
                     <tr key={user._id}>
                         <td>
-                            <span className="table-name">{user.firstName} {user.lastName}</span>
+                            <td><Link className="user-link" to={`/userview/${user._id}`}>{user.firstName} {user.lastName}</Link></td>
                         </td>
                         <td>{user.email}</td>
                         <td>{user.role}</td>

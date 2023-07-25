@@ -1,0 +1,176 @@
+.main-content-uv {
+    display: flex;
+    width: 100vw;
+    margin-top: 60px;
+}
+
+.outside-container-uv {
+    display: flex;
+    flex-direction: column;
+    padding-top: 5vh;
+    background: #eaeef3;
+    width: 85vw;
+
+}
+
+.user-details-top-container {
+    background: white;
+    padding: 3vh;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    height: 30vh;
+    width: 81vw;
+    margin-left: 2vw;
+}
+
+
+.user-details-section {
+    margin-top: 5vh;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow: auto;
+    height: 80%;
+
+
+}
+
+.user-details-left {
+    flex: 1;
+    padding: 10px;
+}
+
+.user-details-right {
+    flex: 1;
+    padding: 10px;
+    overflow: auto;
+}
+
+.title-text {
+    font-size: 18px;
+    color: white;
+    font-weight: bold;
+}
+
+.title-desc-text {
+    font-size: 12px;
+    color: white;
+    padding-left: 5px;
+}
+
+.horizontal-container-uv {
+    display: flex;
+    margin-top: 5vh;
+    /*flex-wrap: nowrap;*/
+    /*overflow-y: auto;*/
+}
+
+
+.common-parent1-uv {
+    box-sizing: border-box;
+    display: block;
+    min-height: 60vh;
+    width: 32vw;
+    max-height: 60vh;
+    margin-left: 2vw;
+    margin-right: 1vw;
+}
+.common-parent2-uv {
+    box-sizing: border-box;
+    display: block;
+    width: 47vw;
+    min-height: 60vh;
+    max-height: 60vh;
+    margin-right: 2vw;
+    margin-left: 1vw;
+    overflow: auto;
+}
+
+.overlapping-title-view {
+    background-color: #000072;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    width: 70%;
+    margin-top: 1vh;
+    margin-bottom: -7vh;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+    position: relative;
+}
+
+
+.content1-uv {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    overflow: auto;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-left: 3vh;
+    padding-right: 3vh;
+    min-height: 52vh;
+    max-height: 52vh;
+
+    /*padding-top: 10vh;*/
+
+
+}
+
+.content2-uv {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    overflow: auto;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-left: 3vh;
+    padding-right: 3vh;
+    min-height: 52vh;
+    max-height: 52vh;
+
+    /*padding-top: 10vh;*/
+
+
+}
+
+
+.table {
+    margin-top: 6vh;
+    display: block;
+    overflow-x: scroll;
+    height: calc(100% - 40px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(155, 155, 155, 0.7); /* Make scrollbar always visible */
+}
+
+.table th,
+.table td {
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
+}
+
+.edit-button {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+

@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { createTicket, attachFileToTicket} from '../controllers/TicketController'
+import { createTicket, attachFileToTicket } from '../controllers/TicketController'
+import {getPresignedUrl} from "../controllers/AttachmentController";
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
 import {addTicketToProject, fetchProjects} from "../controllers/ProjectController";
 import {getAllUsers} from "../controllers/UserController";
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
+import AddAttachment from './AddAttachment';
 
 function CommonFormFields({title, setTitle, type, setType, description, setDescription, priority, setPriority, project, setProject, projects, setProjects}) {
     return (
@@ -154,13 +156,12 @@ function CreateTicketPage() {
     const navigate = useNavigate();
     const [curUserId, setCurUserId] = useState(null);
     const [role, setRole] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [selectedFileName, setSelectedFileName] = useState('No file selected')
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedFileNames, setSelectedFileNames] = useState([]);
     const [isLoading, setIsLoading] = useState(false); // add this to your state
     const [presignedUrl, setPresignedUrl] = useState(null);
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
         setIsLoading(true);
 
         try {
@@ -170,50 +171,44 @@ function CreateTicketPage() {
                 return;
             }
 
-            // First, create the ticket without the attachment...
             const ticket = { title, description, type, assignedBy, assignedTo, status, priority, project };
             const createdTicket = await createTicket(ticket, token);
             const ticketId = createdTicket.ticket._id;
 
-            if (ticketId && selectedFile) {
-                // If ticket was created successfully and a file is selected, upload the file
-                // Get the presigned URL immediately before uploading the file
-                const presignResponse = await fetch(`https://z5pv2jprgl.execute-api.us-east-1.amazonaws.com/dev/presign?filename=${encodeURIComponent(selectedFile.filename)}&filetype=${encodeURIComponent(selectedFile.file.type)}`);
-                if (!presignResponse.ok) {
-                    alert("Could not upload file")
-                    throw new Error('Failed to get presigned URL');
-                }
+            if (ticketId && selectedFiles && selectedFiles.length > 0) {
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const selectedFile = selectedFiles[i];
 
-                const presignData = await presignResponse.json();
-                const presignedUrl = presignData.url;
+                    // Get the presigned URL immediately before uploading the file
+                    const presignData = await getPresignedUrl(selectedFile.filename, selectedFile.file.type, token);
+                    const presignedUrl = presignData.url;
 
-                const response = await fetch(presignedUrl, {
-                    method: 'PUT',
-                    body: selectedFile.file, // selectedFile is now an object, so use selectedFile.file to access the file
-                    headers: {
-                        'Content-Type': selectedFile.file.type // Access the file's type via selectedFile.file.type
-                    }
-                });
+                    const response = await fetch(presignedUrl, {
+                        method: 'PUT',
+                        body: selectedFile.file,
+                        headers: {
+                            'Content-Type': selectedFile.file.type
+                        }
+                    });
 
-                if (!response.ok) {
-                    const errorResponse = await response.text();
-                    console.error('Failed to upload file to S3:', errorResponse);
-                    throw new Error('Failed to upload file to S3');
-                } else {
-                    // If file upload was successful, the file location would be at the presigned URL (minus the query parameters)
-                    const attachmentLocation = presignedUrl.split("?")[0];
+                    if (!response.ok) {
+                        const errorResponse = await response.text();
+                        console.error('Failed to upload file to S3:', errorResponse);
+                        throw new Error('Failed to upload file to S3');
+                    } else {
+                        const attachmentLocation = presignedUrl.split("?")[0];
 
-                    const attachment = {
-                        filename: selectedFile.filename,
-                        path: attachmentLocation,
-                        uploader: selectedFile.uploader,
-                        ticket: ticketId
+                        const attachment = {
+                            filename: selectedFile.filename,
+                            path: attachmentLocation,
+                            uploader: selectedFile.uploader,
+                            ticket: ticketId
                         };
-                    await attachFileToTicket(ticketId, attachment, token);
+                        await attachFileToTicket(ticketId, attachment, token);
+                    }
                 }
             }
 
-            // Reset form fields
             setTitle('');
             setDescription('');
             setAssignedBy(null);
@@ -221,27 +216,24 @@ function CreateTicketPage() {
             setType('bug');
             setStatus('open');
             setPriority('medium');
-            setSelectedFile(null);
-            setSelectedFileName('No file selected');
+            setSelectedFiles([]);
+            setSelectedFileNames([]);
         } catch (error) {
             console.error("Failed to create ticket:", error);
         }
         setIsLoading(false);
     };
-
-
-
-
     const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        const attachment = {
+        const files = Array.from(e.target.files);
+        const attachments = files.map(file => ({
             file,
             filename: file.name,
-            uploader:  curUserId
-        };
-        setSelectedFile(attachment);
-        setSelectedFileName(file.name);
+            uploader: curUserId
+        }));
+        setSelectedFiles(attachments);
+        setSelectedFileNames(files.map(file => file.name));
     };
+
 
 
 
@@ -331,20 +323,31 @@ function CreateTicketPage() {
                             setPriority={setPriority}
                         />}
                     {/*todo modify the styling of this*/}
-                    <Form.Group>
-                        <Form.Label>Attachment</Form.Label>
-                        <Form.Control
-                            type="file"
-                            accept=".jpg,.jpeg,.png,.doc,.pdf" // adjust this string to limit which file types can be selected
-                            onChange={handleFileSelect}
-                        />
-                        <Form.Text>
-                            {selectedFileName}
-                        </Form.Text>
-                    </Form.Group>
+                    {/*<Form.Group>*/}
+                    {/*    <Form.Label>Attachment</Form.Label>*/}
+                    {/*    <Form.Control*/}
+                    {/*        type="file"*/}
+                    {/*        accept=".jpg,.jpeg,.png,.doc,.pdf" // adjust this string to limit which file types can be selected*/}
+                    {/*        onChange={handleFileSelect}*/}
+                    {/*        multiple*/}
+                    {/*    />*/}
+                    {/*    <Form.Text>*/}
+                    {/*        <Form.Text>*/}
+                    {/*            {selectedFileNames.join(', ')}*/}
+                    {/*        </Form.Text>*/}
+                    {/*    </Form.Text>*/}
+                    {/*</Form.Group>*/}
 
-                    <Button variant="primary" type="submit" disabled={isLoading}>Submit</Button>
+                    {/*<Button variant="primary" type="submit" disabled={isLoading}>Submit</Button>*/}
+                    <AddAttachment
+                        selectedFiles={selectedFiles}
+                        setSelectedFiles={setSelectedFiles}
+                        handleFileUpload={handleSubmit}
+                        isLoading={isLoading}
+                        uploader={curUserId}
+                    />
                 </div>
+
             </div>
         </Form>
     );
