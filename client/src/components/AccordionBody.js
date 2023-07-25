@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import './AccordionBody.css';
 import { fetchTicketsForProject } from '../controllers/TicketController';
-import { fetchUsersForProject } from '../controllers/ProjectController';
+import {fetchProject, fetchUsersForProject} from '../controllers/ProjectController';
 import { Form, Button } from 'react-bootstrap';
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
@@ -60,9 +60,13 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     useEffect(() => {
         const fetchAndSetUsers = async () => {
             const token = localStorage.getItem('accessToken');
+            const curProject = await fetchProject(project._id, token)
             const fetchedUsers = await fetchUsersForProject(project._id, token);
+            const projectManager = await fetchUser(curProject.projectManager, token);
             setUsers(fetchedUsers);
             setSelectedUsers(fetchedUsers.map(user => user._id));
+            setProjectManager(projectManager);
+
         };
         fetchAndSetUsers();
     }, [project]);
