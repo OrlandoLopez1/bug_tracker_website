@@ -47,7 +47,7 @@ function TicketView() {
     const [attachments, setAttachments] = useState([]);
     const [curUserId, setCurUserId] = useState(null);
     const [curUser, setCurUser] = useState(null);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState(null);
     const [selectedFileName, setSelectedFileName] = useState('No file selected');
     const [isLoading, setIsLoading] = useState(false);
     const [isEditingAttachments, setIsEditingAttachments] = useState(false);
@@ -102,63 +102,65 @@ function TicketView() {
         let uploadSuccessful = false;
 
         try {
-            if (selectedFile) {
-                // Get the presigned URL from the server immediately before uploading the file
-                const presignData = await getPresignedUrl(selectedFile.filename, selectedFile.file.type, token);
-                const presignedUrl = presignData.url;
+            if (selectedFiles && selectedFiles.length > 0) {
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const selectedFile = selectedFiles[i];
 
-                const response = await fetch(presignedUrl, {
-                    method: 'PUT',
-                    body: selectedFile.file,
-                    headers: {
-                        'Content-Type': selectedFile.file.type
+                    // Get the presigned URL from the server immediately before uploading the file
+                    const presignData = await getPresignedUrl(selectedFile.filename, selectedFile.file.type, token);
+                    const presignedUrl = presignData.url;
+
+                    const response = await fetch(presignedUrl, {
+                        method: 'PUT',
+                        body: selectedFile.file,
+                        headers: {
+                            'Content-Type': selectedFile.file.type
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const errorResponse = await response.text();
+                        console.error('Failed to upload file to S3:', errorResponse);
+                        throw new Error('Failed to upload file to S3');
+                    } else {
+                        // If file upload was successful, the file location would be at the presigned URL (minus the query parameters)
+                        const attachmentLocation = presignedUrl.split("?")[0];
+                        const attachment = {
+                            filename: selectedFile.filename,
+                            path: attachmentLocation,
+                            uploader: curUserId,
+                            ticket: ticketId
+                        };
+                        await attachFileToTicket(ticketId, attachment, token);
+
+                        // If the upload is successful, fetch the updated list of attachments
+                        const attachmentData = await fetchAttachmentsForTicket(ticketId, token);
+                        setAttachments(attachmentData);
+
+                        uploadSuccessful = true;
                     }
-                });
-
-                if (!response.ok) {
-                    const errorResponse = await response.text();
-                    console.error('Failed to upload file to S3:', errorResponse);
-                    throw new Error('Failed to upload file to S3');
-                } else {
-                    // If file upload was successful, the file location would be at the presigned URL (minus the query parameters)
-                    const attachmentLocation = presignedUrl.split("?")[0];
-                    const attachment = {
-                        filename: selectedFile.filename,
-                        path: attachmentLocation,
-                        uploader: curUserId,
-                        ticket: ticketId
-                    };
-                    await attachFileToTicket(ticketId, attachment, token);
-
-                    // If the upload is successful, fetch the updated list of attachments
-                    const attachmentData = await fetchAttachmentsForTicket(ticketId, token);
-                    setAttachments(attachmentData);
-
-                    uploadSuccessful = true;
                 }
             }
         } catch (error) {
             console.error('Failed to upload file:', error);
         } finally {
-            setSelectedFile(null);
-            setSelectedFileName('No file selected');
+            setSelectedFiles([]);
             setIsLoading(false);
         }
 
         return uploadSuccessful;
     };
 
-
     const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        const attachment = {
+        const files = Array.from(e.target.files);
+        const attachments = files.map(file => ({
             file,
             filename: file.name,
             uploader:  curUserId
-        };
-        console.log(`fileselect: ${attachment}`)
-        setSelectedFile(attachment);
-        setSelectedFileName(file.name);
+        }));
+        setSelectedFiles(attachments);
+        // If you want to show the name of the first selected file or a summary
+        setSelectedFileName(files.length > 1 ? `${files.length} files selected` : files[0].name);
     };
 
 
@@ -256,8 +258,8 @@ function TicketView() {
                                         attachments={attachments}
                                         setAttachments={setAttachments}
                                         ticketId={ticketId}
-                                        selectedFile={selectedFile}
-                                        setSelectedFile={setSelectedFile}
+                                        selectedFiles={selectedFiles}
+                                        setSelectedFiles={setSelectedFiles}
                                         selectedFileName={selectedFileName}
                                         setSelectedFileName={setSelectedFileName}
                                         handleFileUpload={handleFileUpload}
@@ -282,6 +284,7 @@ function TicketView() {
                                     <CommentSection
                                         curUserObject={curUser}
                                         isEditingComments={isEditingComments}
+                                        setIsEditingComments={setIsEditingComments}
                                     ></CommentSection>
                                 </div>
                             </div>

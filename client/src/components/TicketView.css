@@ -1,7 +1,6 @@
 .main-content-tv {
     display: flex;
     width: 100vw;
-    background: red;
     margin-top: 60px;
 }
 
@@ -111,7 +110,8 @@
     padding-bottom: 3vh;
     padding-left: 3vh;
     padding-right: 3vh;
-    min-height: 40vh;
+    min-height: 52vh;
+    max-height: 52vh;
 
     /*padding-top: 10vh;*/
 
@@ -127,7 +127,8 @@
     padding-bottom: 3vh;
     padding-left: 3vh;
     padding-right: 3vh;
-    min-height: 40vh;
+    min-height: 52vh;
+    max-height: 52vh;
 
     /*padding-top: 10vh;*/
 

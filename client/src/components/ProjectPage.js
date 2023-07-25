@@ -9,7 +9,7 @@
     import Modal from 'react-modal';
     import ProjectForm from "./ProjectForm";
     Modal.setAppElement('#root');
-
+    //todo fix modal its hideous
     //todo block projects off by planning, finished, etc
     function ProjectPage() {
         const [projects, setProjects] = useState([]);

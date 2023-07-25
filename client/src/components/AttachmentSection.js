@@ -3,7 +3,7 @@ import AddAttachment from './AddAttachment';
 import {deleteAttachment, fetchAttachmentsForTicket, fetchPresignedUrl} from '../controllers/AttachmentController';
 import {useState} from "react";
 //todo pagination, delete functionality
-function AttachmentSection({ curUserId, attachments, setAttachments, ticketId, selectedFile, setSelectedFile, selectedFileName, setSelectedFileName, handleFileUpload, isLoading, token, isEditingAttachments, setIsEditingAttachments }) {
+function AttachmentSection({ curUserId, attachments, setAttachments, ticketId, selectedFiles, setSelectedFiles, selectedFileName, setSelectedFileName, handleFileUpload, isLoading, token, isEditingAttachments, setIsEditingAttachments }) {
 
 
     const [selectedAttachments, setSelectedAttachments] = useState([]);
@@ -122,10 +122,8 @@ function AttachmentSection({ curUserId, attachments, setAttachments, ticketId, s
             )}
 
             <AddAttachment
-                selectedFile={selectedFile}
-                setSelectedFile={setSelectedFile}
-                selectedFileName={selectedFileName}
-                setSelectedFileName={setSelectedFileName}
+                selectedFiles={selectedFiles}
+                setSelectedFiles={setSelectedFiles}
                 handleFileUpload={handleFileUpload}
                 isLoading={isLoading}
                 uploader={curUserId}

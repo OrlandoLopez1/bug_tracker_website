@@ -6,8 +6,8 @@ import {fetchUser} from "../controllers/UserController";
 import {useNavigate, useParams} from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import {deleteAttachment, fetchAttachmentsForTicket, fetchPresignedUrl} from "../controllers/AttachmentController";
-//todo issue with cancel button
-function CommentSection({ curUserObject, isEditingComments }) {
+//todo issue with cancel buttont
+function CommentSection({ curUserObject, isEditingComments, setIsEditingComments }) {
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState([]);
     const [textareaFocused, setTextareaFocused] = useState(false);
@@ -32,6 +32,11 @@ function CommentSection({ curUserObject, isEditingComments }) {
     const handleCommentChange = (e) => {
         setNewComment(e.target.value);
     };
+
+    const handleCancel = () => {
+        setSelectedComments([]);
+        setIsEditingComments(false);
+    }
 
 
     const handleCommentSubmit = async (e) => {
@@ -165,6 +170,9 @@ function CommentSection({ curUserObject, isEditingComments }) {
             {isEditingComments && (
                 <>
                     <div className="delete-comment-buttons">
+                        <button onClick={handleCancel}>
+                            Cancel
+                        </button>
                         <button onClick={handleSelectAll}>
                             Select All
                         </button>
@@ -202,11 +210,6 @@ function Comment({ comment, curUserObject, token }) {
                     <p>{comment.content}</p>
                 </div>
 
-            </div>
-            <div className="replies">
-                {comment.replies.map(reply => (
-                    <Comment comment={reply} key={reply._id} />
-                ))}
             </div>
         </div>
     );
