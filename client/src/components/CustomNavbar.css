@@ -9,6 +9,28 @@
     height: 60px;
 }
 
+@font-face {
+    font-family: 'homemade_appleregular';
+    src: url('../assets/fonts/homemadeapple-9zz5-webfont.woff2') format('woff2'),
+    url('../assets/fonts/homemadeapple-9zz5-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.title-brand {
+    font-family: 'sans-serif';
+}
+
+.admin-brand {
+    font-family: 'homemade_appleregular', sans-serif;
+    color: red;
+    transform: rotate(-15deg);
+    position: absolute;
+    left: 80px;
+    top: 20px;
+}
+
 
 .profile-pic {
     height: 32px;

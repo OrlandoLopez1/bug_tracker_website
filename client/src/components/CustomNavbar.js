@@ -5,7 +5,7 @@ import "./CustomNavbar.css";
 import jwtDecode from "jwt-decode";
 import {loginUser, logoutUser} from "../controllers/AuthController";
 import { useNavigate } from 'react-router-dom';
-//todo add artsy section for role right next to Placeholder
+
 function CustomNavbar() {
     const [userName, setUserName] = useState(null);
     const token = localStorage.getItem('accessToken');
@@ -18,7 +18,6 @@ function CustomNavbar() {
             setUserName(username);
         }
     }, [token]);
-
 
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -33,11 +32,11 @@ function CustomNavbar() {
         }
     };
 
-
-
     return (
         <Navbar bg="dark" variant="dark" className="custom-navbar">
-            <Navbar.Brand href="#home">Placeholder</Navbar.Brand>
+            <Navbar.Brand href="#home" style={{fontFamily: 'sans-serif'}}>Pro-Man</Navbar.Brand>
+            <Navbar.Brand href="#home" className="admin-brand">Admin</Navbar.Brand>
+            {/*<Navbar.Brand href="#home" style={{fontFamily: 'homemade_appleregular, sans-serif', color: 'red'}}>Admin</Navbar.Brand>*/}
             <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -58,8 +57,6 @@ function CustomNavbar() {
             </Navbar.Collapse>
         </Navbar>
     );
-
-
 }
 
 export default CustomNavbar;
