@@ -60,17 +60,17 @@ function SideMenu() {
                 setUserName({username});
 
                 switch (role){
-                    case "submitter":
-                        setRole("Submitter");
-                        break;
-                    case "developer":
-                        setRole("Developer");
+                    case "admin":
+                        setRole("Admin");
                         break;
                     case "projectmanager":
                         setRole("Project Manager");
                         break;
-                    case "admin":
-                        setRole("Admin");
+                    case "developer":
+                        setRole("Developer");
+                        break;
+                    case "submitter":
+                        setRole("Submitter");
                         break;
                     default:
                         setRole("Role: ???");

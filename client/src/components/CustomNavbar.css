@@ -28,9 +28,44 @@
     transform: rotate(-15deg);
     position: absolute;
     left: 80px;
-    top: 20px;
+    top: 25px;
+    font-size: 1.25rem;
+    line-height: inherit;
 }
 
+
+.dev-brand {
+    font-family: 'homemade_appleregular', sans-serif;
+    color: red;
+    transform: rotate(-15deg);
+    position: absolute;
+    left: 80px;
+    top: 20px;
+    font-size: 1.25rem;
+    line-height: inherit;
+}
+
+.sub-brand {
+    font-family: 'homemade_appleregular', sans-serif;
+    color: red;
+    transform: rotate(-15deg);
+    position: absolute;
+    left: 80px;
+    top: 20px;
+    font-size: 1.25rem;
+    line-height: inherit;
+}
+
+.project-manager-brand {
+    font-family: 'homemade_appleregular', sans-serif;
+    color: red;
+    transform: rotate(-15deg);
+    position: absolute;
+    left: 80px;
+    top: 20px;
+    font-size: 1.25rem;
+    line-height: inherit;
+}
 
 .profile-pic {
     height: 32px;
