@@ -7,3 +7,22 @@
     color: inherit;
     text-decoration: underline;
 }
+
+/*.table {*/
+/*    border: 2px solid red;*/
+/*}*/
+
+/* Modify padding for table cells */
+.table th, .table td {
+    padding: 10px; /* adjust this value based on your need */
+}
+
+/* Reduce margin bottom of the table */
+.table {
+    margin-bottom: 0px; /* adjust this value based on your need */
+}
+
+/* Reduce top margin of the pagination */
+.pagination {
+    /*margin-top: 10px; !* adjust this value based on your need *!*/
+}

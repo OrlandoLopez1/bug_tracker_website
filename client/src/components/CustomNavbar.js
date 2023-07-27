@@ -5,7 +5,7 @@ import "./CustomNavbar.css";
 import jwtDecode from "jwt-decode";
 import {loginUser, logoutUser} from "../controllers/AuthController";
 import { useNavigate } from 'react-router-dom';
-
+//todo add artsy section for role right next to Placeholder
 function CustomNavbar() {
     const [userName, setUserName] = useState(null);
     const token = localStorage.getItem('accessToken');

@@ -16,7 +16,6 @@ function HomePage() {
     return (
         <div>
             <CustomNavbar username={username} />
-
             <SideMenu />
         </div>
     );

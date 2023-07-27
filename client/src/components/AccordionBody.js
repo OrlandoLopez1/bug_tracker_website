@@ -262,7 +262,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             </div>
             <div>
                 <h3>Tickets:</h3>
-                <TicketTable tickets={tickets} projectID={project._id} />
+                <TicketTable tickets={tickets} viewType={"project"} />
             </div>
             <div>
                 <h3>Users:</h3>

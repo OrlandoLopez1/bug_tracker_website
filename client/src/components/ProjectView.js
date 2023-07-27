@@ -10,6 +10,7 @@ import {fetchUser} from "../controllers/UserController";
 import ProjectViewUserTable from "./UserTable";
 import TicketTable from "./TicketTable";
 import {fetchTicketsForProject} from "../controllers/TicketController";
+import UserTable from "./UserTable";
 Modal.setAppElement('#root');
 
 //todo make it so that something appears in the place of an empty table
@@ -149,7 +150,7 @@ function ProjectView() {
 
                                 </div>
                             </div>
-                            <div className="horizontal-container">
+                            <div className="horizontal-container-pv">
                                 <div className="common-parent1">
                                     <div className="overlapping-title-view">
                                         <div className="title-text">
@@ -160,7 +161,7 @@ function ProjectView() {
                                         </div>
                                     </div>
                                         <div className="content">
-                                            <ProjectViewUserTable users={project.users} className="my-table"/>
+                                            <UserTable users={project.users}    />
                                         </div>
                                 </div>
                                 <div className="common-parent2">
@@ -175,7 +176,7 @@ function ProjectView() {
                                         <div className="content">
                                             {/*todo adjust css for tickettable*/}
                                             {console.log(project.tickets)}
-                                            <TicketTable tickets={project.tickets} projectID={project._id}></TicketTable>
+                                            <TicketTable tickets={project.tickets} viewType={"project"}></TicketTable>
                                         </div>
                                 </div>
                             </div>

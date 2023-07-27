@@ -56,9 +56,10 @@
     padding-left: 5px;
 }
 
-.horizontal-container {
+.horizontal-container-pv {
     display: flex;
     margin-top: 5vh;
+    overflow: hidden;
 }
 
 

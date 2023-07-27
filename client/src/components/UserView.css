@@ -15,7 +15,6 @@
 
 .user-details-container {
     display: block;
-    border: green solid;
     background: white;
     padding: 3vh;
     border-radius: 8px;
@@ -27,52 +26,60 @@
 
 }
 
-
-.user-details-section {
-    margin-top: 5vh;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    overflow: auto;
-    height: 80%;
-
-
-}
-.user-profile-picture-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+.user-details-section img {
+    width: 40%;
+    height: auto;
 }
 
+.user-name-role h2{
+    margin: 0;
+    font-size: 2.5em; /* Increase the font size of the name */
+}
+
+.user-name-role p{
+    font-size: 1.5em; /* Increase the font size of the role */
+}
 
 
 .user-name-role {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /*align-items: center;*/
 }
 
 .user-name-role h2{
     margin: 0;
 }
 
-/*.user-profile-picture-container > div {*/
-/*    !* Your styles here *!*/
-/*    margin-left: auto;*/
-/*    margin-right: auto;*/
-/*}*/
+
+.user-details-section {
+    display: flex;
+    justify-content: space-between;
+}
 
 .user-details-left {
-    flex: 1;
-    padding: 10px;
+    /*padding: 10px;*/
+    /*min-width: 30%; Remove or comment this out */
+    /*max-width: 30%; You can keep or remove this depending on your layout requirements */
+    border: red solid;
+    flex: 1; /* Add this line */
+}
+
+.user-details-middle {
+    /*min-width: 30%; Remove or comment this out */
+    /*display: flex; You can keep or remove this depending on your layout requirements */
+    /*align-items: flex-start; Remove or comment this out */
+    flex: 2; /* Add this line */
 }
 
 .user-details-right {
-    flex: 1;
     padding: 10px;
     overflow: auto;
+    flex: 1; /* Add this line */
 }
+
+/* ...other styles... */
+
 
 .title-text {
     font-size: 18px;
@@ -190,6 +197,18 @@
     white-space: nowrap;
     font-size: 14px;
     width: 100%;
+}
+
+.table-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 5vw;
+    /*padding: 0 20px; !* Adjust padding as needed *!*/
+}
+
+.table-container > * {
+    flex: 1;
+
 }
 
 .edit-button {

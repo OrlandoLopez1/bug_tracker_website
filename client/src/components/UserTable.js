@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import { Link } from 'react-router-dom';
+import {Table, Pagination} from "react-bootstrap";
 import "./UserTable.css";
-import {Pagination, Table} from 'react-bootstrap';
-import {Link} from "react-router-dom";
 
-
-export function ProjectViewUserTable({users, className}) {
+function UserTable({ users, viewType }) {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
@@ -12,38 +11,44 @@ export function ProjectViewUserTable({users, className}) {
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
-    // If less than usersPerPage users exist, create an array of empty users to fill the rest of the table
     const emptyRows = Array(usersPerPage - currentUsers.length).fill(null);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
+    const columnsConfig = {
+        default: ['Name', 'Email', 'Role'],
+        project: ['Name', 'Email', 'Role']
+    };
+
+    const columns = columnsConfig[viewType] || columnsConfig.default;
+
     return (
-        <div className={`table-container ${className}`}>
+        <div>
             <Table className="table">
                 <thead>
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Role</th>
+                    {columns.map((column) => <th scope="col" key={column}>{column}</th>)}
                 </tr>
                 </thead>
                 <tbody>
                 {currentUsers.map((user) => (
                     <tr key={user._id}>
-                        <td>
+                        {columns.includes('Name') &&
                             <td><Link className="user-link" to={`/userview/${user._id}`}>{user.firstName} {user.lastName}</Link></td>
-                        </td>
-                        <td>{user.email}</td>
-                        <td>{user.role}</td>
+                        }
+                        {columns.includes('Email') &&
+                            <td>{user.email}</td>
+                        }
+                        {columns.includes('Role') &&
+                            <td>{user.role}</td>
+                        }
                     </tr>
                 ))}
                 {emptyRows.map((_, index) => (
                     <tr key={`empty-${index}`}>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td colSpan={columns.length}>&nbsp;</td>
                     </tr>
                 ))}
                 </tbody>
@@ -63,5 +68,4 @@ export function ProjectViewUserTable({users, className}) {
     );
 }
 
-
-export default ProjectViewUserTable;
+export default UserTable;

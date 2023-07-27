@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import {Table, Pagination} from "react-bootstrap";
-//todo fix css for gods sake please
-import "./TicketTable.css";
+import "./ProjectTable.css";
 
 function getPriorityColor(priority) {
     switch(priority) {
@@ -17,25 +16,23 @@ function getPriorityColor(priority) {
     }
 }
 
-
-function TicketTable({ tickets, viewType }) {
+function ProjectTable({ projects, viewType }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const ticketsPerPage = 5;
-    const totalPages = Math.ceil(tickets.length / ticketsPerPage);
-    const indexOfLastTicket = currentPage * ticketsPerPage;
-    const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
-    const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
+    const projectsPerPage = 5;
+    const totalPages = Math.ceil(projects.length / projectsPerPage);
+    const indexOfLastProject = currentPage * projectsPerPage;
+    const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+    const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
 
-    // If less than usersPerPage users exist, create an array of empty users to fill the rest of the table
-    const emptyRows = Array(ticketsPerPage - currentTickets.length).fill(null);
+    const emptyRows = Array(projectsPerPage - currentProjects.length).fill(null);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     const columnsConfig = {
-        default: ['Title', 'Type', 'Assigned To', 'Date', 'Status', 'Priority'],
-        user: ['Title', 'Status', 'Priority']
+        default: ['Name', 'Description', 'Manager', 'Start Date', 'Status', 'Priority'],
+        user: ['Name', 'Status', 'Priority']
     };
 
     const columns = columnsConfig[viewType] || columnsConfig.default;
@@ -49,32 +46,32 @@ function TicketTable({ tickets, viewType }) {
                 </tr>
                 </thead>
                 <tbody>
-                {currentTickets.map((ticket) => (
-                    <tr key={ticket._id}>
-                        {columns.includes('Title') &&
-                            <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
+                {currentProjects.map((project) => (
+                    <tr key={project._id}>
+                        {columns.includes('Name') &&
+                            <td><Link className="project-link" to={`/projectview/${project._id}`}>{project.name}</Link></td>
                         }
-                        {columns.includes('Type') &&
-                            <td>{ticket.type}</td>
+                        {columns.includes('Description') &&
+                            <td>{project.projectDescription}</td>
                         }
-                        {columns.includes('Assigned To') &&
-                            <td>{ticket.assignedTo ? `${ticket.assignedTo.firstName} ${ticket.assignedTo.lastName}` : 'N/A'}</td>
+                        {columns.includes('Manager') &&
+                            <td>{project.projectManager}</td>
                         }
-                        {columns.includes('Date') &&
-                            <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
+                        {columns.includes('Start Date') &&
+                            <td>{new Date(project.startDate).toLocaleDateString()}</td>
                         }
                         {columns.includes('Status') &&
-                            <td>{ticket.status}</td>
+                            <td>{project.currentStatus}</td>
                         }
                         {columns.includes('Priority') &&
                             <td>
                                 <span
                                     style={{
-                                        backgroundColor: getPriorityColor(ticket.priority),
+                                        backgroundColor: getPriorityColor(project.priority),
                                         padding: "5px",
                                         borderRadius: "5px"
                                     }}>
-                                    {ticket.priority}
+                                    {project.priority}
                                 </span>
                             </td>
                         }
@@ -102,4 +99,4 @@ function TicketTable({ tickets, viewType }) {
     );
 }
 
-export default TicketTable;
+export default ProjectTable;
