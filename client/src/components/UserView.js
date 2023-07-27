@@ -54,26 +54,34 @@ function UserView() {
                         <div className='user-details-container'>
                             <div className="user-details-section">
                                 <div className="user-details-left">
-                                    <img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture"/>
-                                    <div className="user-name-role">
-                                        <h2>{`${user.firstName} ${user.lastName}`}</h2>
-                                        <p>{user.role}</p>
+                                    <img src="/defaultpfp.jpg" alt="Profile picture" className="profile-picture-uv"/>
+                                    <div className={"user-details-name-row"}>
+                                        <div>{`${user.firstName} ${user.lastName}`}</div>{''}
+                                        <span>({user.username})</span>
                                     </div>
-                                </div>
-                                <div className="user-details-middle">
-                                    <div>
-                                        <div>Email: {user.email}</div>
-                                        <div>Joined: {user.createdAt}</div>
-                                    </div>
+                                    <div>{user.role}</div> {/*todo replace with stylized version*/}
+                                    <div>{user.email}</div>
+                                    <div>Joined at {user.createdAt}</div>
                                 </div>
                                 <div className="user-details-right">
-                                    <h3>Skills:</h3>
-                                    <ul>
-                                        <li>Placeholder skill 1</li>
-                                        <li>Placeholder skill 2</li>
-                                        <li>Placeholder skill 3</li>
-                                    </ul>
+                                    <div className="skills-container">
+                                        <span className="skill-bubble">Placeholder skill 1</span>
+                                        <span className="skill-bubble">Placeholder skill 2</span>
+                                        <span className="skill-bubble">Placehold skill 3</span>
+                                        <span className="skill-bubble">Placeholder</span>
+                                        <span className="skill-bubble">Placeholder skill 5</span>
+                                        <span className="skill-bubble">Placehlder skill 1</span>
+                                        <span className="skill-bubble">Placeholder skill 2</span>
+                                        <span className="skill-bubble">Placeholder skill </span>
+                                        <span className="skill-bubble">Placeholder skill 4</span>
+                                        <span className="skill-bubble">Placeholder skill 5</span>
+                                        <span className="skill-bubble">Placeholder skill 5</span>
+                                        <span className="skill-bubble">Placeholder skill 5</span>
+                                        <span className="skill-bubble">Placeholder skill 5</span>
+                                        <span className="skill-bubble">Placeholder skill 5</span>
+                                    </div>
                                 </div>
+
                             </div>
                             <div className="table-container">
                                 <TicketTable tickets={tickets}  viewType="user" style={{ marginRight: "2vw" }} />
