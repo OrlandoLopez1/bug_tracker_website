@@ -23,7 +23,6 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [projectManagers, setProjectManagers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const [assignedUsers, setAssignedUsers] = useState([]);  // New state variable
     const token = localStorage.getItem('accessToken');
 
 
@@ -198,7 +197,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             </div>
             <div>
                 <h3>Users:</h3>
-                <UserTable  users={users} projectID={project._id} />
+                <UserTable  users={users} />
             </div>
         </div>
     );

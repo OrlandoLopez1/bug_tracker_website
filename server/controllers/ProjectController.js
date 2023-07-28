@@ -67,11 +67,11 @@ const updateProject = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
         const oldProject = await Project.findById(id);
-        const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true });
+        const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true }).populate('users');
 
         // Find any new users that were added
-        const oldUsers = oldProject.users;
-        const newUsers = updatedProject.users;
+        const oldUsers = oldProject.users.map(user => user._id.toString());
+        const newUsers = updatedProject.users.map(user => user._id.toString());
         const addedUsers = newUsers.filter(user => !oldUsers.includes(user));
 
         // Add this project to the project array of each added user
@@ -84,6 +84,7 @@ const updateProject = asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Error updating project', error: error.message });
     }
 });
+
 
 // @desc Delete a specific project
 // @route DELETE /projects/:id

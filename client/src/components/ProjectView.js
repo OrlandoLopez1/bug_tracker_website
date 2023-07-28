@@ -3,19 +3,18 @@ import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
 import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "../controllers/ProjectController";
-import {fetchUser} from "../controllers/UserController";
-import ProjectViewUserTable from "./UserTable";
+import {fetchUser, getAllUsers} from "../controllers/UserController";
 import TicketTable from "./TicketTable";
 import {fetchTicketsForProject} from "../controllers/TicketController";
 import UserTable from "./UserTable";
 import ProjectEditForm from "./ProjectEditForm";
 Modal.setAppElement('#root');
-//todo fix error when saving update
+
 function ProjectView() {
     const {id} = useParams();
-    const [project, setProject] = useState([]);
+    const [project, setProject] = useState({});
     const [users, setUsers] = useState(null);
     const [isEditing, setIsEditing] = useState(null);
     const token = localStorage.getItem('accessToken');
@@ -23,7 +22,7 @@ function ProjectView() {
     const [loading, setLoading] = useState(true);
 
     const [name, setName] = useState('');
-    const [projectManager, setProjectManager] = useState(project.projectManager);
+    const [projectManager, setProjectManager] = useState(null);
     const [projectDescription, setProjectDescription] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [deadline, setDeadline] = useState(null);
@@ -33,10 +32,31 @@ function ProjectView() {
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
 
+    const fetchAndSetUsers = useCallback(async () => {
+        try {
+            const fetchedUsers = await fetchUsersForProject(id, token);
+            setUsers(fetchedUsers);
+            setSelectedUsers(fetchedUsers.map(user => user._id));
+            const users = await getAllUsers(token);
+            const assignableUsers = users.filter(user => user.role === 'submitter' || user.role === 'developer');
+            setAssignableUsers(assignableUsers);
+
+            const projectManagers = users.filter(user => user.role === 'projectmanager');
+            setProjectManagers(projectManagers);
+            if (projectManagers.length > 0) {
+                setProjectManager(projectManagers[0]._id); // use setProjectManager instead
+            }
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        }
+    }, [token]);
+
+
     useEffect(() => {
         if (!token) {
             navigate('/login');
         }
+
         const fetchData = async () => {
             try {
                 const projectData = await fetchProject(id, token);
@@ -48,32 +68,13 @@ function ProjectView() {
                 setPriority(projectData.priority);
                 setCurrentStatus(projectData.currentStatus);
 
+                    await fetchAndSetUsers();
+
                 if (projectData.projectManager) {
                     const managerData = await fetchUser(projectData.projectManager, token);
                     setProjectManager(managerData);
                 }
 
-                if (projectData.users && Array.isArray(projectData.users)) {
-                    const usersData = await fetchUsersForProject(id, token);
-                    setUsers(usersData);
-                    let ticketData = await fetchTicketsForProject(id, token);
-
-                    if (ticketData.length === 0) {
-                        setProject(curProject => ({ ...curProject, users: usersData, tickets: [] }));
-                    }
-
-                    const ticketsPromises = ticketData.map(async (ticket) => {
-                        if (ticket.assignedTo) {
-                            const assignedUserData = await fetchUser(ticket.assignedTo, token);
-                            return {...ticket, assignedTo: assignedUserData};
-                        }
-                        return ticket;
-                    });
-
-                    ticketData = await Promise.all(ticketsPromises);
-
-                    setProject(curProject => ({ ...curProject, users: usersData, tickets: ticketData }));
-                }
                 setLoading(false);
             } catch (error) {
                 console.error('Failed to fetch project or manager:', error);
@@ -81,13 +82,13 @@ function ProjectView() {
         };
 
         fetchData();
-    }, [navigate, token]);
+    }, [navigate, token, fetchAndSetUsers]);
+
     const handleEditClick = () => {
         setIsEditing(project._id);
     };
 
     const handleDeleteProject = (project) => {
-        console.log("delete clicked", project);
         const confirmation = window.confirm(`Are you sure you want to delete project: ${project.name}?`);
 
         if (!confirmation) {
@@ -103,17 +104,6 @@ function ProjectView() {
         }
     }
 
-
-    // const handleUpdateProject = async (updatedProject) => {
-    //     try {
-    //         const response = await updateProject(updatedProject, token);
-    //         setProject(updatedProject); // update project in state
-    //         setIsEditing(null);
-    //         console.log("Updated Project:", updatedProject)
-    //     } catch (error) {
-    //         console.error('Failed to update project:', error);
-    //     }
-    // };
 
     const handleSave = async () => {
         const updatedProject = {
@@ -132,8 +122,28 @@ function ProjectView() {
             return;
         }
         try {
-            const response = await updateProject(updatedProject, token);
+            const updatedProjectData = await updateProject(updatedProject, token);
+            setProject(updatedProjectData);
+            setName(updatedProjectData.name);
+            setProjectDescription(updatedProjectData.projectDescription);
+            setStartDate(updatedProjectData.startDate ? new Date(updatedProjectData.startDate) : new Date());
+            setDeadline(updatedProjectData.deadline ? new Date(updatedProjectData.deadline) : null);
+            setPriority(updatedProjectData.priority);
+            setCurrentStatus(updatedProjectData.currentStatus);
+
+            if (updatedProjectData.projectManager) {
+                const managerData = await fetchUser(updatedProjectData.projectManager, token);
+                setProjectManager(managerData);
+            }
+
+            if (updatedProjectData.users && Array.isArray(updatedProjectData.users)) {
+                const usersData = updatedProjectData.users; // No need to fetch again
+                setUsers(usersData);
+                setProject(currentProject => ({ ...currentProject, users: usersData }));
+            }
+
             setIsEditing(null);
+
         } catch (error) {
             console.error('Failed to update project:', error);
         }
@@ -154,8 +164,8 @@ function ProjectView() {
                                 {project.name}
                             </div>
                             <div className="title-desc-text">
-                                Back | <button onClick={handleEditClick}>Edit</button> {/* Make the edit text a button */}
-                            </div>
+                                Back | <button className="edit-button-pv" onClick={handleEditClick}>Edit</button>
+                        </div>
                         </div>
                         <div className="project-details-top-container">
                             <div className='project-details-section'>
@@ -195,7 +205,7 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <UserTable users={project.users}    />
+                                    <UserTable users={users}    />
                                 </div>
                             </div>
                             <div className="common-parent2">
