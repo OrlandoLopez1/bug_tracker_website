@@ -73,10 +73,15 @@ const updateProject = asyncHandler(async (req, res) => {
         const oldUsers = oldProject.users.map(user => user._id.toString());
         const newUsers = updatedProject.users.map(user => user._id.toString());
         const addedUsers = newUsers.filter(user => !oldUsers.includes(user));
+        const removedUsers = oldUsers.filter(user => !newUsers.includes(user));
 
         // Add this project to the project array of each added user
         for (let userId of addedUsers) {
             await User.findByIdAndUpdate(userId, { $push: { projects: updatedProject._id } }, { new: true });
+        }
+
+        for (let userId of removedUsers) {
+            await User.findByIdAndUpdate(userId, { $pull: {projects: updatedProject._id }}, { new: true})
         }
 
         res.json(updatedProject);
