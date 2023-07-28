@@ -3,7 +3,6 @@ import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
 import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
-import ProjectForm from "./ProjectForm";
 import React, {useEffect, useState} from "react";
 import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "../controllers/ProjectController";
 import {fetchUser} from "../controllers/UserController";
@@ -11,23 +10,18 @@ import ProjectViewUserTable from "./UserTable";
 import TicketTable from "./TicketTable";
 import {fetchTicketsForProject} from "../controllers/TicketController";
 import UserTable from "./UserTable";
+import AccordionBody from './AccordionBody';
 Modal.setAppElement('#root');
-
-//todo make it so that something appears in the place of an empty table
-//todo issue with container resizing
-//todo outside container is not extending with the accordions opening
-//todo add pagination
-
+//todo fix error when saving update
 function ProjectView() {
     const {id} = useParams();
     const [project, setProject] = useState([]);
     const [projectManager, setProjectManager] = useState(null);
     const [users, setUsers] = useState(null);
-    const [editingProjectId, setEditingProjectId] = useState(null);  // new state variable
+    const [isEditing, setIsEditing] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -67,13 +61,12 @@ function ProjectView() {
                 console.error('Failed to fetch project or manager:', error);
             }
         };
+
         fetchData();
     }, [navigate, token]);
 
-
-
-    const handleEditProject = (project) => {
-        setEditingProjectId(project._id);  // when Edit button is clicked, set this project as being edited
+    const handleEditClick = () => {
+        setIsEditing(project._id);
     };
 
     const handleDeleteProject = (project) => {
@@ -93,10 +86,13 @@ function ProjectView() {
         }
     }
 
+
     const handleUpdateProject = async (updatedProject) => {
         try {
             const response = await updateProject(updatedProject, token);
-            setEditingProjectId(null); // Turn off edit mode when the update is successful
+            setProject(updatedProject); // update project in state
+            setIsEditing(null);
+            console.log("Updated Project:", updatedProject)
         } catch (error) {
             console.error('Failed to update project:', error);
         }
@@ -116,74 +112,81 @@ function ProjectView() {
                                 {project.name}
                             </div>
                             <div className="title-desc-text">
-                                Back | Edit
+                                Back | <button onClick={handleEditClick}>Edit</button> {/* Make the edit text a button */}
                             </div>
                         </div>
-                            <div className="project-details-top-container">
-                                <div className='project-details-section'>
-                                    <div className="project-details-left">
-                                        <div>
-                                            Project Manager: {projectManager ?
-                                            `${projectManager.firstName} ${projectManager.lastName}`  : 'N/A'}
-                                        </div>
-                                        <div>
-                                            Status: {project.currentStatus}
-                                        </div>
-                                        <div>
-                                            Priority: {project.priority}
-                                        </div>
-                                        <div>
-                                            Start: {new Date(project.startDate).toLocaleDateString("en-US")}
-                                        </div>
-                                        <div>
-                                            Deadline: {new Date(project.deadline).toLocaleDateString("en-US")}
-                                        </div>
-                                        <div>
-
-                                        </div>
+                        <div className="project-details-top-container">
+                            <div className='project-details-section'>
+                                <div className="project-details-left">
+                                    <div>
+                                        Project Manager: {projectManager ?
+                                        `${projectManager.firstName} ${projectManager.lastName}`  : 'N/A'}
                                     </div>
-                                    <div className="project-details-right">
-                                        <div>
-                                            <p>{project.projectDescription}</p>
-                                        </div>
+                                    <div>
+                                        Status: {project.currentStatus}
                                     </div>
-
+                                    <div>
+                                        Priority: {project.priority}
+                                    </div>
+                                    <div>
+                                        Start: {new Date(project.startDate).toLocaleDateString("en-US")}
+                                    </div>
+                                    <div>
+                                        Deadline: {new Date(project.deadline).toLocaleDateString("en-US")}
+                                    </div>
+                                </div>
+                                <div className="project-details-right">
+                                    <div>
+                                        <p>{project.projectDescription}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="horizontal-container-pv">
-                                <div className="common-parent1">
-                                    <div className="overlapping-title-view">
-                                        <div className="title-text">
-                                            {"Users"}
-                                        </div>
-                                        <div className="title-desc-text">
-                                            Add | Edit
-                                        </div>
+                        </div>
+                        <div className="horizontal-container-pv">
+                            <div className="common-parent1">
+                                <div className="overlapping-title-view">
+                                    <div className="title-text">
+                                        {"Users"}
                                     </div>
-                                        <div className="content">
-                                            <UserTable users={project.users}    />
-                                        </div>
+                                    <div className="title-desc-text">
+                                        Add | Edit
+                                    </div>
                                 </div>
-                                <div className="common-parent2">
-                                    <div className="overlapping-title-view">
-                                        <div className="title-text">
-                                            {"Tickets"}
-                                        </div>
-                                        <div className="title-desc-text">
-                                            Add | Edit
-                                        </div>
-                                    </div>
-                                        <div className="content">
-                                            {/*todo adjust css for tickettable*/}
-                                            {console.log(project.tickets)}
-                                            <TicketTable tickets={project.tickets} viewType={"project"}></TicketTable>
-                                        </div>
+                                <div className="content">
+                                    <UserTable users={project.users}    />
                                 </div>
                             </div>
+                            <div className="common-parent2">
+                                <div className="overlapping-title-view">
+                                    <div className="title-text">
+                                        {"Tickets"}
+                                    </div>
+                                    <div className="title-desc-text">
+                                        Add | Edit
+                                    </div>
+                                </div>
+                                <div className="content">
+                                    <TicketTable tickets={project.tickets} viewType={"project"}></TicketTable>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <Modal
+                    isOpen={isEditing === project._id}
+                    onRequestClose={() => setIsEditing(null)}
+                    contentLabel="Edit Project"
+                >
+                    <AccordionBody
+                        project={project}
+                        isEditing={isEditing === project._id}
+                        setIsEditing={setIsEditing}
+                        onUpdateProject={handleUpdateProject}
+                    />
+                </Modal>
             </div>
         )
     }
 }
 export default ProjectView;
+

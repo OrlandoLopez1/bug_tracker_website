@@ -92,12 +92,11 @@ const deleteProject = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
         const tickets = await Ticket.find({ project: id });
-        console.log(`Found ${tickets.length} tickets associated with project ${id}`);
 
         const deletedTicketsResult = await Ticket.deleteMany({project: id});
-        console.log(`Deleted ${deletedTicketsResult.deletedCount} tickets`);
 
         const project = await Project.findById(id);
+
         // Find all users associated with the project and remove the project from their projects array
         await User.updateMany(
             { _id: { $in: project.users } },

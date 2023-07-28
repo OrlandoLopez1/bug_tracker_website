@@ -40,66 +40,72 @@ function TicketTable({ tickets, viewType }) {
 
     const columns = columnsConfig[viewType] || columnsConfig.default;
 
-    return (
-        <div>
-            <Table className="table">
-                <thead>
-                <tr>
-                    {columns.map((column) => <th scope="col" key={column}>{column}</th>)}
-                </tr>
-                </thead>
-                <tbody>
-                {currentTickets.map((ticket) => (
-                    <tr key={ticket._id}>
-                        {columns.includes('Title') &&
-                            <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
-                        }
-                        {columns.includes('Type') &&
-                            <td>{ticket.type}</td>
-                        }
-                        {columns.includes('Assigned To') &&
-                            <td>{ticket.assignedTo ? `${ticket.assignedTo.firstName} ${ticket.assignedTo.lastName}` : 'N/A'}</td>
-                        }
-                        {columns.includes('Date') &&
-                            <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
-                        }
-                        {columns.includes('Status') &&
-                            <td>{ticket.status}</td>
-                        }
-                        {columns.includes('Priority') &&
-                            <td>
-                                <span
-                                    style={{
-                                        backgroundColor: getPriorityColor(ticket.priority),
-                                        padding: "5px",
-                                        borderRadius: "5px"
-                                    }}>
-                                    {ticket.priority}
-                                </span>
-                            </td>
-                        }
+    if (!tickets) {
+        return <p>Loading...</p>;
+    }
+    else{
+        return (
+            <div>
+                <Table className="table">
+                    <thead>
+                    <tr>
+                        {columns.map((column) => <th scope="col" key={column}>{column}</th>)}
                     </tr>
-                ))}
-                {emptyRows.map((_, index) => (
-                    <tr key={`empty-${index}`}>
-                        <td colSpan={columns.length}>&nbsp;</td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
-            <Pagination>
-                {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                    <Pagination.Item
-                        key={pageNumber}
-                        active={pageNumber === currentPage}
-                        onClick={() => handlePageChange(pageNumber)}
-                    >
-                        {pageNumber}
-                    </Pagination.Item>
-                ))}
-            </Pagination>
-        </div>
-    );
+                    </thead>
+                    <tbody>
+                    {currentTickets.map((ticket) => (
+                        <tr key={ticket._id}>
+                            {columns.includes('Title') &&
+                                <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
+                            }
+                            {columns.includes('Type') &&
+                                <td>{ticket.type}</td>
+                            }
+                            {columns.includes('Assigned To') &&
+                                <td>{ticket.assignedTo ? `${ticket.assignedTo.firstName} ${ticket.assignedTo.lastName}` : 'N/A'}</td>
+                            }
+                            {columns.includes('Date') &&
+                                <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
+                            }
+                            {columns.includes('Status') &&
+                                <td>{ticket.status}</td>
+                            }
+                            {columns.includes('Priority') &&
+                                <td>
+                                    <span
+                                        style={{
+                                            backgroundColor: getPriorityColor(ticket.priority),
+                                            padding: "5px",
+                                            borderRadius: "5px"
+                                        }}>
+                                        {ticket.priority}
+                                    </span>
+                                </td>
+                            }
+                        </tr>
+                    ))}
+                    {emptyRows.map((_, index) => (
+                        <tr key={`empty-${index}`}>
+                            <td colSpan={columns.length}>&nbsp;</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </Table>
+                <Pagination>
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+                        <Pagination.Item
+                            key={pageNumber}
+                            active={pageNumber === currentPage}
+                            onClick={() => handlePageChange(pageNumber)}
+                        >
+                            {pageNumber}
+                        </Pagination.Item>
+                    ))}
+                </Pagination>
+            </div>
+        );
+
+    }
 }
 
 export default TicketTable;
