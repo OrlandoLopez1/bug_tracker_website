@@ -10,18 +10,28 @@ import ProjectViewUserTable from "./UserTable";
 import TicketTable from "./TicketTable";
 import {fetchTicketsForProject} from "../controllers/TicketController";
 import UserTable from "./UserTable";
-import AccordionBody from './AccordionBody';
+import ProjectEditForm from "./ProjectEditForm";
 Modal.setAppElement('#root');
 //todo fix error when saving update
 function ProjectView() {
     const {id} = useParams();
     const [project, setProject] = useState([]);
-    const [projectManager, setProjectManager] = useState(null);
     const [users, setUsers] = useState(null);
     const [isEditing, setIsEditing] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+
+    const [name, setName] = useState('');
+    const [projectManager, setProjectManager] = useState(project.projectManager);
+    const [projectDescription, setProjectDescription] = useState('');
+    const [startDate, setStartDate] = useState(new Date());
+    const [deadline, setDeadline] = useState(null);
+    const [priority, setPriority] = useState('');
+    const [currentStatus, setCurrentStatus] = useState('');
+    const [projectManagers, setProjectManagers] = useState([]);
+    const [assignableUsers, setAssignableUsers] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
 
     useEffect(() => {
         if (!token) {
@@ -31,12 +41,21 @@ function ProjectView() {
             try {
                 const projectData = await fetchProject(id, token);
                 setProject(projectData);
+                setName(projectData.name);
+                setProjectDescription(projectData.projectDescription);
+                setStartDate(projectData.startDate ? new Date(projectData.startDate) : new Date());
+                setDeadline(projectData.deadline ? new Date(projectData.deadline) : null);
+                setPriority(projectData.priority);
+                setCurrentStatus(projectData.currentStatus);
+
                 if (projectData.projectManager) {
                     const managerData = await fetchUser(projectData.projectManager, token);
                     setProjectManager(managerData);
                 }
+
                 if (projectData.users && Array.isArray(projectData.users)) {
                     const usersData = await fetchUsersForProject(id, token);
+                    setUsers(usersData);
                     let ticketData = await fetchTicketsForProject(id, token);
 
                     if (ticketData.length === 0) {
@@ -46,7 +65,6 @@ function ProjectView() {
                     const ticketsPromises = ticketData.map(async (ticket) => {
                         if (ticket.assignedTo) {
                             const assignedUserData = await fetchUser(ticket.assignedTo, token);
-                            // Add assigned user data to the ticket
                             return {...ticket, assignedTo: assignedUserData};
                         }
                         return ticket;
@@ -64,7 +82,6 @@ function ProjectView() {
 
         fetchData();
     }, [navigate, token]);
-
     const handleEditClick = () => {
         setIsEditing(project._id);
     };
@@ -87,16 +104,41 @@ function ProjectView() {
     }
 
 
-    const handleUpdateProject = async (updatedProject) => {
+    // const handleUpdateProject = async (updatedProject) => {
+    //     try {
+    //         const response = await updateProject(updatedProject, token);
+    //         setProject(updatedProject); // update project in state
+    //         setIsEditing(null);
+    //         console.log("Updated Project:", updatedProject)
+    //     } catch (error) {
+    //         console.error('Failed to update project:', error);
+    //     }
+    // };
+
+    const handleSave = async () => {
+        const updatedProject = {
+            _id: project._id,
+            name,
+            projectDescription,
+            projectManager,
+            priority,
+            currentStatus,
+            startDate: startDate.toISOString(),
+            users: selectedUsers,
+            deadline: deadline ? deadline.toISOString() : null
+        };
+        if(deadline && deadline < startDate){
+            alert("Deadline should not be before start date");
+            return;
+        }
         try {
             const response = await updateProject(updatedProject, token);
-            setProject(updatedProject); // update project in state
             setIsEditing(null);
-            console.log("Updated Project:", updatedProject)
         } catch (error) {
             console.error('Failed to update project:', error);
         }
     };
+
 
     if (loading) {
         return <p>Loading...</p>
@@ -177,13 +219,30 @@ function ProjectView() {
                     onRequestClose={() => setIsEditing(null)}
                     contentLabel="Edit Project"
                 >
-                    <AccordionBody
-                        project={project}
-                        isEditing={isEditing === project._id}
+                    <ProjectEditForm
+                        name={name}
+                        setName={setName}
+                        projectDescription={projectDescription}
+                        setProjectDescription={setProjectDescription}
+                        projectManager={projectManager}
+                        setProjectManager={setProjectManager}
+                        projectManagers={projectManagers}
+                        priority={priority}
+                        setPriority={setPriority}
+                        currentStatus={currentStatus}
+                        setCurrentStatus={setCurrentStatus}
+                        assignableUsers={assignableUsers}
+                        setSelectedUsers={setSelectedUsers}
+                        selectedUsers={selectedUsers}
+                        startDate={startDate}
+                        setStartDate={setStartDate}
+                        deadline={deadline}
+                        setDeadline={setDeadline}
                         setIsEditing={setIsEditing}
-                        onUpdateProject={handleUpdateProject}
+                        handleSave={handleSave}
                     />
                 </Modal>
+
             </div>
         )
     }
