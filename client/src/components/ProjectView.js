@@ -105,19 +105,8 @@ function ProjectView() {
     }
 
 
-    const handleSave = async () => {
-        const updatedProject = {
-            _id: project._id,
-            name,
-            projectDescription,
-            projectManager,
-            priority,
-            currentStatus,
-            startDate: startDate.toISOString(),
-            users: selectedUsers,
-            deadline: deadline ? deadline.toISOString() : null
-        };
-        if(deadline && deadline < startDate){
+    const handleSave = async (updatedProject) => {
+        if(updatedProject.deadline && updatedProject.deadline < updatedProject.startDate){
             alert("Deadline should not be before start date");
             return;
         }
@@ -137,7 +126,7 @@ function ProjectView() {
             }
 
             if (updatedProjectData.users && Array.isArray(updatedProjectData.users)) {
-                const usersData = updatedProjectData.users; // No need to fetch again
+                const usersData = updatedProjectData.users;
                 setUsers(usersData);
                 setProject(currentProject => ({ ...currentProject, users: usersData }));
             }
@@ -230,6 +219,7 @@ function ProjectView() {
                     contentLabel="Edit Project"
                 >
                     <ProjectEditForm
+                        projectId={id}
                         name={name}
                         setName={setName}
                         projectDescription={projectDescription}

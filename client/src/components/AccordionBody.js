@@ -2,9 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import './AccordionBody.css';
 import { fetchTicketsForProject } from '../controllers/TicketController';
 import {fetchProject, fetchUsersForProject} from '../controllers/ProjectController';
-import { Form, Button } from 'react-bootstrap';
 import "react-datepicker/dist/react-datepicker.css";
-import ReactDatePicker from "react-datepicker";
 import TicketTable from "./TicketTable";
 import UserTable from "./UserTable";
 import {updateProject} from "../controllers/ProjectController";
@@ -86,6 +84,11 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
         };
         if(deadline && deadline < startDate){
             alert("Deadline should not be before start date");
+            return;
+        }
+        if (JSON.stringify(updatedProject) === JSON.stringify(project)) {
+            // If no updates were made, don't attempt to update the project
+            setIsEditing(null);
             return;
         }
         try {

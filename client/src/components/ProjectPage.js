@@ -11,6 +11,7 @@
     Modal.setAppElement('#root');
     //todo fix modal its hideous
     //todo block projects off by planning, finished, etc
+    //todo make clicking the edit button also cancel
     function ProjectPage() {
         const [projects, setProjects] = useState([]);
         const [editingProjectId, setEditingProjectId] = useState(null);  // new state variable
@@ -37,8 +38,15 @@
         }, [navigate, token]);
 
         const handleEditProject = (project) => {
-            setEditingProjectId(project._id);  // when Edit button is clicked, set this project as being edited
+            if(editingProjectId === project._id) {
+                // If the project is already being edited, set editingProjectId to null (cancel editing)
+                setEditingProjectId(null);
+            } else {
+                // Otherwise, set this project as being edited
+                setEditingProjectId(project._id);
+            }
         };
+
 
         const handleDeleteProject = (project) => {
             console.log("delete clicked", project);

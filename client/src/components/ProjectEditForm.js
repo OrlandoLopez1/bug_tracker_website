@@ -1,27 +1,56 @@
 import {Form} from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
-function ProjectEditForm({name, setName, projectDescription, setProjectDescription, projectManager, setProjectManager,
+function ProjectEditForm({projectId, name, setName, projectDescription, setProjectDescription, projectManager, setProjectManager,
                              projectManagers, priority, setPriority, currentStatus, setCurrentStatus, assignableUsers,
                              setSelectedUsers, selectedUsers, startDate, setStartDate, deadline, setDeadline,
                              setIsEditing, handleSave}) {
+
+    const [localName, setLocalName] = useState(name);
+    const [localProjectDescription, setLocalProjectDescription] = useState(projectDescription);
+    const [localProjectManager, setLocalProjectManager] = useState(projectManager);
+    const [localPriority, setLocalPriority] = useState(priority);
+    const [localCurrentStatus, setLocalCurrentStatus] = useState(currentStatus);
+    const [localSelectedUsers, setLocalSelectedUsers] = useState(selectedUsers);
+    const [localStartDate, setLocalStartDate] = useState(startDate);
+    const [localDeadline, setLocalDeadline] = useState(deadline);
+
+    const handleSaveChanges = () => {
+        const updatedProject = {
+            _id: projectId,
+            name: localName,
+            projectDescription: localProjectDescription,
+            projectManager: localProjectManager,
+            priority: localPriority,
+            currentStatus: localCurrentStatus,
+            startDate: localStartDate.toISOString(),
+            users: localSelectedUsers,
+            deadline: localDeadline ? localDeadline.toISOString() : null
+        };
+        handleSave(updatedProject);
+    };
+    useEffect(() => {
+    }, [name]);
+
+
     return (
         <Form>
             <Form.Group>
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" value={name} onChange={e => setName(e.target.value)} />
+                <Form.Control type="text" value={localName} onChange={(e) => setLocalName(e.target.value)} />
+
             </Form.Group>
             <Form.Group>
                 <Form.Label>Project Description</Form.Label>
-                <Form.Control as="textarea" rows={3} value={projectDescription} onChange={e => setProjectDescription(e.target.value)} />
+                <Form.Control as="textarea" rows={3} value={localProjectDescription} onChange={e => setLocalProjectDescription(e.target.value)} />
             </Form.Group>
             <Form.Group>
                 <Form.Label>Project Manager</Form.Label>
                 <Form.Control
                     as="select"
-                    value={projectManager || 'none'}
-                    onChange={e => setProjectManager(e.target.value === 'none' ? null : e.target.value)}
+                    value={localProjectManager || 'none'}
+                    onChange={e => setLocalProjectManager(e.target.value === 'none' ? null : e.target.value)}
                 >
                     {projectManagers.length > 0 ? (
                         projectManagers.map((user) => (
@@ -39,8 +68,8 @@ function ProjectEditForm({name, setName, projectDescription, setProjectDescripti
                 <Form.Label>Priority</Form.Label>
                 <Form.Control
                     as="select"
-                    value={priority}
-                    onChange={e => setPriority(e.target.value)}
+                    value={localPriority}
+                    onChange={e => setLocalPriority(e.target.value)}
                 >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -52,8 +81,8 @@ function ProjectEditForm({name, setName, projectDescription, setProjectDescripti
                 <Form.Label>Current Status</Form.Label>
                 <Form.Control
                     as="select"
-                    value={currentStatus}
-                    onChange={e => setCurrentStatus(e.target.value)}
+                    value={localCurrentStatus}
+                    onChange={e => setLocalCurrentStatus(e.target.value)}
                 >
                     <option value="Planning">Planning</option>
                     <option value="In progress">In progress</option>
@@ -70,30 +99,31 @@ function ProjectEditForm({name, setName, projectDescription, setProjectDescripti
                         id={`checkbox-${user._id}`}
                         label={user.username}
                         value={user._id}
-                        checked={selectedUsers.includes(user._id)}
+                        checked={localSelectedUsers.includes(user._id)}
                         onChange={e => {
                             if (e.target.checked) {
-                                setSelectedUsers(prevUsers => [...prevUsers, user._id]);  // Add the user's ID if it's checked
+                                setLocalSelectedUsers(prevUsers => [...prevUsers, user._id]);  // Add the user's ID if it's checked
                             } else {
-                                setSelectedUsers(prevUsers => prevUsers.filter(id => id !== user._id));  // Remove the user's ID if it's unchecked
+                                setLocalSelectedUsers(prevUsers => prevUsers.filter(id => id !== user._id));  // Remove the user's ID if it's unchecked
                             }
                         }}
                     />
                 ))}
             </Form.Group>
+
             <div className="date-row">
                 <Form.Group style={{ marginRight: '2rem',  }}>
                     <Form.Label>Start Date</Form.Label>
-                    <ReactDatePicker value = {startDate} selected={startDate} onChange={(date) => setStartDate(date)} />
+                    <ReactDatePicker value = {localStartDate} selected={localStartDate} onChange={(date) => setLocalStartDate(date)} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Deadline</Form.Label>
-                    <ReactDatePicker value = {deadline} selected={deadline} onChange={(date) => setDeadline(date)} />
+                    <ReactDatePicker value = {localDeadline} selected={localDeadline} onChange={(date) => setLocalDeadline(date)} />
                 </Form.Group>
             </div>
             <div className="accordion-buttons">
                 <button variant="secondary" type="button" onClick={() => setIsEditing(null)}>Cancel</button>
-                <button variant="primary" type="button" onClick={handleSave}>Save</button>
+                <button variant="primary" type="button" onClick={handleSaveChanges}>Save</button>
             </div>
         </Form>
     );

@@ -93,7 +93,6 @@ function TicketView() {
 
     useEffect(() => {
         // This will cause a re-render when 'isEditingAttachments' changes
-        console.log("button clicked")
     }, [isEditingAttachments, isEditingComments]);
 
 
