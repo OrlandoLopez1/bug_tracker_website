@@ -162,11 +162,12 @@ function CreateTicketPage() {
     const [presignedUrl, setPresignedUrl] = useState(null);
 
     // creates tickets first then sends attachment
+    //todo untie submit with attachment submit
     const handleSubmit = async (event) => {
         setIsLoading(true);
 
         try {
-            const isValidForm = title && description && type && project;
+            const isValidForm = title && type && project;
             if (!isValidForm) {
                 console.error('Invalid form fields');
                 return;

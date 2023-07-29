@@ -1,9 +1,40 @@
 .ticket-link {
     text-decoration: none;
     color: inherit;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .ticket-link:hover {
     color: inherit;
     text-decoration: underline;
+}
+
+.ticket-table-pv {
+    margin-top: 6vh;
+    display: block;
+    overflow-x: scroll;
+    height: calc(100% - 40px);
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.ticket-table-pv th,
+.ticket-table-pv td {
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
+}
+
+td:first-child {
+    max-width: 28vw;
 }

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import ProjectViewUserTable from "./UserTable";
 import {useNavigate, useParams} from "react-router-dom";
 import {fetchProject, fetchUsersForProject} from "../controllers/ProjectController";
 import {fetchUser} from "../controllers/UserController";
 import './testing.css'
 import CustomNavbar from "./CustomNavbar";
 import SideMenu from "./SideMenu";
+import UserTable from "./UserTable";
 
 function Testing() {
     const [project, setProject] = useState([]);
@@ -56,7 +56,7 @@ function Testing() {
                         </div>
                         <div className="outside-container">
                             <div className="content">
-                                <ProjectViewUserTable users={project.users} className="my-table"/>
+                                <UserTable users={project.users} className="my-table"/>
                             </div>
                         </div>
                     </div>

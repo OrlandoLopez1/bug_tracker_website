@@ -114,7 +114,7 @@ function Dashboard() {
                     </div>
                     <div className="row row3">
                         <div className="dashboard-item">
-                            {users && <UserTable users={users}></UserTable>}
+                            {users && <UserTable users={users} token={token}></UserTable>}
                         </div>
                     </div>
                 </div>

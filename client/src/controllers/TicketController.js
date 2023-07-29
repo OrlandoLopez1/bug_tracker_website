@@ -123,20 +123,20 @@ export async function addCommentToTicket(uploaderId, comment, ticketId, token) {
 
 
 
-export async function fetchTicketsForProject(projectId, token) {
-    const response = await fetch(`http://localhost:5000/tickets/project/${projectId}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
-}
+// export async function fetchTicketsForProject(projectId, token) {
+//     const response = await fetch(`http://localhost:5000/tickets/project/${projectId}`, {
+//         method: "GET",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${token}`,
+//         },
+//     });
+//
+//     if (!response.ok) {
+//         throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//
+//     return await response.json();
+// }
 
 

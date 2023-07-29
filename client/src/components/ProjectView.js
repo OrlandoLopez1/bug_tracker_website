@@ -4,19 +4,28 @@ import CustomNavbar from './CustomNavbar';
 import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
 import React, {useCallback, useEffect, useState} from "react";
-import {deleteProject, fetchProject, fetchUsersForProject, updateProject} from "../controllers/ProjectController";
+import {
+    deleteProject,
+    fetchProject,
+    fetchTicketsForProject,
+    fetchUsersForProject,
+    updateProject
+} from "../controllers/ProjectController";
 import {fetchUser, getAllUsers} from "../controllers/UserController";
 import TicketTable from "./TicketTable";
-import {fetchTicketsForProject} from "../controllers/TicketController";
 import UserTable from "./UserTable";
 import ProjectEditForm from "./ProjectEditForm";
+import {FormLabel} from "react-bootstrap";
 Modal.setAppElement('#root');
 
 function ProjectView() {
     const {id} = useParams();
     const [project, setProject] = useState({});
     const [users, setUsers] = useState(null);
+    const [tickets, setTickets] = useState(null);
     const [isEditing, setIsEditing] = useState(null);
+    const [isEditingUsers, setIsEditingUsers] = useState(null);
+    const EDIT_MODES = { PROJECT: 'PROJECT', USER: 'USER', TICKET: 'TICKET' };
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -31,6 +40,23 @@ function ProjectView() {
     const [projectManagers, setProjectManagers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
+
+
+
+    // updated click handlers to set correct mode
+    const handleEditProjectClick = () => {
+        setIsEditing(EDIT_MODES.PROJECT);
+    };
+
+    const handleEditUsersClick = () => {
+        setIsEditingUsers(!isEditingUsers);
+    };
+
+    const handleEditTicketsclick = () => {
+        setIsEditing(EDIT_MODES.TICKET);
+    };
+
+
 
     const fetchAndSetUsers = useCallback(async () => {
         try {
@@ -52,37 +78,6 @@ function ProjectView() {
     }, [token]);
 
 
-    useEffect(() => {
-        if (!token) {
-            navigate('/login');
-        }
-
-        const fetchData = async () => {
-            try {
-                const projectData = await fetchProject(id, token);
-                setProject(projectData);
-                setName(projectData.name);
-                setProjectDescription(projectData.projectDescription);
-                setStartDate(projectData.startDate ? new Date(projectData.startDate) : new Date());
-                setDeadline(projectData.deadline ? new Date(projectData.deadline) : null);
-                setPriority(projectData.priority);
-                setCurrentStatus(projectData.currentStatus);
-
-                    await fetchAndSetUsers();
-
-                if (projectData.projectManager) {
-                    const managerData = await fetchUser(projectData.projectManager, token);
-                    setProjectManager(managerData);
-                }
-
-                setLoading(false);
-            } catch (error) {
-                console.error('Failed to fetch project or manager:', error);
-            }
-        };
-
-        fetchData();
-    }, [navigate, token, fetchAndSetUsers]);
 
     const handleEditClick = () => {
         setIsEditing(project._id);
@@ -103,7 +98,6 @@ function ProjectView() {
             alert("Failed to delete project");
         }
     }
-
 
     const handleSave = async (updatedProject) => {
         if(updatedProject.deadline && updatedProject.deadline < updatedProject.startDate){
@@ -138,10 +132,44 @@ function ProjectView() {
         }
     };
 
+    useEffect(() => {
+        if (!token) {
+            navigate('/login');
+        }
+
+        const fetchData = async () => {
+            try {
+                const projectData = await fetchProject(id, token);
+                const ticketData = await fetchTicketsForProject(id, token);
+                setProject(projectData);
+                setTickets(ticketData)
+                setName(projectData.name);
+                setProjectDescription(projectData.projectDescription);
+                setStartDate(projectData.startDate ? new Date(projectData.startDate) : new Date());
+                setDeadline(projectData.deadline ? new Date(projectData.deadline) : null);
+                setPriority(projectData.priority);
+                setCurrentStatus(projectData.currentStatus);
+
+                await fetchAndSetUsers();
+
+                if (projectData.projectManager) {
+                    const managerData = await fetchUser(projectData.projectManager, token);
+                    setProjectManager(managerData);
+                }
+
+                setLoading(false);
+            } catch (error) {
+                console.error('Failed to fetch project or manager:', error);
+            }
+        };
+
+        fetchData();
+    }, [navigate, token, fetchAndSetUsers]);
 
     if (loading) {
         return <p>Loading...</p>
     } else {
+        console.log("project: ", project)
         return (
             <div>
                 <CustomNavbar/>
@@ -153,7 +181,7 @@ function ProjectView() {
                                 {project.name}
                             </div>
                             <div className="title-desc-text">
-                                Back | <button className="edit-button-pv" onClick={handleEditClick}>Edit</button>
+                                Back | <button className="edit-button-pv" onClick={handleEditProjectClick}>Edit</button>
                         </div>
                         </div>
                         <div className="project-details-top-container">
@@ -190,11 +218,12 @@ function ProjectView() {
                                         {"Users"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | Edit
+                                        Add | <button className="edit-button-pv" onClick={handleEditUsersClick}>Edit</button>
+
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <UserTable users={users}    />
+                                    <UserTable users={users} token={token} isEditing={isEditingUsers}   />
                                 </div>
                             </div>
                             <div className="common-parent2">
@@ -203,18 +232,21 @@ function ProjectView() {
                                         {"Tickets"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | Edit
+                                        Add | <button className="edit-button-pv" onClick={handleEditTicketsclick}>Edit</button>
+
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <TicketTable tickets={project.tickets} viewType={"project"}></TicketTable>
+                                    <TicketTable tickets={tickets} viewType={"default"}></TicketTable>
+
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <Modal
-                    isOpen={isEditing === project._id}
+                    isOpen={isEditing === EDIT_MODES.PROJECT}
                     onRequestClose={() => setIsEditing(null)}
                     contentLabel="Edit Project"
                 >
@@ -243,6 +275,13 @@ function ProjectView() {
                     />
                 </Modal>
 
+                <Modal
+                    isOpen={isEditing === EDIT_MODES.TICKET}
+                    onRequestClose={() => setIsEditing(null)}
+                    contentLabel="Edit Ticket"
+                >
+                    {/* Put your TicketEditForm here */}
+                </Modal>
             </div>
         )
     }

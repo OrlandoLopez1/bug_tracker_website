@@ -31,7 +31,16 @@ const addTicket = asyncHandler(async (req, res) => {
             return res.status(400).json({ message: 'Validation error', error: validationError });
         }
 
-        // If ticket is valid and assignedTo is provided, increment user's ticket count
+        const updatedProject = await Project.findByIdAndUpdate(
+            project,
+            {
+                $push: { tickets: ticket._id }
+            },
+            { new: true }
+        );
+        if (!updatedProject) {
+            throw new Error("User not found, could not add ticket to user");
+        }
         if (assignedTo && title !== '') {
             const updatedUser = await User.findByIdAndUpdate(
                 assignedTo,
@@ -41,9 +50,11 @@ const addTicket = asyncHandler(async (req, res) => {
                 { new: true }
             );
 
+
             if (!updatedUser) {
                 throw new Error("User not found, could not add ticket to user");
             }
+
         }
 
         // Now save the ticket
@@ -113,6 +124,7 @@ const deleteTicket = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: "Ticket not found" });
         }
         await User.findByIdAndUpdate(ticket.assignedTo, { $pull: { tickets: ticketId } }, { new: true });
+        await Project.findByIdAndUpdate(ticket.project, { $pull: { tickets: ticketId } }, { new: true });
 
 
         const { attachments } = ticket;
@@ -214,11 +226,11 @@ const getTickets = asyncHandler(async (req, res) => {
 // @route GET /tickets/project/:projectId
 // @access Private
 //todo fix this
-const getTicketsForProject = asyncHandler(async (req, res) => {
-    const { projectId } = req.params;
-    const tickets = await Ticket.find({ project: projectId });
-    res.json(tickets);
-});
+// const getTicketsForProject = asyncHandler(async (req, res) => {
+//     const { projectId } = req.params;
+//     const tickets = await Ticket.find({ project: projectId });
+//     res.json(tickets);
+// });
 
 module.exports = {
     addTicket,
@@ -227,5 +239,5 @@ module.exports = {
     addComment,
     getTicket,
     getTickets,
-    getTicketsForProject
+    // getTicketsForProject
 };

@@ -136,7 +136,7 @@
 }
 
 
-.table {
+.table-tv {
     margin-top: 6vh;
     display: block;
     overflow-x: scroll;
@@ -153,8 +153,8 @@
     background-color: rgba(155, 155, 155, 0.7); /* Make scrollbar always visible */
 }
 
-.table th,
-.table td {
+.table-tv th,
+.table-tv td {
     padding: 8px;
     text-align: left;
     overflow: hidden;

@@ -35,7 +35,6 @@ function AddAttachment({ selectedFiles, setSelectedFiles, handleFileUpload, isLo
                     multiple
                 />
             </Form.Group>
-
             <Button variant="primary" className='add-attachment-button text-right' onClick={handleClick} disabled={isLoading}>
                 {isLoading ? 'Uploading...' : 'Upload'}
             </Button>

@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import './AccordionBody.css';
-import { fetchTicketsForProject } from '../controllers/TicketController';
-import {fetchProject, fetchUsersForProject} from '../controllers/ProjectController';
+import {fetchProject, fetchTicketsForProject, fetchUsersForProject} from '../controllers/ProjectController';
 import "react-datepicker/dist/react-datepicker.css";
 import TicketTable from "./TicketTable";
 import UserTable from "./UserTable";
@@ -30,25 +29,12 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
         const fetchAndSetTickets = async () => {
             const token = localStorage.getItem('accessToken');
             const fetchedTickets = await fetchTicketsForProject(project._id, token);
-
+            setTickets(fetchedTickets)
             // if no tickets were found for this project, fetchedTickets would be an empty array
             if (fetchedTickets.length === 0) {
                 setTickets([]);
-                return;
             }
 
-            // Fetch assigned user for each ticket
-            const ticketsPromises = fetchedTickets.map(async (ticket) => {
-                if (ticket.assignedTo) {
-                    const assignedUserData = await fetchUser(ticket.assignedTo, token);
-                    // Add assigned user data to the ticket
-                    return {...ticket, assignedTo: assignedUserData};
-                }
-                return ticket;
-            });
-
-            const ticketsWithUserData = await Promise.all(ticketsPromises);
-            setTickets(ticketsWithUserData);
         };
 
         fetchAndSetTickets();
@@ -200,7 +186,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             </div>
             <div>
                 <h3>Users:</h3>
-                <UserTable  users={users} />
+                <UserTable  users={users} token={token}/>
             </div>
         </div>
     );

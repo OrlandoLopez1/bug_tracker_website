@@ -199,7 +199,7 @@
 }
 
 
-.table {
+.table-uv {
     margin-top: 6vh;
     display: block;
     overflow-x: scroll;
@@ -216,8 +216,8 @@
     background-color: rgba(155, 155, 155, 0.7); /* Make scrollbar always visible */
 }
 
-.table th,
-.table td {
+.table-uv th,
+.table-uv td {
     padding: 8px;
     text-align: left;
     overflow: hidden;
@@ -227,14 +227,14 @@
     width: 100%;
 }
 
-.table-container {
+.table-container-uv {
     display: flex;
     justify-content: space-between;
     gap: 5vw;
     /*padding: 0 20px; !* Adjust padding as needed *!*/
 }
 
-.table-container > * {
+.table-container-uv > * {
     flex: 1;
 
 }

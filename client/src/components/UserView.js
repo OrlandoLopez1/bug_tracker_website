@@ -35,8 +35,7 @@ function UserView() {
                 setTickets(ticketData)
                 setLoading(false);
             } catch (error) {
-                console.error('Failed to fetch data:', error);
-            }
+             }
         };
 
         fetchData();

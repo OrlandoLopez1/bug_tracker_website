@@ -8,21 +8,68 @@
     text-decoration: underline;
 }
 
-/*.table {*/
-/*    border: 2px solid red;*/
-/*}*/
-
-/* Modify padding for table cells */
-.table th, .table td {
-    padding: 10px; /* adjust this value based on your need */
+.table-user-pv th, .table-user-pv td {
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
 }
 
-/* Reduce margin bottom of the table */
-.table {
-    margin-bottom: 0px; /* adjust this value based on your need */
+.table-user-pv {
+    margin-top: 6vh;
+    display: block;
+    overflow-x: scroll;
+    height: calc(100% - 40px);
 }
 
-/* Reduce top margin of the pagination */
+.table-user-edit-pv th, .table-user-edit-pv td {
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
+}
+
+.table-user-edit-pv {
+    margin-top: 6vh;
+    display: block;
+    overflow-x: scroll;
+    height: calc(100% - 40px);
+}
+
+
+.table-user-edit-pv td:first-child, .table-user-edit-pv th:first-child {
+    width: 40px; /* adjust this value based on your need */
+    max-width: 40px; /* adjust this value based on your need */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .pagination {
-    /*margin-top: 10px; !* adjust this value based on your need *!*/
+    margin-top: 0.5rem;
 }
+
+.user-table-buttons-pv {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+}
+
+.profile-picture-edit-ut {
+    height: 24px;
+    margin-right: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+
+
+
+

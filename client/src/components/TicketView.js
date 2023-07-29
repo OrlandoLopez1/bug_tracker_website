@@ -14,7 +14,6 @@ import {
     updateTicket
 } from "../controllers/TicketController";
 import {fetchUser} from "../controllers/UserController";
-import ProjectViewUserTable from "./UserTable";
 import CommentSection from "./CommentSection";
 import {fetchCommentsForTicket} from "../controllers/CommentController";
 import AttachmentSection from "./AttachmentSection";

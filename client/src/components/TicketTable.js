@@ -34,7 +34,7 @@ function TicketTable({ tickets, viewType }) {
     };
 
     const columnsConfig = {
-        default: ['Title', 'Type', 'Assigned To', 'Date', 'Status', 'Priority'],
+        default: ['Title', 'Type', 'Status', 'Priority'],
         user: ['Title', 'Status', 'Priority']
     };
 
@@ -46,7 +46,7 @@ function TicketTable({ tickets, viewType }) {
     else{
         return (
             <div>
-                <Table className="table">
+                <Table className="ticket-table-pv">
                     <thead>
                     <tr>
                         {columns.map((column) => <th scope="col" key={column}>{column}</th>)}
@@ -60,12 +60,6 @@ function TicketTable({ tickets, viewType }) {
                             }
                             {columns.includes('Type') &&
                                 <td>{ticket.type}</td>
-                            }
-                            {columns.includes('Assigned To') &&
-                                <td>{ticket.assignedTo ? `${ticket.assignedTo.firstName} ${ticket.assignedTo.lastName}` : 'N/A'}</td>
-                            }
-                            {columns.includes('Date') &&
-                                <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
                             }
                             {columns.includes('Status') &&
                                 <td>{ticket.status}</td>

@@ -102,37 +102,6 @@
     padding: 3vh;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
-
-
-}
-
-
-.table {
-    margin-top: 6vh;
-    display: block;
-    overflow-x: scroll;
-    height: calc(100% - 40px);
-    scrollbar-width: thin;
-    scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
-}
-
-::-webkit-scrollbar {
-    display: none;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: rgba(155, 155, 155, 0.7); /* Make scrollbar always visible */
-}
-
-.table th,
-.table td {
-    padding: 8px;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14px;
-    width: 100%;
 }
 
 .edit-button-pv {
