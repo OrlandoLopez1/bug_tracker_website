@@ -280,7 +280,6 @@ function ProjectView() {
                     onRequestClose={() => setIsEditing(null)}
                     contentLabel="Edit Ticket"
                 >
-                    {/* Put your TicketEditForm here */}
                 </Modal>
             </div>
         )

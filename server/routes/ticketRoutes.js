@@ -9,9 +9,6 @@ router.route('/')
     .get(ticketController.getTickets)
     .post(ticketController.addTicket);
 
-router.route('/project/:projectId')
-    .get(ticketController.getTicketsForProject);
-
 router.route('/:ticketId')
     .get(ticketController.getTicket)
 
