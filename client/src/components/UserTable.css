@@ -44,8 +44,8 @@
 
 
 .table-user-edit-pv td:first-child, .table-user-edit-pv th:first-child {
-    width: 40px; /* adjust this value based on your need */
-    max-width: 40px; /* adjust this value based on your need */
+    width: 40px;
+    max-width: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
 }

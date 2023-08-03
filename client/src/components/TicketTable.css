@@ -13,15 +13,57 @@
     text-decoration: underline;
 }
 
-.ticket-table-pv {
+.table-ticket-pv th, .table-ticket-pv td {
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
+}
+
+.table-ticket-pv {
     margin-top: 6vh;
     display: block;
     overflow-x: scroll;
     height: calc(100% - 40px);
 }
 
+.table-ticket-edit-pv th, .table-ticket-edit-pv td {
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
+}
+
+.table-ticket-edit-pv {
+    margin-top: 6vh;
+    display: block;
+    overflow-x: scroll;
+    height: calc(100% - 40px);
+}
+
+
+.table-ticket-edit-pv td:first-child, .table-ticket-edit-pv th:first-child {
+    width: 40px;
+    max-width: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 ::-webkit-scrollbar {
     display: none;
+}
+
+.ticket-table-buttons-pv {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
 }
 
 .ticket-table-pv th,
@@ -35,6 +77,3 @@
     width: 100%;
 }
 
-td:first-child {
-    max-width: 28vw;
-}

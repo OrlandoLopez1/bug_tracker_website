@@ -22,10 +22,10 @@ function App() {
         <Router>
             <div className="App">
                 <Routes>
-                    <Route path="/" element={ token ? <HomePage /> : <Login /> } />
+                    <Route path="/" element={ token ? <ProjectPage /> : <Login /> } />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/homepage" element={<HomePage />} />
+                    {/*<Route path="/homepage" element={<HomePage />} />*/}
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/ticketForm" element={<TicketForm />} />
                     <Route path="/ticketPage" element={<TicketPage />} />

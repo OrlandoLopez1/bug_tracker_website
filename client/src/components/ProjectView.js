@@ -25,6 +25,7 @@ function ProjectView() {
     const [tickets, setTickets] = useState(null);
     const [isEditing, setIsEditing] = useState(null);
     const [isEditingUsers, setIsEditingUsers] = useState(null);
+    const [isEditingTickets, setIsEditingTickets] = useState(null);
     const EDIT_MODES = { PROJECT: 'PROJECT', USER: 'USER', TICKET: 'TICKET' };
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -52,11 +53,11 @@ function ProjectView() {
         setIsEditingUsers(!isEditingUsers);
     };
 
-    const handleEditTicketsclick = () => {
-        setIsEditing(EDIT_MODES.TICKET);
+
+    const handleEditTicketsClick = () => {
+        console.log("edit button for tickets clicked!")
+        setIsEditingTickets(!isEditingTickets);
     };
-
-
 
     const fetchAndSetUsers = useCallback(async () => {
         try {
@@ -65,6 +66,7 @@ function ProjectView() {
             setSelectedUsers(fetchedUsers.map(user => user._id));
             const users = await getAllUsers(token);
             const assignableUsers = users.filter(user => user.role === 'submitter' || user.role === 'developer');
+
             setAssignableUsers(assignableUsers);
 
             const projectManagers = users.filter(user => user.role === 'projectmanager');
@@ -83,7 +85,7 @@ function ProjectView() {
         setIsEditing(project._id);
     };
 
-    const handleDeleteProject = (project) => {
+        const handleDeleteProject = (project) => {
         const confirmation = window.confirm(`Are you sure you want to delete project: ${project.name}?`);
 
         if (!confirmation) {
@@ -219,11 +221,10 @@ function ProjectView() {
                                     </div>
                                     <div className="title-desc-text">
                                         Add | <button className="edit-button-pv" onClick={handleEditUsersClick}>Edit</button>
-
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <UserTable users={users} token={token} isEditing={isEditingUsers}   />
+                                    <UserTable users={users} token={token} isEditing={isEditingUsers} projectId={id}  />
                                 </div>
                             </div>
                             <div className="common-parent2">
@@ -232,14 +233,12 @@ function ProjectView() {
                                         {"Tickets"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | <button className="edit-button-pv" onClick={handleEditTicketsclick}>Edit</button>
+                                        Add | <button className="edit-button-pv" onClick={handleEditTicketsClick}>Edit</button>
 
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <TicketTable tickets={tickets} viewType={"default"}></TicketTable>
-
-
+                                    <TicketTable tickets={tickets} viewType={"default"} token={token} isEditing={isEditingTickets} projectId={id}></TicketTable>
                                 </div>
                             </div>
                         </div>

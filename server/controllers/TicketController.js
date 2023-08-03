@@ -41,18 +41,14 @@ const addTicket = asyncHandler(async (req, res) => {
         if (!updatedProject) {
             throw new Error("User not found, could not add ticket to user");
         }
-        if (assignedTo && title !== '') {
-            const updatedUser = await User.findByIdAndUpdate(
-                assignedTo,
-                {
-                    $push: { tickets: ticket._id }
-                },
-                { new: true }
-            );
+        if (assignedTo !== [] && title !== '') {
+            for (assignedUser of assignedTo){
+                const updatedUser = await User.findByIdAndUpdate(assignedUser, {$push: { tickets: ticket._id }},
+                    { new: true });
 
-
-            if (!updatedUser) {
-                throw new Error("User not found, could not add ticket to user");
+                if (!updatedUser) {
+                    throw new Error("User not found, could not add ticket to user");
+                }
             }
 
         }

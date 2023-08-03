@@ -9,6 +9,8 @@ import {getAllUsers} from "../controllers/UserController";
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
 import AddAttachment from './AddAttachment';
+import Select from 'react-select';
+
 
 function CommonFormFields({title, setTitle, type, setType, description, setDescription, priority, setPriority, project, setProject, projects, setProjects}) {
     return (
@@ -82,6 +84,16 @@ function SubmitterFields() {
 }
 
 function ProjectManagerFields({user, setUser, users, priority, setPriority, assignedTo, setAssignedTo, assignedBy, setAssignedBy}) {
+    // prepare options for the Select component
+    const options = users.map(user => ({
+        value: user._id,
+        label: `${user.firstName} ${user.lastName}`,
+    }));
+
+    // prepare the default selection
+    const defaultValue = options.filter(option =>
+        assignedTo.includes(option.value)
+    );
 
     return (
         <>
@@ -100,22 +112,16 @@ function ProjectManagerFields({user, setUser, users, priority, setPriority, assi
 
             <Form.Group>
                 <Form.Label>Assigned To</Form.Label>
-                <Form.Control
-                    as="select"
-                    value={assignedTo || 'none'}
-                    onChange={e => setAssignedTo(e.target.value === 'none' ? null : e.target.value)}
-                >
-                    <option value='none'>No Assignment</option>
-                    {users.length > 0 ? (
-                        users.map((user) => (
-                            <option key={user._id} value={user._id}>
-                                {user.firstName} {user.lastName}
-                            </option>
-                        ))
-                    ) : (
-                        <option>No users available</option>
-                    )}
-                </Form.Control>
+                <Select
+                    isMulti
+                    options={options}
+                    defaultValue={defaultValue}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={selected => {
+                        setAssignedTo(selected ? selected.map(item => item.value) : []);
+                    }}
+                />
             </Form.Group>
         </>
 
@@ -144,7 +150,7 @@ function CreateTicketPage() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignedBy, setAssignedBy] = useState(null);
-    const [assignedTo, setAssignedTo] = useState(null);
+    const [assignedTo, setAssignedTo] = useState([]);
     const [type, setType] = useState('bug');
     const [project, setProject] = useState('');
     const [status, setStatus] = useState('open');
@@ -214,7 +220,7 @@ function CreateTicketPage() {
             setTitle('');
             setDescription('');
             setAssignedBy(null);
-            setAssignedTo(null);
+            setAssignedTo([]);
             setType('bug');
             setStatus('open');
             setPriority('medium');
@@ -235,9 +241,6 @@ function CreateTicketPage() {
         setSelectedFiles(attachments);
         setSelectedFileNames(files.map(file => file.name));
     };
-
-
-
 
     useEffect(() => {
 
@@ -264,7 +267,6 @@ function CreateTicketPage() {
             }
         }
 
-
         fetchAndSetProjects().then();
         fetchAndSetUsers().then();
 
@@ -281,9 +283,6 @@ function CreateTicketPage() {
         }
 
     }, [navigate, token]);
-
-
-
 
 
     return (
@@ -324,23 +323,6 @@ function CreateTicketPage() {
                             priority={priority}
                             setPriority={setPriority}
                         />}
-                    {/*todo modify the styling of this*/}
-                    {/*<Form.Group>*/}
-                    {/*    <Form.Label>Attachment</Form.Label>*/}
-                    {/*    <Form.Control*/}
-                    {/*        type="file"*/}
-                    {/*        accept=".jpg,.jpeg,.png,.doc,.pdf" // adjust this string to limit which file types can be selected*/}
-                    {/*        onChange={handleFileSelect}*/}
-                    {/*        multiple*/}
-                    {/*    />*/}
-                    {/*    <Form.Text>*/}
-                    {/*        <Form.Text>*/}
-                    {/*            {selectedFileNames.join(', ')}*/}
-                    {/*        </Form.Text>*/}
-                    {/*    </Form.Text>*/}
-                    {/*</Form.Group>*/}
-
-                    {/*<Button variant="primary" type="submit" disabled={isLoading}>Submit</Button>*/}
                     <AddAttachment
                         selectedFiles={selectedFiles}
                         setSelectedFiles={setSelectedFiles}

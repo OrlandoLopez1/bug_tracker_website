@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import {Table, Pagination} from "react-bootstrap";
 import "./UserTable.css";
 import {deleteUser, fetchUserProjects} from "../controllers/UserController";
-
-function UserTable({ users, viewType, token, isEditing }) {
+import {removeUserFromProject} from "../controllers/ProjectController";
+function UserTable({ users, viewType, token, isEditing, projectId}) {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
@@ -24,10 +24,10 @@ function UserTable({ users, viewType, token, isEditing }) {
     };
 
     const  handleRemove = () => {
-        // todo remove user from project and vise versa
-        // todo remove user assignment from every ticket in the project
-        for (let user in selectedUsers) {
-            console.log(user)
+        for (let selectedUserId in selectedUsers) {
+            console.log(selectedUserId)
+            removeUserFromProject(projectId, selectedUserId, token)
+
         }
             setSelectedUsers({}); // Clear selected users after deleting
     };

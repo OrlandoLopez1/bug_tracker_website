@@ -197,6 +197,40 @@ const addTicketToProject = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc Remove a user from a project along with tickets associated with the project
+// @route PATCH /projects/:projectId/users/:UserId
+// @access Private
+
+const removeUserFromProject = asyncHandler( async (req, res) => {
+    //todo issue is with how tickets are not being
+    const { projectId, userId } = req.params;
+    try {
+        console.log("Start REMOVE USER")
+        const project = await Project.findById(projectId).populate({
+            path: 'tickets',
+            model: 'Ticket'
+        });
+        console.log("1")
+        const user = await User.findById(userId);
+        console.log(project)
+        console.log("1.5")
+        const filteredTickets = project.tickets.filter(ticket => ticket.assignedTo.includes(userId));
+        console.log("2")
+
+        for (let ticketToUpdate of filteredTickets) {
+            const updatedTicket = await Ticket.findByIdAndUpdate(ticketToUpdate._id, {$pull: {assignedTo: userId}}, {new: true});
+            const updatedUser = await User.findByIdAndUpdate(userId, {$pull: {tickets: ticketToUpdate._id}}, {new: true})
+        }
+        console.log("3")
+        const updatedProject = await Project.findByIdAndUpdate(projectId, {$pull: {users: userId}}, {new: true})
+        const updatedUser = await User.findByIdAndUpdate(userId, {$pull: {projects: projectId}}, {new: true})
+        res.status(200).json({ message: 'User successfully removed from project and tickets'});
+    } catch (error) {
+        console.log("555555555555555555555555")
+        res.status(500).json({ message: 'Error removing user from project and tickets', error: error.message });
+    }
+});
+
 
 module.exports = {
     addProject,
@@ -207,4 +241,5 @@ module.exports = {
     getUsersForProject,
     getTicketsForProject,
     addTicketToProject,
+    removeUserFromProject,
 };
