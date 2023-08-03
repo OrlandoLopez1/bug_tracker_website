@@ -273,13 +273,6 @@ function ProjectView() {
                         handleSave={handleSave}
                     />
                 </Modal>
-
-                <Modal
-                    isOpen={isEditing === EDIT_MODES.TICKET}
-                    onRequestClose={() => setIsEditing(null)}
-                    contentLabel="Edit Ticket"
-                >
-                </Modal>
             </div>
         )
     }

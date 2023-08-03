@@ -1,5 +1,7 @@
 const Project = require('../models/Project');
 const Ticket = require('../models/Ticket');
+const Attachment = require('../models/Attachment');
+const Comment = require('../models/Comment');
 const User = require('../models/User')
 const asyncHandler = require('express-async-handler');
 
@@ -112,7 +114,7 @@ const deleteProject = asyncHandler(async (req, res) => {
             await User.findByIdAndUpdate(
                 project.projectManager,
                 {$pull: {projects: project._id}}
-                )
+            )
         }
 
         await Project.findByIdAndRemove(id);
@@ -202,7 +204,6 @@ const addTicketToProject = asyncHandler(async (req, res) => {
 // @access Private
 
 const removeUserFromProject = asyncHandler( async (req, res) => {
-    //todo issue is with how tickets are not being
     const { projectId, userId } = req.params;
     try {
         console.log("Start REMOVE USER")
@@ -232,6 +233,42 @@ const removeUserFromProject = asyncHandler( async (req, res) => {
 });
 
 
+const removeTicketFromProject = asyncHandler( async (req, res) => {
+    console.log("RemoveTicketsFromProjectCalled");
+    const { projectId, ticketId} = req.params;
+    console.log(`tickets ID: ${ticketId}`)
+
+    try {
+        const ticket = await Ticket.findById(ticketId).populate([
+            {
+                path: 'attachments',
+                model: 'Attachment'
+            },
+            {
+                path: 'comments',
+                model: 'Comment'
+            }]
+        )
+        console.log(`current ticket: ${ticket}`)
+        for (attachmentId of ticket.attachments) {
+            console.log(`current attachment: ${attachmentId}`);
+            await Attachment.findByIdAndRemove(attachmentId);
+        }
+
+        for (commentId of ticket.comments) {
+            console.log(`current comment: ${commentId}`);
+            await Comment.findByIdAndRemove(commentId);
+        }
+        await Project.findByIdAndUpdate(projectId, {$pull: {tickets: ticketId}}, {new: true});
+        await Ticket.findByIdAndRemove(ticketId);
+        console.log("Finished Deletion process")
+        res.status(200).json("Tickets successfully removed");
+
+    } catch {
+        res.status(500).json("Something went wrong in the ticket removal process");
+    }
+});
+
 module.exports = {
     addProject,
     getProject,
@@ -242,4 +279,5 @@ module.exports = {
     getTicketsForProject,
     addTicketToProject,
     removeUserFromProject,
+    removeTicketFromProject
 };

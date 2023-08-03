@@ -218,15 +218,6 @@ const getTickets = asyncHandler(async (req, res) => {
     res.json(tickets);
 });
 
-// @desc Get tickets for a specific project
-// @route GET /tickets/project/:projectId
-// @access Private
-//todo fix this
-// const getTicketsForProject = asyncHandler(async (req, res) => {
-//     const { projectId } = req.params;
-//     const tickets = await Ticket.find({ project: projectId });
-//     res.json(tickets);
-// });
 
 module.exports = {
     addTicket,
@@ -235,5 +226,4 @@ module.exports = {
     addComment,
     getTicket,
     getTickets,
-    // getTicketsForProject
 };

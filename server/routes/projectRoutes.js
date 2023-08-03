@@ -21,10 +21,11 @@ router.route('/:id/tickets')
     .get(projectController.getTicketsForProject);
 
 router.route('/:projectId/tickets/:ticketId')
-    .patch(projectController.addTicketToProject);
+    .post(projectController.addTicketToProject)
+    .delete(projectController.removeTicketFromProject);
+
 
 router.route('/:projectId/users/:userId')
     .patch(projectController.removeUserFromProject);
-
 
 module.exports = router;

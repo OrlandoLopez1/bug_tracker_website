@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {Table, Pagination} from "react-bootstrap";
-//todo fix css for gods sake please
 import "./TicketTable.css";
-import {removeUserFromProject} from "../controllers/ProjectController";
+import {removeTicketFromProject} from "../controllers/ProjectController";
 
 function getPriorityColor(priority) {
     switch(priority) {
@@ -40,11 +39,9 @@ function TicketTable({ tickets, viewType, token, isEditing, projectId}) {
     };
 
     const handleRemove = () => {
-        for (let selectedTicketId in selectedTickets) {
-            console.log(selectedTicketId)
-            // todo write the code for this function
-            // removeTicketsFromProject(projectId, selectedTicketId, token)
-
+        for (let selectedTicketId in selectedTickets){
+            removeTicketFromProject(projectId, selectedTicketId, token)
+            console.log(`current ticket: ${selectedTicketId}`)
         }
         setSelectedTickets({}); // Clear selected users after deleting
     };
@@ -151,45 +148,7 @@ function TicketTable({ tickets, viewType, token, isEditing, projectId}) {
                     ))}
                     </tbody>
                 </Table>}
-                {/*<Table className="ticket-table-pv">*/}
-                {/*    <thead>*/}
-                {/*    <tr>*/}
-                {/*        {columns.map((column) => <th scope="col" key={column}>{column}</th>)}*/}
-                {/*    </tr>*/}
-                {/*    </thead>*/}
-                {/*    <tbody>*/}
-                {/*    {currentTickets.map((ticket) => (*/}
-                {/*        <tr key={ticket._id}>*/}
-                {/*            {columns.includes('Title') &&*/}
-                {/*                <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>*/}
-                {/*            }*/}
-                {/*            {columns.includes('Type') &&*/}
-                {/*                <td>{ticket.type}</td>*/}
-                {/*            }*/}
-                {/*            {columns.includes('Status') &&*/}
-                {/*                <td>{ticket.status}</td>*/}
-                {/*            }*/}
-                {/*            {columns.includes('Priority') &&*/}
-                {/*                <td>*/}
-                {/*                    <span*/}
-                {/*                        style={{*/}
-                {/*                            backgroundColor: getPriorityColor(ticket.priority),*/}
-                {/*                            padding: "5px",*/}
-                {/*                            borderRadius: "5px"*/}
-                {/*                        }}>*/}
-                {/*                        {ticket.priority}*/}
-                {/*                    </span>*/}
-                {/*                </td>*/}
-                {/*            }*/}
-                {/*        </tr>*/}
-                {/*    ))}*/}
-                {/*    {emptyRows.map((_, index) => (*/}
-                {/*        <tr key={`empty-${index}`}>*/}
-                {/*            <td colSpan={columns.length}>&nbsp;</td>*/}
-                {/*        </tr>*/}
-                {/*    ))}*/}
-                {/*    </tbody>*/}
-                {/*</Table>*/}
+
                 <div className={"ticket-table-buttons-pv"}>
                     <Pagination>
                         {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (

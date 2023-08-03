@@ -118,7 +118,7 @@ export async function fetchTicketsForProject(projectId, token) {
 
 export async function addTicketToProject(projectId, ticketId, token) {
     const response = await fetch(`http://localhost:5000/projects/${projectId}/tickets/${ticketId}`, {
-        method: "PATCH",
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
@@ -135,6 +135,22 @@ export async function addTicketToProject(projectId, ticketId, token) {
 export async function removeUserFromProject(projectId, userId, token) {
     const response = await fetch(`http://localhost:5000/projects/${projectId}/users/${userId}`, {
         method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function removeTicketFromProject(projectId, ticketId, token) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/tickets/${ticketId}`, {
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
