@@ -39,11 +39,11 @@ const addProject = asyncHandler(async (req, res) => {
     }
 });
 // @desc Get a specific project by id
-// @route GET /projects/:id
+// @route GET /projects/:projectId
 // @access Private
 const getProject = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const project = await Project.findById(id);
+    const { projectId} = req.params;
+    const project = await Project.findById(projectId);
     if (!project) {
         return res.status(404).json({ message: 'Cannot find project' });
     }
@@ -63,13 +63,13 @@ const getProjects = asyncHandler(async (req, res) => {
 });
 
 // @desc Update a specific project
-// @route PATCH /projects/:id
+// @route PATCH /projects/:projectId
 // @access Private
 const updateProject = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { projectId } = req.params;
     try {
-        const oldProject = await Project.findById(id);
-        const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true }).populate('users');
+        const oldProject = await Project.findById(projectId);
+        const updatedProject = await Project.findByIdAndUpdate(projectId, req.body, { new: true }).populate('users');
 
         // Find any new users that were added
         const oldUsers = oldProject.users.map(user => user._id.toString());
@@ -94,16 +94,16 @@ const updateProject = asyncHandler(async (req, res) => {
 
 
 // @desc Delete a specific project
-// @route DELETE /projects/:id
+// @route DELETE /projects/:projectId
 // @access Private
 const deleteProject = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { projectId } = req.params;
     try {
-        const tickets = await Ticket.find({ project: id });
+        const tickets = await Ticket.find({ project: projectId });
 
-        const deletedTicketsResult = await Ticket.deleteMany({project: id});
+        const deletedTicketsResult = await Ticket.deleteMany({ project: projectId });
 
-        const project = await Project.findById(id);
+        const project = await Project.findById( projectId );
 
         // Find all users associated with the project and remove the project from their projects array
         await User.updateMany(
@@ -117,8 +117,8 @@ const deleteProject = asyncHandler(async (req, res) => {
             )
         }
 
-        await Project.findByIdAndRemove(id);
-        console.log(`Deleted project ${id}`);
+        await Project.findByIdAndRemove( projectId );
+        console.log(`Deleted project ${projectId}`);
 
         res.json({ message: 'Project deleted' });
     } catch (error) {
@@ -128,12 +128,12 @@ const deleteProject = asyncHandler(async (req, res) => {
 });
 
 // @desc Get all users associated with a specific project
-// @route GET /projects/:id/users
+// @route GET /projects/:projectId/users
 // @access Private
 const getUsersForProject = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { projectId } = req.params;
     try {
-        const project = await Project.findById(id).populate('users');
+        const project = await Project.findById(projectId).populate('users');
         if (!project) {
             return res.status(404).json({ message: 'Cannot find project' });
         }
@@ -145,10 +145,10 @@ const getUsersForProject = asyncHandler(async (req, res) => {
 
 
 // @desc Get all tickets associated with a specific project
-// @route GET /projects/:id/tickets
+// @route GET /projects/:projectId/tickets
 // @access Private
 const getTicketsForProject = asyncHandler(async (req, res) => {
-    const projectId = req.params.id;  // assuming that the project ID is sent as a URL parameter
+    const projectId = req.params.projectId;  // assuming that the project ID is sent as a URL parameter
 
     try {
         const project = await Project.findById(projectId).populate({

@@ -13,7 +13,7 @@ export default function Login() {
             const data = await loginUser(email, password);
             if (data.accessToken) {
                 localStorage.setItem('accessToken', data.accessToken);
-                navigate("/homepage");
+                navigate("/");
                 alert("Login Successful");
             } else {
                 alert("Something went wrong");

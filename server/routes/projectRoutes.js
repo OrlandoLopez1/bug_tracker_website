@@ -9,15 +9,15 @@ router.route('/')
     .get(projectController.getProjects)
     .post(projectController.addProject);
 
-router.route('/:id')
+router.route('/:projectId')
     .get(projectController.getProject)
     .patch(projectController.updateProject)
     .delete(projectController.deleteProject);
 
-router.route('/:id/users')
+router.route('/:projectId/users')
     .get(projectController.getUsersForProject);
 
-router.route('/:id/tickets')
+router.route('/:projectId/tickets')
     .get(projectController.getTicketsForProject);
 
 router.route('/:projectId/tickets/:ticketId')

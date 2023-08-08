@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
-import HomePage from "./components/HomePage";
 import TicketForm from "./components/TicketForm";
 import TicketPage from "./components/TicketPage";
 import TicketView from "./components/TicketView";
@@ -26,7 +25,6 @@ function App() {
                     <Route path="/" element={ token ? <ProjectPage /> : <Login /> } />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    {/*<Route path="/homepage" element={<HomePage />} />*/}
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/ticketForm" element={<TicketForm />} />
                     <Route path="/ticketPage" element={<TicketPage />} />
@@ -34,7 +32,7 @@ function App() {
                     <Route path="/projectPage" element={<ProjectPage />} />
                     <Route path="/projectView/:id" element={<ProjectView />} />
                     <Route path="/testing/:id" element={<Testing/>} />
-                    <Route path="/test/:id" element={<ParentComponentTest/>} />
+                    <Route path="/test/:projectId" element={<ParentComponentTest/>} />
                     <Route path="/ticketView/:ticketId" element={<TicketView />} />
                     <Route path="/userView/:userId" element={<UserView />} />
 
