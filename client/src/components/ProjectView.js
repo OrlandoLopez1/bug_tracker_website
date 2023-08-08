@@ -19,7 +19,7 @@ import {FormLabel} from "react-bootstrap";
 Modal.setAppElement('#root');
 
 function ProjectView() {
-    const {id} = useParams();
+    const {projectId} = useParams();
     const [project, setProject] = useState({});
     const [users, setUsers] = useState(null);
     const [tickets, setTickets] = useState(null);
@@ -66,7 +66,7 @@ function ProjectView() {
 
     const fetchAndSetUsers = useCallback(async () => {
         try {
-            const fetchedUsers = await fetchUsersForProject(id, token);
+            const fetchedUsers = await fetchUsersForProject(projectId, token);
             setUsers(fetchedUsers);
             setSelectedUsers(fetchedUsers.map(user => user._id));
             //todo check this, was 'users' now 'allUsers'
@@ -147,8 +147,8 @@ function ProjectView() {
 
         const fetchData = async () => {
             try {
-                const projectData = await fetchProject(id, token);
-                const ticketData = await fetchTicketsForProject(id, token);
+                const projectData = await fetchProject(projectId, token);
+                const ticketData = await fetchTicketsForProject(projectId, token);
                 setProject(projectData);
                 setTickets(ticketData)
                 setName(projectData.name);
@@ -234,7 +234,7 @@ function ProjectView() {
                                         users={users}
                                         token={token}
                                         isEditing={isEditingUsers}
-                                        projectId={id}
+                                        projectId={projectId}
                                         fetchAndSetUsers={fetchAndSetUsers}
                                     />
                                 </div>
@@ -250,7 +250,7 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <TicketTable tickets={tickets} viewType={"default"} token={token} isEditing={isEditingTickets} projectId={id}></TicketTable>
+                                    <TicketTable tickets={tickets} viewType={"default"} token={token} isEditing={isEditingTickets} projectId={projectId}></TicketTable>
                                 </div>
                             </div>
                         </div>
@@ -262,7 +262,7 @@ function ProjectView() {
                     contentLabel="Edit Project"
                 >
                     <ProjectEditForm
-                        projectId={id}
+                        projectId={projectId}
                         name={name}
                         setName={setName}
                         projectDescription={projectDescription}

@@ -31,7 +31,7 @@ function ChildComponent({users, projectId, token}){
    useEffect(() => {
        console.log("calling useEffect in ChildComponet");
        fetchData();
-   },[currentUsers, token])
+   },[token])
 
     return (
         <div>

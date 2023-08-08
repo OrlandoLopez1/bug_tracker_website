@@ -30,7 +30,7 @@ function App() {
                     <Route path="/ticketPage" element={<TicketPage />} />
                     <Route path="/projectForm" element={<ProjectForm />} />
                     <Route path="/projectPage" element={<ProjectPage />} />
-                    <Route path="/projectView/:id" element={<ProjectView />} />
+                    <Route path="/projectView/:projectId" element={<ProjectView />} />
                     <Route path="/testing/:id" element={<Testing/>} />
                     <Route path="/test/:projectId" element={<ParentComponentTest/>} />
                     <Route path="/ticketView/:ticketId" element={<TicketView />} />
