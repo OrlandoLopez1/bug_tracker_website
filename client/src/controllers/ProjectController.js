@@ -50,7 +50,7 @@ export async function addProject(project, token) {
 }
 
 export async function updateProject(project, token) {
-    const response = await fetch(`http://localhost:5000/projects/${project._projectId}`, {
+    const response = await fetch(`http://localhost:5000/projects/${project._id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
