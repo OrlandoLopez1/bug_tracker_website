@@ -4,7 +4,8 @@ import {Table, Pagination} from "react-bootstrap";
 import "./UserTable.css";
 import {deleteUser, fetchUserProjects} from "../controllers/UserController";
 import {removeUserFromProject} from "../controllers/ProjectController";
-function UserTable({ users, viewType, token, isEditing, projectId}) {
+function UserTable({ users, viewType, token, isEditing, projectId, fetchAndSetUsers}) {
+    //todo look into how users is being updated when passed up to the parent, maybe try to isolate the tables from the parent????
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
@@ -12,9 +13,8 @@ function UserTable({ users, viewType, token, isEditing, projectId}) {
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
     const [selectedUsers, setSelectedUsers] = useState({});
-
     const emptyRows = Array(usersPerPage - currentUsers.length).fill(null);
-
+    const [displayUsers, setDisplayUsers] = useState(users);
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -27,9 +27,8 @@ function UserTable({ users, viewType, token, isEditing, projectId}) {
         for (let selectedUserId in selectedUsers) {
             console.log(selectedUserId)
             removeUserFromProject(projectId, selectedUserId, token)
-
         }
-            setSelectedUsers({}); // Clear selected users after deleting
+        setSelectedUsers({});
     };
 
     const columnsConfig = {
@@ -41,7 +40,6 @@ function UserTable({ users, viewType, token, isEditing, projectId}) {
     const columns = columnsConfig[viewType] || columnsConfig.default;
 
     useEffect(() => {
-        // If isEditing changes from true to false, clear selectedUsers
         if (!isEditing) {
             setSelectedUsers({});
         }

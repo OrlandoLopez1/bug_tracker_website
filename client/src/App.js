@@ -14,6 +14,7 @@ import  ProjectForm from "./components/ProjectForm";
 import  ProjectView from "./components/ProjectView";
 import Dashboard from "./components/Dashboard";
 import Testing from "./components/testing";
+import ParentComponentTest from "./components/ParentComponentTest"
 // todo make it redirect to a logged out page after a token expires
 function App() {
     const token = localStorage.getItem('accessToken');
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/projectPage" element={<ProjectPage />} />
                     <Route path="/projectView/:id" element={<ProjectView />} />
                     <Route path="/testing/:id" element={<Testing/>} />
+                    <Route path="/test/:id" element={<ParentComponentTest/>} />
                     <Route path="/ticketView/:ticketId" element={<TicketView />} />
                     <Route path="/userView/:userId" element={<UserView />} />
 

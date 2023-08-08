@@ -25,6 +25,7 @@ function ProjectView() {
     const [tickets, setTickets] = useState(null);
     const [isEditing, setIsEditing] = useState(null);
     const [isEditingUsers, setIsEditingUsers] = useState(null);
+    const [isAddingUsers, setIsAddingUsers] = useState(null);
     const [isEditingTickets, setIsEditingTickets] = useState(null);
     const EDIT_MODES = { PROJECT: 'PROJECT', USER: 'USER', TICKET: 'TICKET' };
     const token = localStorage.getItem('accessToken');
@@ -53,6 +54,10 @@ function ProjectView() {
         setIsEditingUsers(!isEditingUsers);
     };
 
+    //todo finish implementing
+   const handleAddUsersClick = () => {
+       setIsAddingUsers(!isAddingUsers);
+   }
 
     const handleEditTicketsClick = () => {
         console.log("edit button for tickets clicked!")
@@ -64,8 +69,9 @@ function ProjectView() {
             const fetchedUsers = await fetchUsersForProject(id, token);
             setUsers(fetchedUsers);
             setSelectedUsers(fetchedUsers.map(user => user._id));
-            const users = await getAllUsers(token);
-            const assignableUsers = users.filter(user => user.role === 'submitter' || user.role === 'developer');
+            //todo check this, was 'users' now 'allUsers'
+            const allUsers= await getAllUsers(token);
+            const assignableUsers = allUsers.filter(user => user.role === 'submitter' || user.role === 'developer');
 
             setAssignableUsers(assignableUsers);
 
@@ -220,11 +226,17 @@ function ProjectView() {
                                         {"Users"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | <button className="edit-button-pv" onClick={handleEditUsersClick}>Edit</button>
+                                        <button className="add-buttn-pv" onClick={handleAddUsersClick}>Add |</button> <button className="edit-button-pv" onClick={handleEditUsersClick}>Edit</button>
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <UserTable users={users} token={token} isEditing={isEditingUsers} projectId={id}  />
+                                    <UserTable
+                                        users={users}
+                                        token={token}
+                                        isEditing={isEditingUsers}
+                                        projectId={id}
+                                        fetchAndSetUsers={fetchAndSetUsers}
+                                    />
                                 </div>
                             </div>
                             <div className="common-parent2">
