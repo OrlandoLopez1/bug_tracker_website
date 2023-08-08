@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import {Table, Pagination} from "react-bootstrap";
 import "./UserTable.css";
 import {deleteUser, fetchUserProjects} from "../controllers/UserController";
-import {removeUserFromProject} from "../controllers/ProjectController";
-function UserTable({ users, viewType, token, isEditing, projectId, fetchAndSetUsers}) {
-    //todo look into how users is being updated when passed up to the parent, maybe try to isolate the tables from the parent????
+import {fetchUsersForProject, removeUserFromProject} from "../controllers/ProjectController";
+function UserTable({ users, setUsers, viewType, token, isEditing, projectId}) {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
@@ -23,13 +22,28 @@ function UserTable({ users, viewType, token, isEditing, projectId, fetchAndSetUs
         setSelectedUsers({...selectedUsers, [userId]: isChecked,});
     };
 
-    const  handleRemove = () => {
-        for (let selectedUserId in selectedUsers) {
-            console.log(selectedUserId)
-            removeUserFromProject(projectId, selectedUserId, token)
+    const fetchUsers = async () => {
+        try {
+            const fetchedUsers = await fetchUsersForProject(projectId, token);
+            setUsers(fetchedUsers);
+        } catch (error) {
+            console.error("ChildComponent.js fetchData error: ", error);
         }
-        setSelectedUsers({});
     };
+
+    const  handleRemove = async () => {
+        const removalPromises = Object.keys(selectedUsers).map(async selectedUserId=> {
+            if (selectedUsers[selectedUserId]) {
+                console.log(selectedUserId);
+                return removeUserFromProject(projectId, selectedUserId, token);
+            }
+        });
+            await Promise.all(removalPromises);
+            console.log(`removal promises ${removalPromises}`)
+            setSelectedUsers({});
+            fetchUsers();
+        };
+
 
     const columnsConfig = {
         default: ['name', 'email', 'role'],

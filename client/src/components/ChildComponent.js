@@ -1,64 +1,67 @@
-import React, {useEffect, useState} from 'react';
-import {Button} from 'react-bootstrap';
-import {fetchUsersForProject, removeUserFromProject} from "../controllers/ProjectController";
-function ChildComponent({users, projectId, token}){
-    const [selectedUsers, setSelectedUsers] = useState([])
-    const [currentUsers, setCurrentUsers] = useState(users);
+import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import { fetchUsersForProject, removeUserFromProject } from "../controllers/ProjectController";
+function ChildComponent({ users, setUsers, projectId, token }) {
+    const [selectedUsers, setSelectedUsers] = useState([]);
+
     const handleCheckboxChange = (userId, isChecked) => {
-        setSelectedUsers({...selectedUsers, [userId]: isChecked,});
-        console.log(`Selected user: ${userId} was ${isChecked ? "checked" : "unchecked"}`)
+        setSelectedUsers(prevState => ({ ...prevState, [userId]: isChecked }));
+        console.log(`Selected user: ${userId} was ${isChecked ? "checked" : "unchecked"}`);
     };
 
-    const fetchData = async () => {
+    const handleRemove = async () => {
+        const removalPromises = Object.keys(selectedUsers).map(async selectedUserId => {
+            if (selectedUsers[selectedUserId]) {
+                console.log(selectedUserId);
+                return removeUserFromProject(projectId, selectedUserId, token);
+            }
+        });
+
+        await Promise.all(removalPromises);
+        console.log("removalPromises");
+        console.log(removalPromises);
+        setSelectedUsers({});
+        // fetchData();
+    };
+
+    const fetchUsers = async () => {
         try {
             const fetchedUsers = await fetchUsersForProject(projectId, token);
-            setCurrentUsers(fetchedUsers);
+            setUsers(fetchedUsers);
+        } catch (error) {
+            console.error("ChildComponent.js fetchData error: ", error);
         }
-        catch (error) {
-            console.error("ParentComponentTest.js useEffect error: ", error);
-        }
-    }
-
-    const  handleRemove = () => {
-        for (let selectedUserId in selectedUsers) {
-            console.log(selectedUserId);
-            removeUserFromProject(projectId, selectedUserId, token);
-
-        }
-        setSelectedUsers({});
     };
 
-   useEffect(() => {
-       console.log("calling useEffect in ChildComponet");
-       fetchData();
-   },[token])
+    useEffect(() => {
+        fetchUsers();
+    }, [token, projectId]);
 
     return (
         <div>
             <table>
                 <thead>
                 <tr>
-                    <th>checkbox</th>
-                    <th>name</th>
+                    <th>Checkbox</th>
+                    <th>Name</th>
                 </tr>
                 </thead>
                 <tbody>
-                    {users.map((user, index) => (
-                        <tr key={user._id}>
-                            <th>
-                                <input type="checkbox" checked={!!selectedUsers[user._id]} onChange={(e) => handleCheckboxChange(user._id, e.target.checked)} />
-                            </th>
-                            <th key={index}>
-                                {user.firstName}
-                            </th>
-                        </tr>
-                    ))}
+                {users.map(user => (
+                    <tr key={user._id}>
+                        <td>
+                            <input type="checkbox" checked={!!selectedUsers[user._id]} onChange={(e) => handleCheckboxChange(user._id, e.target.checked)} />
+                        </td>
+                        <td>
+                            {user.firstName}
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
-
             </table>
             <Button onClick={handleRemove}>Remove</Button>
         </div>
-    )
+    );
 }
 
 export default ChildComponent;

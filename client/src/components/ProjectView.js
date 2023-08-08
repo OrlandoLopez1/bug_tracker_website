@@ -232,6 +232,7 @@ function ProjectView() {
                                 <div className="content">
                                     <UserTable
                                         users={users}
+                                        setUsers={setUsers}
                                         token={token}
                                         isEditing={isEditingUsers}
                                         projectId={projectId}
