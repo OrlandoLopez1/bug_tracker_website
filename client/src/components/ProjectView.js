@@ -24,9 +24,9 @@ function ProjectView() {
     const [users, setUsers] = useState(null);
     const [tickets, setTickets] = useState(null);
     const [isEditing, setIsEditing] = useState(null);
-    const [isEditingUsers, setIsEditingUsers] = useState(null);
-    const [isAddingUsers, setIsAddingUsers] = useState(null);
-    const [isEditingTickets, setIsEditingTickets] = useState(null);
+    const [isEditingUsers, setIsEditingUsers] = useState(false);
+    const [isAddingUsers, setIsAddingUsers] = useState(false);
+    const [isEditingTickets, setIsEditingTickets] = useState(false);
     const EDIT_MODES = { PROJECT: 'PROJECT', USER: 'USER', TICKET: 'TICKET' };
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -51,28 +51,22 @@ function ProjectView() {
     const handleEditProjectClick = () => {
         setIsEditing(EDIT_MODES.PROJECT);
     };
-
-    const handleEditUsersClick = () => {
+    //todo fix this, issue with the add and edit alternations
+    const handleEditUsersClick = async () => {
+        console.log(`edituser is currently: ${isEditingUsers}`)
+        if (isAddingUsers) {
+            setIsAddingUsers(false);
+        }
         setIsEditingUsers(!isEditingUsers);
-        setIsAddingUsers(!isAddingUsers);
-        if (isEditingUsers) {
-            setUserTableViewMode('edit');
-        }
-        else {
-            setUserTableViewMode('view');
-        }
     };
 
-   const handleAddUsersClick = () => {
-       setIsAddingUsers(!isAddingUsers);
-       setIsEditingUsers(!isEditingUsers);
-       if (isAddingUsers){
-           setUserTableViewMode('add');
-       }
-       else {
-           setUserTableViewMode('view');
-       }
-   }
+    const handleAddUsersClick = async () => {
+        if (isEditingUsers) {
+            setIsEditingUsers(false);
+        }
+        setIsAddingUsers(!isAddingUsers);
+    };
+
 
     const handleEditTicketsClick = () => {
         console.log("edit button for tickets clicked!")
@@ -160,7 +154,6 @@ function ProjectView() {
         if (!token) {
             navigate('/login');
         }
-
         const fetchData = async () => {
             try {
                 const projectData = await fetchProject(projectId, token);
@@ -190,10 +183,20 @@ function ProjectView() {
         fetchData();
     }, [navigate, token, fetchAndSetUsers]);
 
+    useEffect(() => {
+        if (isAddingUsers) {
+            setUserTableViewMode('add');
+        } else if (isEditingUsers) {
+            setUserTableViewMode('edit');
+        } else {
+            setUserTableViewMode('view');
+        }
+    }, [isAddingUsers, isEditingUsers]);
+
+
     if (loading) {
         return <p>Loading...</p>
     } else {
-        console.log("project: ", project)
         return (
             <div>
                 <CustomNavbar/>
