@@ -26,6 +26,7 @@ router.route('/:projectId/tickets/:ticketId')
 
 
 router.route('/:projectId/users/:userId')
+    .post(projectController.addUserToProject)
     .patch(projectController.removeUserFromProject);
 
 module.exports = router;

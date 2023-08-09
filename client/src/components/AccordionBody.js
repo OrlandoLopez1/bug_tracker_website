@@ -186,7 +186,7 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
             </div>
             <div>
                 <h3>Users:</h3>
-                <UserTable  users={users} token={token}/>
+                <UserTable  users={users} token={token} viewMode={'view'}/>
             </div>
         </div>
     );

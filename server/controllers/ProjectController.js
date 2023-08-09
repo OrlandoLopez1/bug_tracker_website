@@ -232,6 +232,16 @@ const removeUserFromProject = asyncHandler( async (req, res) => {
     }
 });
 
+const addUserToProject = asyncHandler ( async (req, res) => {
+    const { projectId, userId } = req.params;
+    try {
+        await Project.findByIdAndUpdate(projectId, {$push: {users: userId}}, {new: true})
+        await User.findByIdAndUpdate(userId, {$push: {projects: projectId}}, {new: true})
+        res.status(200).json({ message: 'User successfully added to project'});
+    } catch (error) {
+        res.status(500).json({ message: 'Error removing user from project', error: error.message });
+    }
+});
 
 const removeTicketFromProject = asyncHandler( async (req, res) => {
     console.log("RemoveTicketsFromProjectCalled");
@@ -278,6 +288,7 @@ module.exports = {
     getUsersForProject,
     getTicketsForProject,
     addTicketToProject,
+    addUserToProject,
     removeUserFromProject,
     removeTicketFromProject
 };

@@ -148,6 +148,23 @@ export async function removeUserFromProject(projectId, userId, token) {
     return await response.json();
 }
 
+export async function addUserToProject(projectId, userId, token) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/users/${userId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+
 export async function removeTicketFromProject(projectId, ticketId, token) {
     const response = await fetch(`http://localhost:5000/projects/${projectId}/tickets/${ticketId}`, {
         method: "DELETE",

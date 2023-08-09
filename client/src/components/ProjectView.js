@@ -31,6 +31,7 @@ function ProjectView() {
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    const [userTableViewMode, setUserTableViewMode] = useState('view');
 
     const [name, setName] = useState('');
     const [projectManager, setProjectManager] = useState(null);
@@ -45,6 +46,7 @@ function ProjectView() {
 
 
 
+
     // updated click handlers to set correct mode
     const handleEditProjectClick = () => {
         setIsEditing(EDIT_MODES.PROJECT);
@@ -52,11 +54,24 @@ function ProjectView() {
 
     const handleEditUsersClick = () => {
         setIsEditingUsers(!isEditingUsers);
+        setIsAddingUsers(!isAddingUsers);
+        if (isEditingUsers) {
+            setUserTableViewMode('edit');
+        }
+        else {
+            setUserTableViewMode('view');
+        }
     };
 
-    //todo finish implementing
    const handleAddUsersClick = () => {
        setIsAddingUsers(!isAddingUsers);
+       setIsEditingUsers(!isEditingUsers);
+       if (isAddingUsers){
+           setUserTableViewMode('add');
+       }
+       else {
+           setUserTableViewMode('view');
+       }
    }
 
     const handleEditTicketsClick = () => {
@@ -72,13 +87,14 @@ function ProjectView() {
             //todo check this, was 'users' now 'allUsers'
             const allUsers= await getAllUsers(token);
             const assignableUsers = allUsers.filter(user => user.role === 'submitter' || user.role === 'developer');
-
             setAssignableUsers(assignableUsers);
 
-            const projectManagers = users.filter(user => user.role === 'projectmanager');
-            setProjectManagers(projectManagers);
-            if (projectManagers.length > 0) {
-                setProjectManager(projectManagers[0]._id); // use setProjectManager instead
+            if (fetchedUsers.length > 0) {
+                const projectManagers = fetchedUsers.filter(user => user.role === 'projectmanager');
+                setProjectManagers(projectManagers);
+                if (projectManagers.length > 0) {
+                    setProjectManager(projectManagers[0]._id);
+                }
             }
         } catch (error) {
             console.error('Failed to fetch users:', error);
@@ -189,7 +205,7 @@ function ProjectView() {
                                 {project.name}
                             </div>
                             <div className="title-desc-text">
-                                Back | <button className="edit-button-pv" onClick={handleEditProjectClick}>Edit</button>
+                                Back | <button className="button-pv" onClick={handleEditProjectClick}>Edit</button>
                         </div>
                         </div>
                         <div className="project-details-top-container">
@@ -226,7 +242,7 @@ function ProjectView() {
                                         {"Users"}
                                     </div>
                                     <div className="title-desc-text">
-                                        <button className="add-buttn-pv" onClick={handleAddUsersClick}>Add |</button> <button className="edit-button-pv" onClick={handleEditUsersClick}>Edit</button>
+                                        <button className="button-pv" onClick={handleAddUsersClick}>Add |</button> <button className="button-pv" onClick={handleEditUsersClick}>Edit</button>
                                     </div>
                                 </div>
                                 <div className="content">
@@ -235,6 +251,8 @@ function ProjectView() {
                                         setUsers={setUsers}
                                         token={token}
                                         isEditing={isEditingUsers}
+                                        isAdding={isAddingUsers}
+                                        viewMode={userTableViewMode}
                                         projectId={projectId}
                                         fetchAndSetUsers={fetchAndSetUsers}
                                     />
@@ -246,7 +264,7 @@ function ProjectView() {
                                         {"Tickets"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | <button className="edit-button-pv" onClick={handleEditTicketsClick}>Edit</button>
+                                        Add | <button className="button-pv" onClick={handleEditTicketsClick}>Edit</button>
 
                                     </div>
                                 </div>
