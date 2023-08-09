@@ -4,7 +4,7 @@ import {Table, Pagination} from "react-bootstrap";
 import "./UserTable.css";
 import {deleteUser, fetchUserProjects, getAllUsers} from "../controllers/UserController";
 import {fetchUsersForProject, addUserToProject, removeUserFromProject} from "../controllers/ProjectController";
-function UserTable({ users, setUsers, tableType, viewMode, token, isEditing, projectId}) {
+function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, isEditing, projectId}) {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
@@ -58,6 +58,7 @@ function UserTable({ users, setUsers, tableType, viewMode, token, isEditing, pro
         console.log(`removal promises ${additionPromises}`)
         setSelectedUsers({});
         fetchUsers();
+        setViewMode('view');
    };
 
     const  handleRemove = async () => {

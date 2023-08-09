@@ -256,6 +256,7 @@ function ProjectView() {
                                         isEditing={isEditingUsers}
                                         isAdding={isAddingUsers}
                                         viewMode={userTableViewMode}
+                                        setViewMode={setUserTableViewMode}
                                         projectId={projectId}
                                         fetchAndSetUsers={fetchAndSetUsers}
                                     />
