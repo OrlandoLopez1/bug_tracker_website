@@ -15,6 +15,7 @@ function UserTable({ users, setUsers, tableType, viewMode, token, isEditing, pro
     const emptyRows = Array(usersPerPage - currentUsers.length).fill(null);
     const [displayUsers, setDisplayUsers] = useState(users);
     const [allUsers, setAllUsers] = useState([])
+    const [filteredUsers, setFilteredUsers] = useState([])
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -36,6 +37,9 @@ function UserTable({ users, setUsers, tableType, viewMode, token, isEditing, pro
         try {
             const allFetchedUsers= await getAllUsers(token);
             setAllUsers(allFetchedUsers);
+            const types = ['developer', 'submitter'];
+            const usersFilteredByType = allUsers.filter(user => types.includes(user.type));
+            setFilteredUsers(usersFilteredByType)
         }
         catch (error) {
             console.error(`Error fetching all users: ${error}`)
@@ -196,7 +200,7 @@ function UserTable({ users, setUsers, tableType, viewMode, token, isEditing, pro
                         </tr>
                         </thead>
                         <tbody>
-                        {allUsers.map((user) => (
+                        {filteredUsers.map((user) => (
                             <tr key={user._id}>
                                 <td>
                                     <input type="checkbox" checked={!!selectedUsers[user._id]}
@@ -250,6 +254,18 @@ function UserTable({ users, setUsers, tableType, viewMode, token, isEditing, pro
         setSelectedUsers({})
         fetchAllUsers();
     }, [token]);
+
+   useEffect(() => {
+       console.log("all users: ", allUsers)
+       const types = ['developer', 'submitter'];
+        console.log('Users: ', users)
+       const usersFilteredByType = allUsers.filter(user =>
+           types.includes(user.role) && !users.some(existingUser => existingUser._id === user._id)
+       );
+       setFilteredUsers(usersFilteredByType)
+   },[allUsers])
+
+
     return (
         <div>
             {table}
