@@ -16,6 +16,13 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
     const [displayUsers, setDisplayUsers] = useState(users);
     const [allUsers, setAllUsers] = useState([])
     const [filteredUsers, setFilteredUsers] = useState([])
+
+    const helpfulButton = () => {
+        console.log("allUsers array: ", allUsers);
+        console.log("filtered array: ", filteredUsers)
+        console.log("users array: ",users)
+    }
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -27,51 +34,55 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
     const fetchUsers = async () => {
         try {
             const fetchedUsers = await fetchUsersForProject(projectId, token);
-            setUsers(fetchedUsers);
+            setUsers(fetchedUsers); // State update scheduled here
         } catch (error) {
             console.error("ChildComponent.js fetchData error: ", error);
         }
     };
-
     const fetchAllUsers = async () => {
         try {
-            const allFetchedUsers= await getAllUsers(token);
-            setAllUsers(allFetchedUsers);
-            const types = ['developer', 'submitter'];
-            const usersFilteredByType = allUsers.filter(user => types.includes(user.type));
-            setFilteredUsers(usersFilteredByType)
-        }
-        catch (error) {
+            console.log("called fetchAllUsers")
+            const allFetchedUsers = await getAllUsers(token);
+            setAllUsers(allFetchedUsers); // Don't call updateFilteredUsers here
+
+        } catch (error) {
             console.error(`Error fetching all users: ${error}`)
         }
+    }
+    const updateFilteredUsers =  () => {
+        const types = ['developer', 'submitter'];
+        console.log("users Array", users);
+        console.log("allUsers Array", allUsers)
+        const usersFilteredByType = allUsers.filter(user =>
+            types.includes(user.role) && !users.some(existingUser => existingUser._id === user._id)
+        );
+        setFilteredUsers(usersFilteredByType)
 
     }
 
-   const handleAdd = async () => {
-       const additionPromises= Object.keys(selectedUsers).map(async selectedUserId=> {
-           if (selectedUsers[selectedUserId]) {
-               console.log(selectedUserId);
-               return addUserToProject(projectId, selectedUserId, token);
-           }
-       });
+    const handleAdd = async () => {
+        const additionPromises= Object.keys(selectedUsers).map(async selectedUserId=> {
+            if (selectedUsers[selectedUserId]) {
+                return addUserToProject(projectId, selectedUserId, token);
+            }
+        });
         await Promise.all(additionPromises);
-        console.log(`removal promises ${additionPromises}`)
         setSelectedUsers({});
-        fetchUsers();
+        await fetchUsers();
         setViewMode('view');
-   };
+        updateFilteredUsers()
+    };
 
     const  handleRemove = async () => {
         const removalPromises = Object.keys(selectedUsers).map(async selectedUserId=> {
             if (selectedUsers[selectedUserId]) {
-                console.log(selectedUserId);
                 return removeUserFromProject(projectId, selectedUserId, token);
             }
         });
             await Promise.all(removalPromises);
-            console.log(`removal promises ${removalPromises}`)
             setSelectedUsers({});
-            fetchUsers();
+            await fetchUsers();
+            await updateFilteredUsers();
         };
 
 
@@ -86,7 +97,6 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
     let table;
     switch(viewMode) {
         case 'view':
-            console.log("In view mode")
             table = (
                 <div>
                     <Table className="table-user-pv">
@@ -248,28 +258,54 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
 
     }
 
+    // useEffect(() => {
+    //     console.log("useEffect 1 running UT")
+    //     if (!isEditing) {
+    //         setSelectedUsers({});
+    //     }
+    //     const fetchData = async () => {
+    //         console.log("In fetch data")
+    //         await fetchAllUsers();
+    //     }
+    //     setSelectedUsers({})
+    //     fetchData();
+    // }, [token]);
+
     useEffect(() => {
-        if (!isEditing) {
-            setSelectedUsers({});
+        console.log("useEffect 1 running UT")
+        const fetchData = async () => {
+            console.log("In fetch data")
+            await fetchAllUsers();
         }
-        setSelectedUsers({})
-        fetchAllUsers();
+        setSelectedUsers({});
+        fetchData();
     }, [token]);
 
-   useEffect(() => {
-       console.log("all users: ", allUsers)
-       const types = ['developer', 'submitter'];
-        console.log('Users: ', users)
-       const usersFilteredByType = allUsers.filter(user =>
-           types.includes(user.role) && !users.some(existingUser => existingUser._id === user._id)
-       );
-       setFilteredUsers(usersFilteredByType)
-   },[allUsers])
+    useEffect(() => { // New useEffect hook to watch allUsers
+        updateFilteredUsers();
+    }, [allUsers]);
 
+    useEffect(() => {
+        updateFilteredUsers(); // Called after the users state changes
+    }, [users]);
+
+    // useEffect(() => {
+    //     console.log("useEffect 3 running UT")
+    //     console.log("FilteredUsers: ", filteredUsers)
+    //
+    // }, [filteredUsers])
+
+    // useEffect(() => {
+    //     console.log("useEffect 2 running UT")
+    //     updateFilteredUsers();
+    // }, [users])
 
     return (
+
         <div>
             {table}
+            <button onClick={helpfulButton}>HELP</button>
+
         </div>
     );
 }
