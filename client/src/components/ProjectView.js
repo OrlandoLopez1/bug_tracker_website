@@ -53,7 +53,6 @@ function ProjectView() {
     };
     //todo fix this, issue with the add and edit alternations
     const handleEditUsersClick = async () => {
-        console.log(`edituser is currently: ${isEditingUsers}`)
         if (isAddingUsers) {
             setIsAddingUsers(false);
         }
@@ -69,7 +68,6 @@ function ProjectView() {
 
 
     const handleEditTicketsClick = () => {
-        console.log("edit button for tickets clicked!")
         setIsEditingTickets(!isEditingTickets);
     };
 
@@ -151,6 +149,7 @@ function ProjectView() {
     };
 
     useEffect(() => {
+        // console.log("useEffect pv 1")
         if (!token) {
             navigate('/login');
         }
@@ -184,6 +183,7 @@ function ProjectView() {
     }, [navigate, token, fetchAndSetUsers]);
 
     useEffect(() => {
+        // console.log("useEffect pv 2")
         if (isAddingUsers) {
             setUserTableViewMode('add');
         } else if (isEditingUsers) {

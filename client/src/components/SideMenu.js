@@ -51,6 +51,7 @@ function SideMenu() {
 
 
     useEffect(() => {
+        // console.log("useEffect side menu 1")
         const fetchData = async () => {
             if (token) {
                 const decodedToken = jwtDecode(token);
@@ -94,12 +95,10 @@ function SideMenu() {
             )}
             {buttons.map((button, index) => (
                 typeof button === 'string'
-                    ? <Button className="w-100 text-start" key={button} onClick={() =>
-                        navigate(`/${button.toLowerCase().replace(' ', '')}`)}>{button}</Button>
+                    ? <Button className="w-100 text-start" key={button} onClick={() => navigate(`/${button.toLowerCase().replace(' ', '')}`)}>{button}</Button>
                     : (
-                        <>
+                        <div key={button.name}> {/* Wrap the components with a div and provide the key here */}
                             <Button
-                                key={button.name}
                                 onClick={() => toggleDropdown(index)}
                                 onBlur={() => closeDropdown(index)}
                                 aria-controls={`dropdown-${index}`}
@@ -109,7 +108,6 @@ function SideMenu() {
                                 {button.name} &#9660;
                             </Button>
                             <Collapse in={openDropdowns[index]} timeout={200}>
-
                                 <div id={`dropdown-${index}`} className="mb-1">
                                     {button.dropdown.map(subitem => (
                                         <Button
@@ -122,9 +120,10 @@ function SideMenu() {
                                     ))}
                                 </div>
                             </Collapse>
-                        </>
+                        </div>
                     )
             ))}
+
         </div>
     );
 }
