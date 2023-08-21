@@ -51,7 +51,6 @@ function ProjectView() {
     const handleEditProjectClick = () => {
         setIsEditing(EDIT_MODES.PROJECT);
     };
-    //todo fix this, issue with the add and edit alternations
     const handleEditUsersClick = async () => {
         if (isAddingUsers) {
             setIsAddingUsers(false);
@@ -129,6 +128,8 @@ function ProjectView() {
             setDeadline(updatedProjectData.deadline ? new Date(updatedProjectData.deadline) : null);
             setPriority(updatedProjectData.priority);
             setCurrentStatus(updatedProjectData.currentStatus);
+
+
 
             if (updatedProjectData.projectManager) {
                 const managerData = await fetchUser(updatedProjectData.projectManager, token);

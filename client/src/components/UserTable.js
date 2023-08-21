@@ -4,19 +4,28 @@ import {Table, Pagination} from "react-bootstrap";
 import "./UserTable.css";
 import {deleteUser, fetchUserProjects, getAllUsers} from "../controllers/UserController";
 import {fetchUsersForProject, addUserToProject, removeUserFromProject} from "../controllers/ProjectController";
+import CoolButton from "../components/CoolButton"
 function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, isEditing, projectId}) {
+    // users includes every user assigned to the specific project
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 5;
     const totalPages = Math.ceil(users.length / usersPerPage);
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+    // initial users before any changes have been made to the table
+    const initialUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+    const [addableUsers, setAddableUsers] = useState([])
+
+
     const [selectedUsers, setSelectedUsers] = useState({});
-    const emptyRows = Array(usersPerPage - currentUsers.length).fill(null);
+    //todo fix issue where add table has wrong number of empty rows
+    // const emptyRowsEditTable = Array(usersPerPage - initialUsers.length).fill(null);
+    const [filteredUsers, setFilteredUsers] = useState([])
+    const [emptyRowsEditTable, setEmptyRowsEditTable] = useState(Array(usersPerPage - filteredUsers.length).fill(null));
+    const [emptyRowsAddTable, setEmptyRowsAddTable] = useState(Array(usersPerPage - addableUsers.length).fill(null));
     const [displayUsers, setDisplayUsers] = useState(users);
     const [allUsers, setAllUsers] = useState([])
-    const [filteredUsers, setFilteredUsers] = useState([])
-
+    // for debugging
     const helpfulButton = () => {
         console.log("allUsers array: ", allUsers);
         console.log("filtered array: ", filteredUsers)
@@ -34,7 +43,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
     const fetchUsers = async () => {
         try {
             const fetchedUsers = await fetchUsersForProject(projectId, token);
-            setUsers(fetchedUsers); // State update scheduled here
+            setUsers(fetchedUsers);
         } catch (error) {
             console.error("ChildComponent.js fetchData error: ", error);
         }
@@ -43,7 +52,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
         try {
             console.log("called fetchAllUsers")
             const allFetchedUsers = await getAllUsers(token);
-            setAllUsers(allFetchedUsers); // Don't call updateFilteredUsers here
+            setAllUsers(allFetchedUsers);
 
         } catch (error) {
             console.error(`Error fetching all users: ${error}`)
@@ -57,8 +66,29 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
             types.includes(user.role) && !users.some(existingUser => existingUser._id === user._id)
         );
         setFilteredUsers(usersFilteredByType)
-
+        setEmptyRowsEditTable()
     }
+
+    const updateAddableUsers = () => {
+        const types = ['developer', 'submitter'];
+        let usersToAdd= []
+        for (const user of allUsers) {
+            if (!users.some(viewableUser => viewableUser._id === user._id) && types.includes(user.role)) {
+                usersToAdd.push(user)
+            }
+        }
+        setAddableUsers(usersToAdd)
+        console.log("addableUsers Updated!")
+    }
+
+    const updateEmptyRowsAddTable = () => {
+        setEmptyRowsAddTable(Array(usersPerPage - addableUsers.length).fill(null))
+    };
+
+    const updateEmptyRowsEditTable = () => {
+        setEmptyRowsAddTable(Array(usersPerPage - filteredUsers.length).fill(null))
+    };
+
 
     const handleAdd = async () => {
         const additionPromises= Object.keys(selectedUsers).map(async selectedUserId=> {
@@ -106,7 +136,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
                         </tr>
                         </thead>
                         <tbody>
-                        {currentUsers.map((user) => (
+                        {initialUsers.map((user) => (
                             <tr key={user._id}>
                                 {columns.includes('profilePicture') && <td><img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture-edit-ut"/></td>}
                                 {columns.includes('firstName') && <td>{user.firstName}</td>}
@@ -117,7 +147,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
                                 {columns.includes('role') && <td>{user.role}</td>}
                             </tr>
                         ))}
-                        {emptyRows.map((_, index) => (
+                        {emptyRowsEditTable.map((_, index) => (
                             <tr key={`empty-${index}`}>
                                 <td colSpan={columns.length + (isEditing ? 1 : 0)}>&nbsp;</td>
                             </tr>
@@ -153,7 +183,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
                         </tr>
                         </thead>
                         <tbody>
-                        {currentUsers.map((user) => (
+                        {initialUsers.map((user) => (
                             <tr key={user._id}>
                                 <td>
                                     <input type="checkbox" checked={!!selectedUsers[user._id]}
@@ -172,7 +202,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
                                 {columns.includes('role') && <td>{user.role}</td>}
                             </tr>
                         ))}
-                        {emptyRows.map((_, index) => (
+                        {emptyRowsEditTable.map((_, index) => (
                             <tr key={`empty-${index}`}>
                                 <td colSpan={columns.length + (isEditing ? 1 : 0)}>&nbsp;</td>
                             </tr>
@@ -229,9 +259,11 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
                                 {columns.includes('role') && <td>{user.role}</td>}
                             </tr>
                         ))}
-                        {emptyRows.map((_, index) => (
+
+                        {emptyRowsAddTable.map((_, index) => (
                             <tr key={`empty-${index}`}>
-                                <td colSpan={columns.length + (isEditing ? 1 : 0)}>&nbsp;</td>
+                                {/*<td colSpan={columns.length + (isEditing ? 1 : 0)}>&nbsp;</td>*/}
+                                <td colSpan={columns.length + (viewMode === "add" ? 1 : 0)}>&nbsp;</td>
                             </tr>
                         ))}
                         </tbody>
@@ -250,7 +282,12 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
                                 ))}
                             </Pagination>
 
-                            {viewMode === 'add' && <button onClick={handleAdd}>Add</button>}
+                            {/*{viewMode === 'add' && <button onClick={handleAdd}>Add</button>}*/}
+                            {viewMode === 'add' &&
+                                <CoolButton
+                                    label={"add"}
+                                    handleRequest={handleAdd}
+                                />}
                         </div>
                     </div>
             )
@@ -288,6 +325,16 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
     useEffect(() => {
         updateFilteredUsers(); // Called after the users state changes
     }, [users]);
+
+    useEffect(() => {
+        updateEmptyRowsAddTable();
+
+    }, [addableUsers])
+
+    useEffect(() => {
+        updateAddableUsers();
+        updateEmptyRowsEditTable()
+    }, [filteredUsers]);
 
     // useEffect(() => {
     //     console.log("useEffect 3 running UT")

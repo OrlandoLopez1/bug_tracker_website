@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const authController = require('../controllers/authController')
+const authController = require('../controllers/AuthController')
 const loginLimiter = require('../middleware/loginLimiter')
 
 router.route('/register')
