@@ -31,6 +31,25 @@ const getAllUsers = asyncHandler(async (req, res) => {
     res.json(users)
 })
 
+const getAllUsersOfRole = asyncHandler(async (req, res) => {
+    const roles = req.query.roles ? req.query.roles.split(',') : [];
+
+    let query = {};
+    if (roles.length > 0) {
+        query.role = { $in: roles };
+    }
+
+    const users = await User.find(query).select('-password').lean();
+
+    if (!users?.length) {
+        return res.status(400).json({ message: 'No users found' });
+    }
+
+    res.json(users);
+});
+
+
+
 // @desc Create new user
 // @route POST /users
 // @access Private
@@ -153,6 +172,7 @@ const getUserTickets = asyncHandler(async (req, res) => {
 module.exports = {
     getUser,
     getAllUsers,
+    getAllUsersOfRole,
     createNewUser,
     updateUser,
     deleteUser,

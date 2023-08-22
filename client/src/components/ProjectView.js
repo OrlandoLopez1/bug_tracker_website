@@ -14,6 +14,7 @@ import {
 import {fetchUser, getAllUsers} from "../controllers/UserController";
 import TicketTable from "./TicketTable";
 import UserTable from "./UserTable";
+import CoolUserTable from "./CoolUserTable";
 import ProjectEditForm from "./ProjectEditForm";
 import {FormLabel} from "react-bootstrap";
 Modal.setAppElement('#root');
@@ -250,17 +251,24 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <UserTable
-                                        users={users}
-                                        setUsers={setUsers}
-                                        token={token}
-                                        isEditing={isEditingUsers}
-                                        isAdding={isAddingUsers}
+                                    <CoolUserTable
                                         viewMode={userTableViewMode}
                                         setViewMode={setUserTableViewMode}
+                                        token={token}
                                         projectId={projectId}
-                                        fetchAndSetUsers={fetchAndSetUsers}
+
                                     />
+                                    {/*<UserTable*/}
+                                    {/*    users={users}*/}
+                                    {/*    setUsers={setUsers}*/}
+                                    {/*    token={token}*/}
+                                    {/*    isEditing={isEditingUsers}*/}
+                                    {/*    isAdding={isAddingUsers}*/}
+                                    {/*    viewMode={userTableViewMode}*/}
+                                    {/*    setViewMode={setUserTableViewMode}*/}
+                                    {/*    projectId={projectId}*/}
+                                    {/*    fetchAndSetUsers={fetchAndSetUsers}*/}
+                                    {/*/>*/}
                                 </div>
                             </div>
                             <div className="common-parent2">

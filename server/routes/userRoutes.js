@@ -9,6 +9,9 @@ router.route('/')
     .get(userController.getAllUsers)
     .post(userController.createNewUser);
 
+router.route('/roles')
+    .get(userController.getAllUsersOfRole);
+
 router.route('/:userId')
     .get(userController.getUser)
     .patch(userController.updateUser)

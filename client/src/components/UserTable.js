@@ -103,7 +103,7 @@ function UserTable({ users, setUsers, tableType, viewMode, setViewMode, token, i
         updateFilteredUsers()
     };
 
-    const  handleRemove = async () => {
+    const handleRemove = async () => {
         const removalPromises = Object.keys(selectedUsers).map(async selectedUserId=> {
             if (selectedUsers[selectedUserId]) {
                 return removeUserFromProject(projectId, selectedUserId, token);

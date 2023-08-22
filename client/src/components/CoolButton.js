@@ -18,10 +18,10 @@ function CoolButton({ label, handleRequest }) {
             await handleRequest();
             setState(STATES.SUCCESS);
             setTimeout(() => setState(STATES.IDLE), 1000);
-            alert("Success")
         } catch (error) {
             setState(STATES.ERROR);
             setTimeout(() => setState(STATES.IDLE), 1000);
+            console.error("Cool Button error: ", error)
             alert("Error sending request")
         }
     };

@@ -27,6 +27,21 @@ export async function getAllUsers(token) {
     return response.json();
 }
 
+export async function getAllUsersOfRole(token, roles = []) {
+    const roleQuery = roles.length > 0 ? `?roles=${roles.join(',')}` : '';
+    const response = await fetch(`http://localhost:5000/users/roles${roleQuery}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+}
+
+
+
 export async function createNewUser(userData, token) {
     const response = await fetch('http://localhost:5000/users', {
         method: 'POST',
