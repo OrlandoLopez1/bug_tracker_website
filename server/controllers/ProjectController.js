@@ -143,6 +143,79 @@ const getUsersForProject = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc Gets only a specific amount of users within a project to display
+// @route GET /projects/:projectId/pageOfUsers
+// @access Private
+const getPageOfUsersForProject = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    console.log(`Getting users for project ID: ${projectId}, Page: ${page}, Page Size: ${pageSize}`); // Debugging statement
+
+    try {
+        const project = await Project.findById(projectId);
+        if (!project) {
+            console.error(`Project with ID ${projectId} not found`); // Debugging statement
+            return res.status(404).json({ message: 'Cannot find project' });
+        }
+
+        console.log(`Found project: ${JSON.stringify(project.name)}`); // Debugging statement
+
+        const users = await User.find({ 'projects': projectId })
+            .limit(pageSize)
+            .skip((page - 1) * pageSize)
+            .exec();
+
+        const totalUsers = await User.countDocuments({ 'projects': projectId });
+
+        console.log(`Users found: ${JSON.stringify(users)} Total Users: ${totalUsers}`); // Debugging statement
+
+        res.json({
+            users: users,
+            currentPage: page,
+            totalPages: Math.ceil(totalUsers / pageSize)
+        });
+    } catch (error) {
+        console.error(`Error getting users for project: ${error.message}`); // Debugging statement
+        res.status(500).json({ message: 'Error getting users for project', error: error.message });
+    }
+});
+
+
+
+// @desc Gets only a specific amount of users not in a specific project to display
+// @route GET /projects/:projectId/pageOfUsersNotInProject
+// @access Private
+const getPageOfUsersNotInProject = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    try {
+        const project = await Project.findById(projectId);
+        if (!project) {
+            return res.status(404).json({ message: 'Cannot find project' });
+        }
+
+        const usersInProject = project.users.map(user => user._id);
+
+        const users = await User.find({ _id: { $nin: usersInProject } })
+            .limit(pageSize)
+            .skip((page - 1) * pageSize)
+            .exec();
+
+        const totalUsers = await User.countDocuments({ _id: { $nin: usersInProject } });
+
+        res.json({
+            users: users,
+            currentPage: page,
+            totalPages: Math.ceil(totalUsers / pageSize)
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting users not in project', error: error.message });
+    }
+});
 
 // @desc Get all tickets associated with a specific project
 // @route GET /projects/:projectId/tickets
@@ -286,6 +359,8 @@ module.exports = {
     updateProject,
     deleteProject,
     getUsersForProject,
+    getPageOfUsersNotInProject,
+    getPageOfUsersForProject,
     getTicketsForProject,
     addTicketToProject,
     addUserToProject,

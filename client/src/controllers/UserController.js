@@ -41,6 +41,21 @@ export async function getAllUsersOfRole(token, roles = []) {
 }
 
 
+// export async function getAllUsersOfRole(token, roles = [], page = 1, pageSize = 10) {
+//     const roleQuery = roles.length > 0 ? `roles=${roles.join(',')}` : '';
+//     const paginationQuery = `page=${page}&pageSize=${pageSize}`;
+//     const queryString = [roleQuery, paginationQuery].filter(Boolean).join('&');
+//
+//     const response = await fetch(`http://localhost:5000/users/roles?${queryString}`, {
+//         headers: {
+//             'Authorization': `Bearer ${token}`
+//         }
+//     });
+//     if (!response.ok) {
+//         throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     return response.json();
+// }
 
 export async function createNewUser(userData, token) {
     const response = await fetch('http://localhost:5000/users', {

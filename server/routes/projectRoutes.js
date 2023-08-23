@@ -17,6 +17,12 @@ router.route('/:projectId')
 router.route('/:projectId/users')
     .get(projectController.getUsersForProject);
 
+router.route('/:projectId/pageOfUsers')
+    .get(projectController.getPageOfUsersForProject);
+
+router.route('/:projectId/pageOfUsersNotInProject')
+    .get(projectController.getPageOfUsersNotInProject);
+
 router.route('/:projectId/tickets')
     .get(projectController.getTicketsForProject);
 

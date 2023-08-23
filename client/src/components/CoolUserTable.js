@@ -3,50 +3,78 @@ import CoolButton from "./CoolButton";
 import {Pagination, Table} from 'react-bootstrap'
 import {Link} from "react-router-dom";
 import {getAllUsersOfRole} from "../controllers/UserController";
-import {addUserToProject, fetchUsersForProject, removeUserFromProject} from "../controllers/ProjectController";
+import {
+    addUserToProject,
+    fetchPageOfUsersForProject, fetchPageOfUsersNotInProject,
+    fetchUsersForProject,
+    removeUserFromProject
+} from "../controllers/ProjectController";
 
 function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
-    const [allDevsAndSubs, setAllDevsAndSubs] = useState([])
+    // const [allDevsAndSubs, setAllDevsAndSubs] = useState([])
     const [projectDevsAndSubs, setProjectDevsAndSubs] = useState([])
     const [devsAndSubsNotInProject, setDevsAndSubsNotInProject] = useState([])
     const [selectedUsers, setSelectedUsers] = useState({});
-
-    const fetchAllDevsAndSubs = async () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(1);
+    const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
+    const [inputPage, setInputPage] = useState('1'); // Add state for the input page
+    // const fetchAllDevsAndSubs = async () => {
+    //     try {
+    //         const allFetchedUsers = await getAllUsersOfRole(token, ['developer', 'submitter'])
+    //         setAllDevsAndSubs(allFetchedUsers)
+    //     } catch (error) {
+    //         console.error("error in fetchAllDevsAndSubs: ", error)
+    //     }
+    // }
+    //
+    // const fetchDevsAndSubsFromProject = async () => {
+    //     try {
+    //         const fetchedUsers = await fetchUsersForProject(projectId, token)
+    //         setProjectDevsAndSubs(fetchedUsers)
+    //     } catch (error) {
+    //         console.error("eror in fetchDevsAndSubsFromProject: ", error)
+    //     }
+    // }
+    const fetchUsersInProject = async () => {
         try {
-            const allFetchedUsers = await getAllUsersOfRole(token, ['developer', 'submitter'])
-            setAllDevsAndSubs(allFetchedUsers)
+            const { users, totalPages } = await fetchPageOfUsersForProject(projectId, token, currentPage, pageSize);
+            setProjectDevsAndSubs(users);
+            setTotalPages(totalPages);
         } catch (error) {
-            console.error("error in fetchAllDevsAndSubs: ", error)
-        }
-    }
-
-    const fetchDevsAndSubsFromProject = async () => {
-        try {
-            const fetchedUsers = await fetchUsersForProject(projectId, token)
-            setProjectDevsAndSubs(fetchedUsers)
-        } catch (error) {
-            console.error("eror in fetchDevsAndSubsFromProject: ", error)
-        }
-    }
-
-    const deriveDevsAndSubsNotInProject = () => {
-        try {
-            // assert
-            allDevsAndSubs.forEach(user => {
-                if (user.role !== 'developer' && user.role !== 'submitter') {
-                    throw new Error(`User ${user.username} has an invalid role: ${user.role}`);
-                }
-            });
-
-            const notInProject = allDevsAndSubs.filter(user =>
-                !projectDevsAndSubs.some(projectUser => projectUser._id === user._id)
-            );
-
-            setDevsAndSubsNotInProject(notInProject);
-        } catch (error) {
-            console.error("Error in deriveDevsAndSubsNotInProject: ", error);
+            console.error("error in fetchDevsAndSubsFromProject: ", error);
         }
     };
+
+    const fetchUsersNotInProject = async () => {
+        try {
+            const { users, totalPages } = await fetchPageOfUsersNotInProject(projectId, token, currentPage, pageSize); // Assuming the function name
+            setDevsAndSubsNotInProject(users);
+            setTotalPages(totalPages);
+        } catch (error) {
+            console.error("error in fetchDevsAndSubsNotFromProject: ", error);
+        }
+    };
+
+    //
+    // const deriveDevsAndSubsNotInProject = () => {
+    //     try {
+    //         // assert
+    //         allDevsAndSubs.forEach(user => {
+    //             if (user.role !== 'developer' && user.role !== 'submitter') {
+    //                 throw new Error(`User ${user.username} has an invalid role: ${user.role}`);
+    //             }
+    //         });
+    //
+    //         const notInProject = allDevsAndSubs.filter(user =>
+    //             !projectDevsAndSubs.some(projectUser => projectUser._id === user._id)
+    //         );
+    //
+    //         setDevsAndSubsNotInProject(notInProject);
+    //     } catch (error) {
+    //         console.error("Error in deriveDevsAndSubsNotInProject: ", error);
+    //     }
+    // };
 
 
     const handleAdd = async () => {
@@ -57,7 +85,6 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
         });
         await Promise.all(additionPromises);
         setSelectedUsers({});
-        await fetchDevsAndSubsFromProject();
         setViewMode('view');
     };
 
@@ -70,7 +97,6 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
         });
         await Promise.all(removalPromises);
         setSelectedUsers({});
-        await fetchDevsAndSubsFromProject();
     };
 
     const handleCheckboxChange = (userId, isChecked) => {
@@ -205,18 +231,78 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
 
 
     }
-    // todo check if other use effect have to wait for this use effect to finish to go ahead, or if they still run
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        // Ensure that the value is a positive number
+        if (/^\d+$/.test(value) || value === '') {
+            setInputPage(value);
+        }
+    };
+
+    const goToInputPage = () => {
+        // Ensure that the input page is within the range of valid pages
+        const page = Math.max(1, Math.min(totalPages, parseInt(inputPage)));
+        setCurrentPage(page);
+    };
+
+    const paginationComponent = (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
+            >
+                Prev
+            </button>
+            <input
+                type="text"
+                value={inputPage}
+                onChange={handleInputChange}
+                style={{ width: `${(inputPage.length * 8) + 10}px`, textAlign: 'center' }}
+                onBlur={goToInputPage}
+                onKeyPress={(e) => { if (e.key === 'Enter') goToInputPage() }}
+            />
+            <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                style={{ visibility: currentPage === totalPages ? 'hidden' : 'visible' }}
+            >
+                Next
+            </button>
+        </div>
+    );
+
+
     useEffect(() => {
-        fetchAllDevsAndSubs()
-        fetchDevsAndSubsFromProject()
+        setInputPage(currentPage); // Update inputPage when currentPage changes
+    }, [currentPage]);
+
+    useEffect(() => {
+        fetchUsersInProject()
     }, [token])
 
     useEffect(() => {
-        deriveDevsAndSubsNotInProject()
-    },[projectDevsAndSubs])
+        console.log("Project Users: ", projectDevsAndSubs)
+    }, [projectDevsAndSubs])
+
+    useEffect(() => {
+        console.log("None Project Users: ", projectDevsAndSubs)
+    }, [devsAndSubsNotInProject])
+
+    useEffect(() => {
+        if (viewMode === 'view' || viewMode === 'edit') {
+            fetchUsersInProject();
+        } else if (viewMode === 'add') {
+            fetchUsersNotInProject()
+        }
+    }, [token, currentPage, pageSize, viewMode]);
 
     return (
-        table
+        <div>
+
+            {table}
+            {paginationComponent}
+        </div>
     )
 }
 export default CoolUserTable

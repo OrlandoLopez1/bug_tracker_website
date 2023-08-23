@@ -99,6 +99,39 @@ export async function fetchUsersForProject(projectId, token) {
 }
 
 
+export async function fetchPageOfUsersForProject(projectId, token, page = 1, pageSize = 10) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/pageOfUsers?page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+
+export async function fetchPageOfUsersNotInProject(projectId, token, page = 1, pageSize = 10) {
+    const response = await fetch(`http://localhost:5000/projects/${projectId}/pageOfUsersNotInProject?page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function fetchTicketsForProject(projectId, token) {
     const response = await fetch(`http://localhost:5000/projects/${projectId}/tickets   `, {
         method: "GET",

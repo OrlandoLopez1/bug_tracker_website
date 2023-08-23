@@ -49,6 +49,36 @@ const getAllUsersOfRole = asyncHandler(async (req, res) => {
 });
 
 
+// const getAllUsersOfRole = asyncHandler(async (req, res) => {
+//     const roles = req.query.roles ? req.query.roles.split(',') : [];
+//     const page = parseInt(req.query.page) || 1;
+//     const pageSize = parseInt(req.query.pageSize) || 10;
+//     const skip = (page - 1) * pageSize;
+//
+//     let query = {};
+//     if (roles.length > 0) {
+//         query.role = { $in: roles };
+//     }
+//
+//     const users = await User.find(query)
+//         .select('-password')
+//         .skip(skip)
+//         .limit(pageSize)
+//         .lean();
+//
+//     const totalUsers = await User.countDocuments(query);
+//
+//     if (!users?.length) {
+//         return res.status(400).json({ message: 'No users found' });
+//     }
+//
+//     res.json({
+//         data: users,
+//         page: page,
+//         pageSize: pageSize,
+//         totalUsers: totalUsers,
+//     });
+// });
 
 // @desc Create new user
 // @route POST /users
