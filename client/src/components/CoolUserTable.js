@@ -3,6 +3,7 @@ import CoolButton from "./CoolButton";
 import {Pagination, Table} from 'react-bootstrap'
 import {Link} from "react-router-dom";
 import {getAllUsersOfRole} from "../controllers/UserController";
+import "./CoolUserTable.css";
 import {
     addUserToProject,
     fetchPageOfUsersForProject, fetchPageOfUsersNotInProject,
@@ -16,7 +17,7 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
     const [devsAndSubsNotInProject, setDevsAndSubsNotInProject] = useState([])
     const [selectedUsers, setSelectedUsers] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
     const [inputPage, setInputPage] = useState('1'); // Add state for the input page
     // const fetchAllDevsAndSubs = async () => {
@@ -39,7 +40,16 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
     const fetchUsersInProject = async () => {
         try {
             const { users, totalPages } = await fetchPageOfUsersForProject(projectId, token, currentPage, pageSize);
-            setProjectDevsAndSubs(users);
+            if (totalPages === currentPage) {
+                let usersAndEmptyRows = [...users]
+                const numEmptyRows = pageSize - users.length
+                for (let i = 0; i < numEmptyRows; i++){
+                    usersAndEmptyRows.push({})
+                }
+                setProjectDevsAndSubs(usersAndEmptyRows);
+            } else {
+                setProjectDevsAndSubs(users);
+            }
             setTotalPages(totalPages);
         } catch (error) {
             console.error("error in fetchDevsAndSubsFromProject: ", error);
@@ -130,7 +140,7 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
                                 {columns.includes('profilePicture') &&
                                     <td><img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture-edit-ut"/>
                                     </td>}
-                                {columns.includes('firstName') && <td>{user.firstName}</td>}
+                                {columns.includes('firstName') && <td>{user.firstName }</td>}
                                 {columns.includes('lastName') && <td>{user.lastName}</td>}
                                 {columns.includes('name') && <td><Link className="user-link"
                                                                        to={`/userview/${user._id}`}>{user.firstName} {user.lastName}</Link>

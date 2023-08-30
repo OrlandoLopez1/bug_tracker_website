@@ -1,0 +1,7 @@
+tr {
+    height: 2em;  /* Set to appropriate value */
+}
+
+td {
+    vertical-align: top;  /* Align content to top */
+}
