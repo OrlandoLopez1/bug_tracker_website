@@ -20,6 +20,9 @@ router.route('/:projectId/users')
 router.route('/:projectId/pageOfUsers')
     .get(projectController.getPageOfUsersForProject);
 
+router.route('/:projectId/pageOfTickets')
+    .get(projectController.getPageOfTicketsForProject);
+
 router.route('/:projectId/pageOfUsersNotInProject')
     .get(projectController.getPageOfUsersNotInProject);
 

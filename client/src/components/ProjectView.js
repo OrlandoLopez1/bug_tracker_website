@@ -15,6 +15,7 @@ import {fetchUser, getAllUsers} from "../controllers/UserController";
 import TicketTable from "./TicketTable";
 import UserTable from "./UserTable";
 import CoolUserTable from "./CoolUserTable";
+import CoolTicketTable from "./CoolTicketTable";
 import ProjectEditForm from "./ProjectEditForm";
 import {FormLabel} from "react-bootstrap";
 Modal.setAppElement('#root');
@@ -33,6 +34,7 @@ function ProjectView() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [userTableViewMode, setUserTableViewMode] = useState('view');
+    const [ticketTableViewMode, setTicketTableViewMode] = useState('view');
 
     const [name, setName] = useState('');
     const [projectManager, setProjectManager] = useState(null);
@@ -258,17 +260,6 @@ function ProjectView() {
                                         projectId={projectId}
 
                                     />
-                                    {/*<UserTable*/}
-                                    {/*    users={users}*/}
-                                    {/*    setUsers={setUsers}*/}
-                                    {/*    token={token}*/}
-                                    {/*    isEditing={isEditingUsers}*/}
-                                    {/*    isAdding={isAddingUsers}*/}
-                                    {/*    viewMode={userTableViewMode}*/}
-                                    {/*    setViewMode={setUserTableViewMode}*/}
-                                    {/*    projectId={projectId}*/}
-                                    {/*    fetchAndSetUsers={fetchAndSetUsers}*/}
-                                    {/*/>*/}
                                 </div>
                             </div>
                             <div className="common-parent2">
@@ -282,7 +273,13 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    <TicketTable tickets={tickets} viewType={"default"} token={token} isEditing={isEditingTickets} projectId={projectId}></TicketTable>
+                                    <CoolTicketTable
+                                        viewMode={ticketTableViewMode}
+                                        setViewMode={setTicketTableViewMode}
+                                        token={token}
+                                        projectId={projectId}
+                                    />
+                                    {/*<TicketTable tickets={tickets} viewType={"default"} token={token} isEditing={isEditingTickets} projectId={projectId}></TicketTable>*/}
                                 </div>
                             </div>
                         </div>

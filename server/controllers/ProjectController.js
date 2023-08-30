@@ -151,7 +151,47 @@ const getPageOfUsersForProject = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
 
-    console.log(`Getting users for project ID: ${projectId}, Page: ${page}, Page Size: ${pageSize}`); // Debugging statement
+    // console.log(`Getting users for project ID: ${projectId}, Page: ${page}, Page Size: ${pageSize}`); // Debugging statement
+
+    try {
+        const project = await Project.findById(projectId);
+        if (!project) {
+            console.error(`Project with ID ${projectId} not found`); // Debugging statement
+            return res.status(404).json({ message: 'Cannot find project' });
+        }
+
+        // console.log(`Found project: ${JSON.stringify(project.name)}`); // Debugging statement
+
+        const users = await User.find({ 'projects': projectId })
+            .limit(pageSize)
+            .skip((page - 1) * pageSize)
+            .exec();
+
+        const totalUsers = await User.countDocuments({ 'projects': projectId });
+
+        // console.log(`Users found: ${JSON.stringify(users)} Total Users: ${totalUsers}`); // Debugging statement
+
+        res.json({
+            users: users,
+            currentPage: page,
+            totalPages: Math.ceil(totalUsers / pageSize)
+        });
+    } catch (error) {
+        console.error(`Error getting users for project: ${error.message}`); // Debugging statement
+        res.status(500).json({ message: 'Error getting users for project', error: error.message });
+    }
+});
+
+
+// @desc Gets only a specific amount of tickets within a project to display
+// @route GET /projects/:projectId/pageOfTickets
+// @access Private
+const getPageOfTicketsForProject = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    console.log(`Getting tickets for project ID: ${projectId}, Page: ${page}, Page Size: ${pageSize}`); // Debugging statement
 
     try {
         const project = await Project.findById(projectId);
@@ -162,23 +202,23 @@ const getPageOfUsersForProject = asyncHandler(async (req, res) => {
 
         console.log(`Found project: ${JSON.stringify(project.name)}`); // Debugging statement
 
-        const users = await User.find({ 'projects': projectId })
+        const tickets = await Ticket.find({ 'project': projectId })
             .limit(pageSize)
             .skip((page - 1) * pageSize)
             .exec();
 
-        const totalUsers = await User.countDocuments({ 'projects': projectId });
+        const totalTickets = await Ticket.countDocuments({ 'project': projectId });
 
-        console.log(`Users found: ${JSON.stringify(users)} Total Users: ${totalUsers}`); // Debugging statement
+        console.log(`Tickets found: ${JSON.stringify(tickets)} Total Tickets: ${totalTickets}`); // Debugging statement
 
         res.json({
-            users: users,
+            tickets: tickets,
             currentPage: page,
-            totalPages: Math.ceil(totalUsers / pageSize)
+            totalPages: Math.ceil(totalTickets / pageSize)
         });
     } catch (error) {
-        console.error(`Error getting users for project: ${error.message}`); // Debugging statement
-        res.status(500).json({ message: 'Error getting users for project', error: error.message });
+        console.error(`Error getting tickets for project: ${error.message}`); // Debugging statement
+        res.status(500).json({ message: 'Error getting tickets for project', error: error.message });
     }
 });
 
@@ -361,6 +401,7 @@ module.exports = {
     getUsersForProject,
     getPageOfUsersNotInProject,
     getPageOfUsersForProject,
+    getPageOfTicketsForProject,
     getTicketsForProject,
     addTicketToProject,
     addUserToProject,

@@ -12,7 +12,6 @@ import {
 } from "../controllers/ProjectController";
 
 function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
-    // const [allDevsAndSubs, setAllDevsAndSubs] = useState([])
     const [projectDevsAndSubs, setProjectDevsAndSubs] = useState([])
     const [devsAndSubsNotInProject, setDevsAndSubsNotInProject] = useState([])
     const [selectedUsers, setSelectedUsers] = useState({});
@@ -20,23 +19,6 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
     const [inputPage, setInputPage] = useState('1'); // Add state for the input page
-    // const fetchAllDevsAndSubs = async () => {
-    //     try {
-    //         const allFetchedUsers = await getAllUsersOfRole(token, ['developer', 'submitter'])
-    //         setAllDevsAndSubs(allFetchedUsers)
-    //     } catch (error) {
-    //         console.error("error in fetchAllDevsAndSubs: ", error)
-    //     }
-    // }
-    //
-    // const fetchDevsAndSubsFromProject = async () => {
-    //     try {
-    //         const fetchedUsers = await fetchUsersForProject(projectId, token)
-    //         setProjectDevsAndSubs(fetchedUsers)
-    //     } catch (error) {
-    //         console.error("eror in fetchDevsAndSubsFromProject: ", error)
-    //     }
-    // }
     const fetchUsersInProject = async () => {
         try {
             const { users, totalPages } = await fetchPageOfUsersForProject(projectId, token, currentPage, pageSize);
@@ -65,27 +47,6 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
             console.error("error in fetchDevsAndSubsNotFromProject: ", error);
         }
     };
-
-    //
-    // const deriveDevsAndSubsNotInProject = () => {
-    //     try {
-    //         // assert
-    //         allDevsAndSubs.forEach(user => {
-    //             if (user.role !== 'developer' && user.role !== 'submitter') {
-    //                 throw new Error(`User ${user.username} has an invalid role: ${user.role}`);
-    //             }
-    //         });
-    //
-    //         const notInProject = allDevsAndSubs.filter(user =>
-    //             !projectDevsAndSubs.some(projectUser => projectUser._id === user._id)
-    //         );
-    //
-    //         setDevsAndSubsNotInProject(notInProject);
-    //     } catch (error) {
-    //         console.error("Error in deriveDevsAndSubsNotInProject: ", error);
-    //     }
-    // };
-
 
     const handleAdd = async () => {
         const additionPromises= Object.keys(selectedUsers).map(async selectedUserId=> {
