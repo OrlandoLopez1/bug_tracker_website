@@ -146,7 +146,7 @@ function DeveloperFields({priority, setPriority}) {
 }
 
 
-function CreateTicketPage() {
+function CreateTicketPage({ onTicketCreated, closeForm }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignedBy, setAssignedBy] = useState(null);
@@ -226,6 +226,13 @@ function CreateTicketPage() {
             setPriority('medium');
             setSelectedFiles([]);
             setSelectedFileNames([]);
+
+            if (onTicketCreated) {
+                onTicketCreated(createdTicket);
+            }
+            if (closeForm) {
+                closeForm();
+            }
         } catch (error) {
             console.error("Failed to create ticket:", error);
         }
@@ -287,9 +294,9 @@ function CreateTicketPage() {
 
     return (
         <Form onSubmit={handleSubmit}>
-            <CustomNavbar />
+            {/*<CustomNavbar />*/}
             <div className="main-content">
-                <SideMenu />
+                {/*<SideMenu />*/}
                 <div className="ticket-page-content">
                     <CommonFormFields
                         title={title}
@@ -330,6 +337,7 @@ function CreateTicketPage() {
                         isLoading={isLoading}
                         uploader={curUserId}
                     />
+                    <Button variant="primary" type="submit" className='submit-button'>Submit</Button>
                 </div>
 
             </div>

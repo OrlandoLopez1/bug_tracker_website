@@ -17,7 +17,9 @@ import UserTable from "./UserTable";
 import CoolUserTable from "./CoolUserTable";
 import CoolTicketTable from "./CoolTicketTable";
 import ProjectEditForm from "./ProjectEditForm";
+import CreateTicketPage from "./TicketForm";
 import {FormLabel} from "react-bootstrap";
+import {createTicket} from "../controllers/TicketController";
 Modal.setAppElement('#root');
 
 function ProjectView() {
@@ -47,8 +49,7 @@ function ProjectView() {
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
 
-
-
+    const [modalIsOpenForCreateTicket, setModalIsOpenForCreateTicket] = useState(false);
 
     // updated click handlers to set correct mode
     const handleEditProjectClick = () => {
@@ -149,6 +150,16 @@ function ProjectView() {
 
         } catch (error) {
             console.error('Failed to update project:', error);
+        }
+    };
+
+    const handleCreateTicket = async (ticket) => {
+        try {
+            const createdTicket = await createTicket(ticket, token);
+            setTickets([...tickets, createdTicket]);
+
+        } catch (error) {
+            console.error('Failed to create ticket:', error);
         }
     };
 
@@ -268,7 +279,7 @@ function ProjectView() {
                                         {"Tickets"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | <button className="button-pv" onClick={handleEditTicketsClick}>Edit</button>
+                                        <button classname="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>add</button> | <button classname="button-pv" onclick={handleEditTicketsClick}>edit</button>
 
                                     </div>
                                 </div>
@@ -313,6 +324,19 @@ function ProjectView() {
                         setIsEditing={setIsEditing}
                         handleSave={handleSave}
                     />
+
+                </Modal>
+                <Modal
+                    isOpen={modalIsOpenForCreateTicket}
+                    onRequestClose={() => setModalIsOpenForCreateTicket(false)}
+                    contentLabel="Create Ticket"
+                >
+                    <div>
+                        <CreateTicketPage
+                            onTicketCreated={handleCreateTicket}
+                            closeForm={() => setModalIsOpenForCreateTicket(false)}
+                        />
+                    </div>
                 </Modal>
             </div>
         )
