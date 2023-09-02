@@ -25,7 +25,6 @@ function getPriorityColor(priority) {
 }
 
 
-// function TicketTable({ tickets, viewType, token, isEditing, projectId}) {
 function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
     const [projectTickets, setProjectTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState({});
@@ -131,7 +130,7 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
             console.log("In edit mode");
             table = (
                 <div>
-                    <Table className="table-user-edit-pv">
+                    <Table className="table-ticket-edit-pv">
                         <thead>
                         <tr>
                             <th></th>
@@ -144,7 +143,6 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
                                 <td>
                                     <input type="checkbox" checked={!!selectedTickets[ticket._id]}
                                            onChange={(e) => handleCheckboxChange(ticket._id, e.target.checked)}/></td>
-
                                 {columns.includes('Title') &&
                                     <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
                                 }
@@ -219,7 +217,7 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
     );
 
     useEffect(() => {
-        setInputPage(currentPage); // Update inputPage when currentPage changes
+        setInputPage(currentPage);
     }, [currentPage]);
 
     useEffect(() => {
@@ -227,8 +225,9 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
     }, [token])
 
     useEffect(() => {
+        console.log("view mode: ", viewMode)
         console.log("Project Tickets: ", projectTickets)
-    }, [projectTickets])
+    }, [viewMode,projectTickets])
 
     return (
         <div>

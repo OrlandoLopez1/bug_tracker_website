@@ -30,6 +30,7 @@ function ProjectView() {
     const [isEditing, setIsEditing] = useState(null);
     const [isEditingUsers, setIsEditingUsers] = useState(false);
     const [isAddingUsers, setIsAddingUsers] = useState(false);
+    const [isAddingTickets, setIsAddingTickets] = useState(false);
     const [isEditingTickets, setIsEditingTickets] = useState(false);
     const EDIT_MODES = { PROJECT: 'PROJECT', USER: 'USER', TICKET: 'TICKET' };
     const token = localStorage.getItem('accessToken');
@@ -70,7 +71,10 @@ function ProjectView() {
     };
 
 
-    const handleEditTicketsClick = () => {
+    const handleEditTicketsClick = async () => {
+        if (isAddingTickets) {
+            setIsAddingTickets(false);
+        }
         setIsEditingTickets(!isEditingTickets);
     };
 
@@ -198,7 +202,6 @@ function ProjectView() {
     }, [navigate, token, fetchAndSetUsers]);
 
     useEffect(() => {
-        // console.log("useEffect pv 2")
         if (isAddingUsers) {
             setUserTableViewMode('add');
         } else if (isEditingUsers) {
@@ -207,6 +210,16 @@ function ProjectView() {
             setUserTableViewMode('view');
         }
     }, [isAddingUsers, isEditingUsers]);
+
+    useEffect(() => {
+        if (isAddingTickets) {
+            setTicketTableViewMode('add');
+        } else if (isEditingTickets) {
+            setTicketTableViewMode('edit');
+        } else {
+            setTicketTableViewMode('view');
+        }
+    }, [isAddingTickets, isEditingTickets]);
 
 
     if (loading) {
@@ -284,7 +297,7 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    {/*todo clean up ffs, buttons, and need to get the edit button to work:*/}
+                                    {/*todo clean up table, make the tables update live*/}
                                     <CoolTicketTable
                                         viewMode={ticketTableViewMode}
                                         setViewMode={setTicketTableViewMode}
