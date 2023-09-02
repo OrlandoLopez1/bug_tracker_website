@@ -279,18 +279,18 @@ function ProjectView() {
                                         {"Tickets"}
                                     </div>
                                     <div className="title-desc-text">
-                                        <button classname="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>add</button> | <button classname="button-pv" onclick={handleEditTicketsClick}>edit</button>
+                                        <button className="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>add</button> | <button className="button-pv" onClick={handleEditTicketsClick}>edit</button>
 
                                     </div>
                                 </div>
                                 <div className="content">
+                                    {/*todo clean up ffs, buttons, and need to get the edit button to work:*/}
                                     <CoolTicketTable
                                         viewMode={ticketTableViewMode}
                                         setViewMode={setTicketTableViewMode}
                                         token={token}
                                         projectId={projectId}
                                     />
-                                    {/*<TicketTable tickets={tickets} viewType={"default"} token={token} isEditing={isEditingTickets} projectId={projectId}></TicketTable>*/}
                                 </div>
                             </div>
                         </div>
@@ -300,6 +300,7 @@ function ProjectView() {
                     isOpen={isEditing === EDIT_MODES.PROJECT}
                     onRequestClose={() => setIsEditing(null)}
                     contentLabel="Edit Project"
+                    className="custom-modal-project-edit"
                 >
                     <ProjectEditForm
                         projectId={projectId}
@@ -330,6 +331,7 @@ function ProjectView() {
                     isOpen={modalIsOpenForCreateTicket}
                     onRequestClose={() => setModalIsOpenForCreateTicket(false)}
                     contentLabel="Create Ticket"
+                    className="custom-modal-ticket-add"
                 >
                     <div>
                         <CreateTicketPage

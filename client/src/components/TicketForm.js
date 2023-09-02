@@ -294,10 +294,9 @@ function CreateTicketPage({ onTicketCreated, closeForm }) {
 
     return (
         <Form onSubmit={handleSubmit}>
-            {/*<CustomNavbar />*/}
-            <div className="main-content">
-                {/*<SideMenu />*/}
-                <div className="ticket-page-content">
+            <div className="main-content-tf">
+                {/*<div className="ticket-page-content">*/}
+                <div>
                     <CommonFormFields
                         title={title}
                         setTitle={setTitle}
@@ -337,7 +336,7 @@ function CreateTicketPage({ onTicketCreated, closeForm }) {
                         isLoading={isLoading}
                         uploader={curUserId}
                     />
-                    <Button variant="primary" type="submit" className='submit-button'>Submit</Button>
+                    <button variant="primary" type="submit" className='submit-button'>Submit</button>
                 </div>
 
             </div>
