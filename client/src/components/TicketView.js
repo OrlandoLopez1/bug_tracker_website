@@ -18,6 +18,8 @@ import CommentSection from "./CommentSection";
 import {fetchCommentsForTicket} from "../controllers/CommentController";
 import AttachmentSection from "./AttachmentSection";
 import jwtDecode from "jwt-decode";
+import ProjectEditForm from "./ProjectEditForm";
+import TicketEditForm from "./TicketEditForm";
 Modal.setAppElement('#root');
 
 
@@ -38,7 +40,7 @@ function TicketView() {
     const [ticket, setTicket] = useState([]);
     const [assignedUser, setAssignedUser] = useState(null);
     const [comments, setComments] = useState(null);
-    const [editingTicketId, setEditingTicketId] = useState(null);  // new state variable
+    const [editingTicketId, setEditingTicketId] = useState(null);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -51,8 +53,19 @@ function TicketView() {
     const [isLoading, setIsLoading] = useState(false);
     const [isEditingAttachments, setIsEditingAttachments] = useState(false);
     const [isEditingComments, setIsEditingComments] = useState(false);
+    const [isEditingTicket, setIsEditingTicket] = useState(false);
+    const [currentTicket, setCurrentTicket] = useState(null);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [type, setType] = useState('');
+    const [status, setStatus] = useState('');
+    const [priority, setPriority] = useState('');
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [assignableUsers, setAssignableUsers] = useState([]);
 
-
+    const handleEditTicketClick = () => {
+        setIsEditingTicket(!isEditingTicket);
+    };
     useEffect(() => {
         if (!token) {
             navigate('/login');
@@ -191,6 +204,29 @@ function TicketView() {
             console.error('Failed to update ticket:', error);
         }
     };
+    const handleSave = async (updatedTicket) => {
+        try {
+
+            const updatedTicketData = await updateTicket(ticketId, updatedTicket, token);
+            setTicket(updatedTicketData);
+            setTitle(updatedTicketData.title);
+            setDescription(updatedTicketData.description);
+            setType(updatedTicketData.type);
+            setStatus(updatedTicketData.status);
+            setPriority(updatedTicketData.priority);
+
+            if (updatedTicketData.users && Array.isArray(updatedTicketData.users)) {
+                const usersData = updatedTicketData.users;
+                setSelectedUsers(usersData);
+                setCurrentTicket(currentTicket => ({ ...currentTicket, users: usersData }));
+            }
+
+            setIsEditingTicket(false);
+
+        } catch (error) {
+            console.error('Failed to update ticket:', error);
+        }
+    };
 
 
     if (loading) {
@@ -207,7 +243,7 @@ function TicketView() {
                                 {ticket.title}
                             </div>
                             <div className="title-desc-text">
-                                Back | Edit
+                                Back | <button className="button-pv" onClick={handleEditTicketClick}>Edit</button>
                             </div>
                         </div>
                             <div className="ticket-details-top-container">
@@ -289,6 +325,32 @@ function TicketView() {
                         </div>
                     </div>
                 </div>
+
+                <Modal
+                    isOpen={isEditingTicket === true}
+                    onRequestClose={() => setIsEditingTicket(false)}
+                    contentLabel="Edit Ticket"
+                    className="custom-modal-project-edit"
+                >
+                    <TicketEditForm
+                        ticketId={ticketId}
+                        title={ticket.title}
+                        setTitle={setTitle}
+                        description={ticket.description}
+                        setDescription={setDescription}
+                        type={ticket.type}
+                        setType={setType}
+                        status={ticket.status}
+                        setStatus={setStatus}
+                        priority={ticket.priority}
+                        setPriority={setPriority}
+                        selectedUsers={ticket.users}
+                        setSelectedUsers={setSelectedUsers}
+                        assignableUsers={assignableUsers}
+                        handleSave={handleSave}
+                        toggleFormVisibility={() => setIsEditingTicket(false)}
+                    />
+                </Modal>
             </div>
         )
     }

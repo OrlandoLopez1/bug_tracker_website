@@ -11,6 +11,7 @@ router.route('/')
 
 router.route('/:ticketId')
     .get(ticketController.getTicket)
+    .patch(ticketController.updateTicket);
 
 router.route('/:ticketId/attachment')
     .put(ticketController.updateTicketAttachment)
