@@ -32,7 +32,7 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
     const [projectTickets, setProjectTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(tableType === 'user' ? 25 : 5);
+    const [pageSize, setPageSize] = useState(tableType === 'user' ? 22 : 5);
     const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
     const [inputPage, setInputPage] = useState('1'); // Add state for the input page
 
@@ -142,11 +142,9 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                                     </span>
                                     </td>
                                 }
-                                {columns.includes('UpdatedAt') && <td>{ticket.updatedAt}</td>}
-                                {columns.includes('CreatedAt') && <td>{ticket.createdAt}</td>}
+                                {columns.includes('UpdatedAt') && <td>{(new Date(ticket.updatedAt)).toString() !== 'Invalid Date' ? new Date(ticket.updatedAt).toLocaleString() : ''}</td>}
+                                {columns.includes('CreatedAt') && <td>{(new Date(ticket.createdAt)).toString() !== 'Invalid Date' ? new Date(ticket.createdAt).toLocaleString() : ''}</td>}
                                 {columns.includes('Project') && <td><Link className="ticket-link" to={`/projectview/${ticket.project?._id}`}>{ticket.project?.name}</Link></td>}
-
-                                {/*{columns.includes('Project') && <td>{ticket.project.name}</td>}*/}
                             </tr>
                         ))}
                         </tbody>
