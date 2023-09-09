@@ -207,9 +207,13 @@ const getPageOfTicketsForUser = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
 
-    console.log("new page pu reached")
     try {
-        const user = await User.findById(userId).populate('tickets');
+        const user = await User.findById(userId)
+            .populate({
+                path: 'tickets',
+                populate: { path: 'project' } // Nested population to fill in the project field in each ticket
+            });
+
         if (!user) {
             return res.status(404).json({ message: 'Cannot find user' });
         }

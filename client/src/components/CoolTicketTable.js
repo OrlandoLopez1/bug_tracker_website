@@ -32,7 +32,7 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
     const [projectTickets, setProjectTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(tableType === 'user' ? 25 : 5);
     const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
     const [inputPage, setInputPage] = useState('1'); // Add state for the input page
 
@@ -44,27 +44,21 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
            console.error("error in fetchProjectName")
        }
     }
-// ... Other imports and code remain the same
-
     const fetchTickets = async () => {
         try {
             let tickets = [];
             let totalPages = 0;
 
-            // Conditionally fetching tickets
             if (projectId) {
-                // Fetch tickets by project
                 const result = await fetchPageOfTicketsForProject(projectId, token, currentPage, pageSize);
                 tickets = result.tickets;
                 totalPages = result.totalPages;
             } else if (userId) {
-                // Fetch tickets by user
                 const result = await fetchPageOfTicketsForUser(userId, token, currentPage, pageSize);
                 tickets = result.tickets;
                 totalPages = result.totalPages;
             }
 
-            // Populate empty rows if needed (Similar to your existing code)
             if (totalPages === currentPage) {
                 let ticketsAndEmptyRows = [...tickets]
                 const numEmptyRows = pageSize - tickets.length;
@@ -113,7 +107,7 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
     let table
     const columnsConfig = {
         default: ['Title', 'Type', 'Status', 'Priority'],
-        user: ['Title', 'Type', 'Status', 'Priority', 'AssignedBy', 'Project']
+        user: ['Title', 'Type', 'Status', 'Priority', "UpdatedAt", "CreatedAt", 'Project']
     };
 
     const columns = columnsConfig[tableType] || columnsConfig.default;
@@ -148,9 +142,11 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                                     </span>
                                     </td>
                                 }
-                                {columns.includes('AssignedBy') && <td>{ticket.assignedBy}</td>}
-                                {columns.includes('Project') && <td>{ticket.project}</td>}
-                            {/*    todo go here*/}
+                                {columns.includes('UpdatedAt') && <td>{ticket.updatedAt}</td>}
+                                {columns.includes('CreatedAt') && <td>{ticket.createdAt}</td>}
+                                {columns.includes('Project') && <td><Link className="ticket-link" to={`/projectview/${ticket.project?._id}`}>{ticket.project?.name}</Link></td>}
+
+                                {/*{columns.includes('Project') && <td>{ticket.project.name}</td>}*/}
                             </tr>
                         ))}
                         </tbody>

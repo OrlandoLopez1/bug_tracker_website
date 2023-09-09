@@ -37,4 +37,21 @@
     background-color: #eaeef3;
 }
 
+.ticket-display {
+    flex: 1;
+    background: white;
+    padding: 2vh 1vw 2vh 1vw;
+    /*margin: 3vh 2vw 5vh 2vw ;*/
+    margin-top: 3vh;
+    margin-bottom: 5vh;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    z-index: 0;
+    overflow: auto;
+    min-width: 79vw;
+    max-width: 79vw;
+    min-height: 75vh;
+}
 

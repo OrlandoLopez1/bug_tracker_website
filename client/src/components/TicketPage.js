@@ -44,6 +44,7 @@ function TicketPage() {
                 <div className="ticket-page-contents">
                     <div className="ticket-display">
                         <CoolTicketTable
+                            tableType={"user"}
                             viewMode={ticketTableViewMode}
                             setViewMode={setTicketTableViewMode}
                             token={token}
