@@ -4,6 +4,7 @@ import {Pagination, Table} from 'react-bootstrap'
 import {Link} from "react-router-dom";
 import {getAllUsersOfRole} from "../controllers/UserController";
 import "./CoolUserTable.css";
+import "./UserTable.css";
 import {
     addUserToProject,
     fetchPageOfUsersForProject, fetchPageOfUsersNotInProject,
@@ -270,7 +271,6 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
 
     return (
         <div>
-
             {table}
             {paginationComponent}
         </div>

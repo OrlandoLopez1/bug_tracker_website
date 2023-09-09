@@ -92,7 +92,7 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
         case 'view':
             table = (
                 <div>
-                    <Table className="table-user-pv">
+                    <Table className="table-ticket-pv">
                         <thead>
                         <tr>
                             {columns.map((column) => <th scope="col" key={column}>{column}</th>)}
@@ -104,7 +104,7 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
                                 {columns.includes('Title') &&
                                     <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
                                 }
-                                {columns.includes('Type') && <td>{ticket.Type}</td>}
+                                {columns.includes('Type') && <td>{ticket.type}</td>}
                                 {columns.includes('Status') && <td>{ticket.status}</td>}
                                 {columns.includes('Priority') &&
                                     <td>
@@ -112,7 +112,7 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
                                         style={{
                                             backgroundColor: getPriorityColor(ticket.priority),
                                             padding: "5px",
-                                            borderRadius: "5px"
+                                            borderRadius: "5px",
                                         }}>
                                         {ticket.priority}
                                     </span>
@@ -154,7 +154,8 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
                                         style={{
                                             backgroundColor: getPriorityColor(ticket.priority),
                                             padding: "5px",
-                                            borderRadius: "5px"
+                                            borderRadius: "5px",
+                                            overflow:"auto"
                                         }}>
                                         {ticket.priority}
                                     </span>

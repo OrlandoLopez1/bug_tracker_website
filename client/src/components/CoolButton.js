@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import "./CoolButton.css"
 
 function CoolButton({ label, handleRequest }) {
     const STATES = {
@@ -28,7 +28,11 @@ function CoolButton({ label, handleRequest }) {
 
 
     return (
-        <button disabled={state !== STATES.IDLE} onClick={handleClick}>
+        <button
+            disabled={state !== STATES.IDLE}
+            onClick={handleClick}
+            className="right-align-button"
+        >
             {label}
         </button>
     );

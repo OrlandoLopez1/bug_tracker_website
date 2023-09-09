@@ -292,7 +292,7 @@ function ProjectView() {
                                         {"Tickets"}
                                     </div>
                                     <div className="title-desc-text">
-                                        <button className="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>add</button> | <button className="button-pv" onClick={handleEditTicketsClick}>edit</button>
+                                        <button className="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>Add</button> | <button className="button-pv" onClick={handleEditTicketsClick}>Edit</button>
 
                                     </div>
                                 </div>

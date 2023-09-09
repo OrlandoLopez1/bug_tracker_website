@@ -1,6 +1,11 @@
 .user-link {
     text-decoration: none;
     color: inherit;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .user-link:hover {
