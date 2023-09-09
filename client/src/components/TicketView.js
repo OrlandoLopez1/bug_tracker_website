@@ -246,7 +246,7 @@ function TicketView() {
                                         {"Attachments"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | <button className="edit-button-tv" onClick={() => setIsEditingAttachments(!isEditingAttachments)}>Edit</button>
+                                        <button className="edit-button-tv" onClick={() => setIsEditingAttachments(!isEditingAttachments)}>Edit</button>
                                     </div>
 
                                 </div>
@@ -275,7 +275,7 @@ function TicketView() {
                                         {"Comments"}
                                     </div>
                                     <div className="title-desc-text">
-                                        Add | <button className="edit-button" onClick={() => setIsEditingComments(!isEditingComments)}>Edit</button>
+                                        <button className="edit-button" onClick={() => setIsEditingComments(!isEditingComments)}>Edit</button>
                                     </div>
                                 </div>
                                 <div className="content2-tv">

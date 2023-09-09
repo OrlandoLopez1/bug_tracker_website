@@ -51,10 +51,9 @@ function SideMenu() {
                     <h3 className="role-style">{role}</h3>
                 </div>
             )}
-            <Button className="w-100 text-start" onClick={() => navigate("/dashboard")}>Dashboard</Button>
+            {/*<Button className="w-100 text-start" onClick={() => navigate("/dashboard")}>Dashboard</Button>*/}
             <Button className="w-100 text-start" onClick={() => navigate("/projectPage")}>My Projects</Button>
             <Button className="w-100 text-start" onClick={() => navigate("/ticketPage")}>My Tickets</Button>
-            {/* Add more buttons as you like */}
         </div>
     );
 }

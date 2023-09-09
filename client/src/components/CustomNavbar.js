@@ -53,7 +53,7 @@ function CustomNavbar() {
 
     return (
         <Navbar bg="dark" variant="dark" className="custom-navbar">
-            <Navbar.Brand href="#home" style={{ fontFamily: 'sans-serif' }}>Pro-Man</Navbar.Brand>
+            <Navbar.Brand href="/projectpage" style={{ fontFamily: 'sans-serif' }}>Pro-Man</Navbar.Brand>
             {roleDisplay}
             <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text>
