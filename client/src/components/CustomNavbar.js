@@ -13,8 +13,6 @@ function CustomNavbar() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log("Custom Navbar useEffect 1")
-
         if (token) {
             const decodedToken = jwtDecode(token);
             const username = decodedToken.UserInfo.username;

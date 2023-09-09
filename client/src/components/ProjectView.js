@@ -297,7 +297,6 @@ function ProjectView() {
                                     </div>
                                 </div>
                                 <div className="content">
-                                    {/*todo clean up table, make the tables update live*/}
                                     <CoolTicketTable
                                         viewMode={ticketTableViewMode}
                                         setViewMode={setTicketTableViewMode}

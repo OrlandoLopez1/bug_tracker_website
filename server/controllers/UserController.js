@@ -199,6 +199,34 @@ const getUserTickets = asyncHandler(async (req, res) => {
     res.json(user.tickets);
 });
 
+// @desc gets a specifics amount of tickets associated to a user
+// @route GET /users/:userId/pageOfTickets
+// @access Private
+const getPageOfTicketsForUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    console.log("new page pu reached")
+    try {
+        const user = await User.findById(userId).populate('tickets');
+        if (!user) {
+            return res.status(404).json({ message: 'Cannot find user' });
+        }
+
+        const tickets = user.tickets.slice((page - 1) * pageSize, page * pageSize);
+        const totalTickets = user.tickets.length;
+
+        res.json({
+            tickets: tickets,
+            currentPage: page,
+            totalPages: Math.ceil(totalTickets / pageSize)
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting tickets for user', error: error.message });
+    }
+});
+
 module.exports = {
     getUser,
     getAllUsers,
@@ -207,5 +235,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getUserProjects,
-    getUserTickets
+    getUserTickets,
+    getPageOfTicketsForUser
 }

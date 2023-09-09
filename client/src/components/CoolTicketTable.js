@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import {Table, Pagination} from "react-bootstrap";
 import "./TicketTable.css";
 import {
+    fetchProject,
     addTicketToProject,
     addUserToProject,
     fetchPageOfTicketsForProject,
     fetchPageOfUsersForProject,
-    removeTicketFromProject, removeUserFromProject
+    removeTicketFromProject,
+    removeUserFromProject
 } from "../controllers/ProjectController";
+import {fetchPageOfTicketsForUser} from "../controllers/UserController";
 import CoolButton from "./CoolButton";
 
 function getPriorityColor(priority) {
@@ -25,7 +28,7 @@ function getPriorityColor(priority) {
 }
 
 
-function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
+function CoolTicketTable({tableType, token, userId, projectId, viewMode, setViewMode}) {
     const [projectTickets, setProjectTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
@@ -33,25 +36,52 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
     const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
     const [inputPage, setInputPage] = useState('1'); // Add state for the input page
 
+    const [project, setProject] = useState('');
+    const fetchProjectName = async () => {
+       try {
+            setProject(await fetchProject(projectId));
+       } catch (error) {
+           console.error("error in fetchProjectName")
+       }
+    }
+// ... Other imports and code remain the same
 
-    const fetchTicketsInProject = async () => {
+    const fetchTickets = async () => {
         try {
-            const { tickets, totalPages } = await fetchPageOfTicketsForProject(projectId, token, currentPage, pageSize)
+            let tickets = [];
+            let totalPages = 0;
+
+            // Conditionally fetching tickets
+            if (projectId) {
+                // Fetch tickets by project
+                const result = await fetchPageOfTicketsForProject(projectId, token, currentPage, pageSize);
+                tickets = result.tickets;
+                totalPages = result.totalPages;
+            } else if (userId) {
+                // Fetch tickets by user
+                const result = await fetchPageOfTicketsForUser(userId, token, currentPage, pageSize);
+                tickets = result.tickets;
+                totalPages = result.totalPages;
+            }
+
+            // Populate empty rows if needed (Similar to your existing code)
             if (totalPages === currentPage) {
                 let ticketsAndEmptyRows = [...tickets]
-                const numEmptyRows = pageSize - tickets.length
+                const numEmptyRows = pageSize - tickets.length;
                 for (let i = 0; i < numEmptyRows; i++){
-                    ticketsAndEmptyRows.push({})
+                    ticketsAndEmptyRows.push({});
                 }
                 setProjectTickets(ticketsAndEmptyRows);
             } else {
                 setProjectTickets(tickets);
             }
             setTotalPages(totalPages);
+
         } catch (error) {
-            console.error("error in fetchDevsAndSubsFromProject: ", error);
+            console.error("error in fetchTickets: ", error);
         }
     };
+
 
 
     const handleAdd = async () => {
@@ -83,7 +113,7 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
     let table
     const columnsConfig = {
         default: ['Title', 'Type', 'Status', 'Priority'],
-        user: ['Title', 'Status', 'Priority']
+        user: ['Title', 'Type', 'Status', 'Priority', 'AssignedBy', 'Project']
     };
 
     const columns = columnsConfig[tableType] || columnsConfig.default;
@@ -118,6 +148,9 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
                                     </span>
                                     </td>
                                 }
+                                {columns.includes('AssignedBy') && <td>{ticket.assignedBy}</td>}
+                                {columns.includes('Project') && <td>{ticket.project}</td>}
+                            {/*    todo go here*/}
                             </tr>
                         ))}
                         </tbody>
@@ -222,8 +255,8 @@ function CoolTicketTable({tableType, token, projectId, viewMode, setViewMode}) {
     }, [currentPage]);
 
     useEffect(() => {
-        fetchTicketsInProject()
-    }, [token])
+        fetchTickets(); // Update this to fetchTickets
+    }, [token, currentPage, pageSize, userId, projectId]); // Add userId and projectId as dependencies
 
     useEffect(() => {
         console.log("view mode: ", viewMode)

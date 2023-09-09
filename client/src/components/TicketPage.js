@@ -5,11 +5,15 @@ import TicketTable from './TicketTable';
 import {fetchTickets} from '../controllers/TicketController.js'
 import './TicketPage.css';
 import { useNavigate } from 'react-router-dom';
+import CoolTicketTable from "./CoolTicketTable";
+import jwtDecode from "jwt-decode";
 
 function TicketPage() {
     const [tickets, setTickets] = useState([]);
     const token = localStorage.getItem('accessToken');
     const navigate = useNavigate();
+    const [ticketTableViewMode, setTicketTableViewMode] = useState('view');
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,27 +29,27 @@ function TicketPage() {
         fetchData();
     }, []);
 
-    const [username, setUsername] = useState(null);
-
     useEffect(() => {
-        const usernameFromStorage = localStorage.getItem('username');
-
-        if (usernameFromStorage) {
-            setUsername(usernameFromStorage);
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            setUserId(decodedToken.UserInfo.id)
         }
-        if (!token) {
-            navigate('/login');
-        }
-    }, [navigate, token]);
+    }, [token]);
 
     return (
         <div>
-            <CustomNavbar username={username} />
+            <CustomNavbar/>
             <div className="main-content">
                 <SideMenu />
-                <div className="ticket-page-content">
-                    <h1>Tickets</h1>
-                    <TicketTable tickets={tickets} />
+                <div className="ticket-page-contents">
+                    <div className="ticket-display">
+                        <CoolTicketTable
+                            viewMode={ticketTableViewMode}
+                            setViewMode={setTicketTableViewMode}
+                            token={token}
+                            userId={userId}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

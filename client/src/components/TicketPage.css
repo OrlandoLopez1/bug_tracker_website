@@ -32,8 +32,9 @@
     flex-direction: row;
 }
 
-.ticket-page-content {
+.ticket-page-contents {
     flex-grow: 1;
+    background-color: #eaeef3;
 }
 
 

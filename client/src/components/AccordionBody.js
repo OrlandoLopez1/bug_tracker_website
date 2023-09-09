@@ -8,6 +8,7 @@ import {updateProject} from "../controllers/ProjectController";
 import {fetchUser, getAllUsers} from "../controllers/UserController";
 import ProjectEditForm from "./ProjectEditForm";
 import CoolUserTable from "./CoolUserTable";
+import CoolTicketTable from "./CoolTicketTable";
 function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
     const [tickets, setTickets] = useState([]);
     const [users, setUsers] = useState([]);
@@ -180,15 +181,6 @@ function AccordionBody({ project, isEditing, setIsEditing, onUpdateProject}) {
                     <p>{project.currentStatus}</p>
                 </div>
 
-            </div>
-            <div>
-                <h3>Tickets:</h3>
-                <TicketTable tickets={tickets} viewType={"project"} />
-            </div>
-            <div>
-                <h3>Users:</h3>
-                {/*<UserTable  users={users} token={token} viewMode={'view'}/>*/}
-                <CoolUserTable  prjectId={project._id} token={token} viewMode={'view'}/>
             </div>
         </div>
     );
