@@ -104,12 +104,25 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
                                     </td>}
                                 {columns.includes('firstName') && <td>{user.firstName }</td>}
                                 {columns.includes('lastName') && <td>{user.lastName}</td>}
-                                {columns.includes('name') && <td><Link className="user-link"
-                                                                       to={`/userview/${user._id}`}>{user.firstName} {user.lastName}</Link>
+                                {columns.includes('name') && <td>
+                                    <Link
+                                        className="user-link"
+                                        to={`/userview/${user._id}`}>{user.firstName} {user.lastName}
+                                    </Link>
+
                                 </td>}
                                 {columns.includes('username') && <td>{user.username}</td>}
                                 {columns.includes('email') && <td>{user.email}</td>}
-                                {columns.includes('role') && <td>{user.role}</td>}
+                                {columns.includes('role') &&
+                                    <td>
+                                        <span
+                                            style={{
+                                                padding: "5px",
+                                                borderRadius: "5px",
+                                            }}>
+                                            {user.role}
+                                        </span>
+                                    </td>}
                             </tr>
                         ))}
                         </tbody>
@@ -145,7 +158,16 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
                                 </td>}
                                 {columns.includes('username') && <td>{user.username}</td>}
                                 {columns.includes('email') && <td>{user.email}</td>}
-                                {columns.includes('role') && <td>{user.role}</td>}
+                                {columns.includes('role') &&
+                                    <td>
+                                        <span
+                                            style={{
+                                                padding: "5px",
+                                                borderRadius: "5px",
+                                            }}>
+                                            {user.role}
+                                        </span>
+                                    </td>}
                             </tr>
                         ))}
                         </tbody>
