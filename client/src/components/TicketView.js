@@ -13,7 +13,7 @@ import {
     fetchTicketsForProject,
     updateTicket
 } from "../controllers/TicketController";
-import {fetchUser} from "../controllers/UserController";
+import {fetchUser, getAllUsers} from "../controllers/UserController";
 import CommentSection from "./CommentSection";
 import {fetchCommentsForTicket} from "../controllers/CommentController";
 import AttachmentSection from "./AttachmentSection";
@@ -38,7 +38,7 @@ function getPriorityColor(priority) {
 function TicketView() {
     const {ticketId} = useParams();
     const [ticket, setTicket] = useState([]);
-    const [assignedUser, setAssignedUser] = useState(null);
+    const [assignedUsers, setAssignedUsers] = useState(null);
     const [comments, setComments] = useState(null);
     const [editingTicketId, setEditingTicketId] = useState(null);
     const token = localStorage.getItem('accessToken');
@@ -54,7 +54,6 @@ function TicketView() {
     const [isEditingAttachments, setIsEditingAttachments] = useState(false);
     const [isEditingComments, setIsEditingComments] = useState(false);
     const [isEditingTicket, setIsEditingTicket] = useState(false);
-    const [currentTicket, setCurrentTicket] = useState(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
@@ -75,9 +74,16 @@ function TicketView() {
             try {
                 const ticketData = await fetchTicket(ticketId, token);
                 setTicket(ticketData);
-                if (ticketData.assignedTo) {
-                    const userData = await fetchUser(ticketData.assignedTo, token);
-                    setAssignedUser(userData);
+                if (ticketData.assignedTo && Array.isArray(ticketData.assignedTo)) {
+                    const userPromises = ticketData.assignedTo.map(userId => fetchUser(userId, token));
+
+                    Promise.all(userPromises)
+                        .then(userData => {
+                            setAssignedUsers(userData);
+                        })
+                        .catch(error => {
+                            console.error("Error fetching users:", error);
+                        });
                 }
                 if (ticketData.comments) {
                     const commentData = await fetchCommentsForTicket(ticketData._id, token);
@@ -89,6 +95,26 @@ function TicketView() {
                     console.log("Fetched attachments:", attachmentData);
                     setAttachments(attachmentData);
                 }
+
+                 const promise = new Promise(async (resolve, reject) => {
+                    try {
+                        if (ticketData.assignedTo) {
+                            const allUsers = await getAllUsers(token);
+                            const assignableUsers = allUsers.filter(user => user.role === 'developer');
+                            setAssignableUsers(assignableUsers);
+                        }
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+                try {
+                    await promise;
+                    console.log("Data gathered and processed successfully.");
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                }
+
 
                 const decodedToken = jwtDecode(token);
                 const curUserId = decodedToken.UserInfo.id;
@@ -104,7 +130,6 @@ function TicketView() {
     }, [navigate, token]);
 
     useEffect(() => {
-        // This will cause a re-render when 'isEditingAttachments' changes
     }, [isEditingAttachments, isEditingComments]);
 
 
@@ -170,13 +195,12 @@ function TicketView() {
             uploader:  curUserId
         }));
         setSelectedFiles(attachments);
-        // If you want to show the name of the first selected file or a summary
         setSelectedFileName(files.length > 1 ? `${files.length} files selected` : files[0].name);
     };
 
 
     const handleEditTicket = (ticket) => {
-        setEditingTicketId(ticket._id);  // when Edit button is clicked, set this project as being edited
+        setEditingTicketId(ticket._id);
     };
 
     const handleDeleteTicket = (ticket) => {
@@ -209,18 +233,6 @@ function TicketView() {
 
             const updatedTicketData = await updateTicket(ticketId, updatedTicket, token);
             setTicket(updatedTicketData);
-            setTitle(updatedTicketData.title);
-            setDescription(updatedTicketData.description);
-            setType(updatedTicketData.type);
-            setStatus(updatedTicketData.status);
-            setPriority(updatedTicketData.priority);
-
-            if (updatedTicketData.users && Array.isArray(updatedTicketData.users)) {
-                const usersData = updatedTicketData.users;
-                setSelectedUsers(usersData);
-                setCurrentTicket(currentTicket => ({ ...currentTicket, users: usersData }));
-            }
-
             setIsEditingTicket(false);
 
         } catch (error) {
@@ -228,6 +240,19 @@ function TicketView() {
         }
     };
 
+    useEffect(() => {
+        if (ticket.assignedTo && Array.isArray(ticket.assignedTo)) {
+            const userPromises = ticket.assignedTo.map(userId => fetchUser(userId, token));
+
+            Promise.all(userPromises)
+                .then(userData => {
+                    setAssignedUsers(userData);
+                })
+                .catch(error => {
+                    console.error("Error fetching users:", error);
+                });
+        }
+    }, [ticket]);
 
     if (loading) {
         return <p>Loading...</p>
@@ -249,9 +274,17 @@ function TicketView() {
                             <div className="ticket-details-top-container">
                                 <div className='ticket-details-section'>
                                     <div className="ticket-details-left">
-                                        <div>
-                                            Assigned to: {assignedUser ?
-                                            `${assignedUser.firstName} ${assignedUser.lastName}`  : 'N/A'}
+                                        <div className="user-container">
+                                            Assigned to:
+                                            {assignedUsers && assignedUsers.length > 0 ? (
+                                                assignedUsers.map((user, index) => (
+                                                    <div key={index}>
+                                                        {`${user.firstName} ${user.lastName}`}
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                'N/A'
+                                            )}
                                         </div>
                                         <div>
                                             <div>Type: {ticket.type}</div>
@@ -344,12 +377,11 @@ function TicketView() {
                         setStatus={setStatus}
                         priority={ticket.priority}
                         setPriority={setPriority}
-                        selectedUsers={ticket.users}
+                        selectedUsers={ticket.assignedTo}
                         setSelectedUsers={setSelectedUsers}
                         assignableUsers={assignableUsers}
                         handleSave={handleSave}
                         setIsEditing={setIsEditingTicket}
-                        // toggleFormVisibility={() => setIsEditingTicket(!isEditingTicket)}
                     />
                 </Modal>
             </div>

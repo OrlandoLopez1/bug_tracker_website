@@ -23,13 +23,10 @@ function TicketEditForm({
             type: localType,
             status: localStatus,
             priority: localPriority,
-            users: localSelectedUsers,
+            assignedTo: localSelectedUsers,
         };
-
         handleSave(updatedTicket);
     };
-
-    useEffect(() => {}, [title]);
 
     return (
         <Form>
@@ -48,10 +45,16 @@ function TicketEditForm({
                     value={localType}
                     onChange={e => setLocalType(e.target.value)}
                 >
-                    {/* Add all your types here */}
                     <option value="bug">Bug</option>
                     <option value="feature request">Feature Request</option>
-                    {/* ... */}
+                    <option value="improvement">Improvement</option>
+                    <option value="maintenance">Maintenance</option>
+                    <option value="security">Security</option>
+                    <option value="documentation">Documentation</option>
+                    <option value="ui/ux">UI/UX</option>
+                    <option value="performance">Performance</option>
+                    <option value="compatibility">Compatibility</option>
+                    <option value="other">Other</option>
                 </Form.Control>
             </Form.Group>
             <Form.Group>
@@ -80,7 +83,7 @@ function TicketEditForm({
             </Form.Group>
             <Form.Group>
                 <Form.Label>Users</Form.Label>
-                {assignableUsers.map(user => (
+                {assignableUsers && assignableUsers.map(user => (
                     <Form.Check
                         type='checkbox'
                         id={`checkbox-${user._id}`}
