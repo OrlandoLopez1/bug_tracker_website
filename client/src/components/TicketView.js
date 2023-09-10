@@ -348,7 +348,8 @@ function TicketView() {
                         setSelectedUsers={setSelectedUsers}
                         assignableUsers={assignableUsers}
                         handleSave={handleSave}
-                        toggleFormVisibility={() => setIsEditingTicket(false)}
+                        setIsEditing={setIsEditingTicket}
+                        // toggleFormVisibility={() => setIsEditingTicket(!isEditingTicket)}
                     />
                 </Modal>
             </div>
