@@ -175,6 +175,16 @@
 }
 
 .user-container {
-    max-height: 150px;
-    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user-link-tv{
+    white-space: nowrap;
+    color: inherit;
+    text-decoration: none;
+}
+.user-link-tv:hover {
+    color: inherit;
+    text-decoration: underline;
 }

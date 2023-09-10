@@ -1,7 +1,7 @@
 import SideMenu from './SideMenu';
 import CustomNavbar from './CustomNavbar';
 import './TicketView.css'
-import {useNavigate, useParams} from 'react-router-dom';
+import {Link, useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';
 import React, {useEffect, useState} from "react";
 import {fetchAttachmentsForTicket, addAttachmentToTicket, getPresignedUrl} from "../controllers/AttachmentController";
@@ -275,12 +275,15 @@ function TicketView() {
                                 <div className='ticket-details-section'>
                                     <div className="ticket-details-left">
                                         <div className="user-container">
-                                            Assigned to:
+                                            {`Assigned to:\u00A0`}
                                             {assignedUsers && assignedUsers.length > 0 ? (
                                                 assignedUsers.map((user, index) => (
-                                                    <div key={index}>
-                                                        {`${user.firstName} ${user.lastName}`}
-                                                    </div>
+                                                    <React.Fragment key={index}>
+                                                        <Link className="user-link-tv" to={`/userview/${user._id}`}>
+                                                            {`${user.firstName} ${user.lastName}`}
+                                                        </Link>
+                                                        {index < assignedUsers.length - 1 && `,\u00A0`}
+                                                    </React.Fragment>
                                                 ))
                                             ) : (
                                                 'N/A'
