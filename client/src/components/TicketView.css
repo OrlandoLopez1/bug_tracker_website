@@ -9,8 +9,8 @@
     flex-direction: column;
     padding-top: 5vh;
     background: #eaeef3;
-
-    /*height: 100vh; !* Add this if you also want vertical centering *!*/
+    min-height: 100vh;
+    overflow: auto;
 }
 
 .ticket-details-top-container {
@@ -61,10 +61,8 @@
 .horizontal-container-tv {
     display: flex;
     margin-top: 5vh;
-    /*flex-wrap: nowrap;*/
-    /*overflow-y: auto;*/
+    /*overflow: hidden;*/
 }
-
 
 .common-parent1-tv {
     box-sizing: border-box;
@@ -83,7 +81,6 @@
     max-height: 60vh;
     margin-right: 2vw;
     margin-left: 1vw;
-    overflow: auto;
 }
 
 .overlapping-title-view {
@@ -98,6 +95,7 @@
     margin-right: auto;
     z-index: 1;
     position: relative;
+    overflow: auto;
 }
 
 
@@ -105,34 +103,26 @@
     background: white;
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0, 0, 0, .3);
-    overflow: auto;
     padding-top: 3vh;
     padding-bottom: 3vh;
     padding-left: 3vh;
     padding-right: 3vh;
     min-height: 52vh;
     max-height: 52vh;
-
-    /*padding-top: 10vh;*/
-
-
+    overflow: auto;
 }
 
 .content2-tv {
     background: white;
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0, 0, 0, .3);
-    overflow: auto;
     padding-top: 3vh;
     padding-bottom: 3vh;
     padding-left: 3vh;
     padding-right: 3vh;
     min-height: 52vh;
     max-height: 52vh;
-
-    /*padding-top: 10vh;*/
-
-
+    overflow: auto;
 }
 
 

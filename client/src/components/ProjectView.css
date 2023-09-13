@@ -9,6 +9,8 @@
     display: flex;
     flex-direction: column;
     padding-top: 5vh;
+    min-height: 100vh;
+    overflow: auto;
 }
 
 .project-details-top-container {
@@ -59,7 +61,7 @@
 .horizontal-container-pv {
     display: flex;
     margin-top: 5vh;
-    overflow: hidden;
+    /*overflow: auto;*/
 }
 
 

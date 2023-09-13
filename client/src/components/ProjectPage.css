@@ -106,19 +106,10 @@
 
 .outside-container {
     display: flex;
-    /*justify-content: center;*/
-    /*align-items: center;*/
     background: #eaeef3;
     width: 100%;
-    height: 100vh; /* Add this if you also want vertical centering */
-
+    min-height: 100vh;
 }
-
-/*}.outside-container {*/
-/*    display: block;*/
-/*    background: #eaeef3;*/
-/*    width: 100%;*/
-/*}*/
 
 .top-item {
         padding-top: 8vh;
