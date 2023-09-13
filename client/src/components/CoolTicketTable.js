@@ -13,6 +13,9 @@ import {
 } from "../controllers/ProjectController";
 import {fetchPageOfTicketsForUser} from "../controllers/UserController";
 import CoolButton from "./CoolButton";
+import StatusCompleteIcon from "../assets/icons/StatusCompleteIcon";
+import StatusInProgress from "../assets/icons/StatusInProgressIcon";
+import StatusOpenIcon from "../assets/icons/StatusOpenIcon";
 
 function getPriorityColor(priority) {
     switch(priority) {
@@ -33,8 +36,8 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
     const [selectedTickets, setSelectedTickets] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(tableType === 'user' ? 22 : 5);
-    const [totalPages, setTotalPages] = useState(0); // Update this value based on the data from the API
-    const [inputPage, setInputPage] = useState('1'); // Add state for the input page
+    const [totalPages, setTotalPages] = useState(0);
+    const [inputPage, setInputPage] = useState('1');
 
     const [project, setProject] = useState('');
     const fetchProjectName = async () => {
@@ -129,7 +132,11 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                                     <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
                                 }
                                 {columns.includes('Type') && <td>{ticket.type}</td>}
-                                {columns.includes('Status') && <td>{ticket.status}</td>}
+                                {columns.includes('Status') &&
+                                    <td>
+                                        <StatusCompleteIcon/>
+                                    </td>
+                                }
                                 {columns.includes('Priority') &&
                                     <td>
                                     <span
