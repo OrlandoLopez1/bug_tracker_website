@@ -79,9 +79,9 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
 
     let table
     const columnsConfig = {
-        default: ['name', 'email', 'role'],
-        project: ['name', 'email', 'role'],
-        full: ['profilePicture', 'firstName', 'lastName', 'username', 'email', 'role', 'projects', 'tickets', 'skills']
+        default: ['Name', 'Email', 'Role'],
+        project: ['Name', 'Email', 'Role'],
+        full: ['ProfilePicture', 'FirstName', 'LastName', 'Username', 'Email', 'Role', 'Projects', 'Tickets', 'Skills']
     };
 
     const columns = columnsConfig[tableType] || columnsConfig.default;
@@ -102,18 +102,18 @@ function CoolUserTable({tableType, token, projectId, viewMode, setViewMode}) {
                                 {columns.includes('profilePicture') &&
                                     <td><img src="/defaultpfp.jpg" alt="Profile1" className="profile-picture-edit-ut"/>
                                     </td>}
-                                {columns.includes('firstName') && <td>{user.firstName }</td>}
-                                {columns.includes('lastName') && <td>{user.lastName}</td>}
-                                {columns.includes('name') && <td>
+                                {columns.includes('FirstName') && <td>{user.firstName }</td>}
+                                {columns.includes('LastName') && <td>{user.lastName}</td>}
+                                {columns.includes('Name') && <td>
                                     <Link
                                         className="user-link"
                                         to={`/userview/${user._id}`}>{user.firstName} {user.lastName}
                                     </Link>
 
                                 </td>}
-                                {columns.includes('username') && <td>{user.username}</td>}
-                                {columns.includes('email') && <td>{user.email}</td>}
-                                {columns.includes('role') &&
+                                {columns.includes('Username') && <td>{user.username}</td>}
+                                {columns.includes('Email') && <td>{user.email}</td>}
+                                {columns.includes('Role') &&
                                     <td>
                                         <span
                                             style={{

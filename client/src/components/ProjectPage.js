@@ -21,8 +21,6 @@
         const navigate = useNavigate();
         const [modalIsOpen, setModalIsOpen] = useState(false);
 
-
-
         useEffect(() => {
             const fetchData = async () => {
                 if (!token) {
@@ -119,7 +117,7 @@
                     </Modal>
                     <div className="outside-container">
                         <Button className="add-button" variant="primary" onClick={() => setModalIsOpen(true)}>Add +</Button>
-                        <div className="overlapping-title-project-page">
+                    <div className="overlapping-title-project-page">
                             <div className="title-text">
                                 Projects
                             </div>
