@@ -4,4 +4,10 @@ tr {
 
 td {
     vertical-align: top;
+    border: red solid;
+}
+
+.status-icon td{
+    border: red solid;
+    background-color: red;
 }

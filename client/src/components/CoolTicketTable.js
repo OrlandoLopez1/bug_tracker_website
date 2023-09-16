@@ -14,7 +14,7 @@ import {
 import {fetchPageOfTicketsForUser} from "../controllers/UserController";
 import CoolButton from "./CoolButton";
 import StatusCompleteIcon from "../assets/icons/StatusCompleteIcon";
-import StatusInProgress from "../assets/icons/StatusInProgressIcon";
+import StatusInProgressIcon from "../assets/icons/StatusInProgressIcon";
 import StatusOpenIcon from "../assets/icons/StatusOpenIcon";
 
 function getPriorityColor(priority) {
@@ -109,10 +109,15 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
 
     let table
     const columnsConfig = {
-        default: ['Title', 'Type', 'Status', 'Priority'],
+        default: ['Title', 'Type', 'Priority', 'Status'],
         user: ['Title', 'Type', 'Status', 'Priority', "UpdatedAt", "CreatedAt", 'Project']
     };
 
+    const STATUS_ICONS = {
+        "closed": <StatusCompleteIcon />,
+        "inprogress": <StatusInProgressIcon />,
+        "open": <StatusOpenIcon />
+    };
     const columns = columnsConfig[tableType] || columnsConfig.default;
 
     switch (viewMode) {
@@ -132,11 +137,6 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                                     <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
                                 }
                                 {columns.includes('Type') && <td>{ticket.type}</td>}
-                                {columns.includes('Status') &&
-                                    <td>
-                                        <StatusCompleteIcon/>
-                                    </td>
-                                }
                                 {columns.includes('Priority') &&
                                     <td>
                                     <span
@@ -152,6 +152,13 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                                 {columns.includes('UpdatedAt') && <td>{(new Date(ticket.updatedAt)).toString() !== 'Invalid Date' ? new Date(ticket.updatedAt).toLocaleString() : ''}</td>}
                                 {columns.includes('CreatedAt') && <td>{(new Date(ticket.createdAt)).toString() !== 'Invalid Date' ? new Date(ticket.createdAt).toLocaleString() : ''}</td>}
                                 {columns.includes('Project') && <td><Link className="ticket-link" to={`/projectview/${ticket.project?._id}`}>{ticket.project?.name}</Link></td>}
+                                {columns.includes('Status') &&
+                                    <td>
+                                        <div className='status-icon' >
+                                            {STATUS_ICONS[ticket.status] || <div></div>}
+                                        </div>
+                                    </td>
+                                }
                             </tr>
                         ))}
                         </tbody>

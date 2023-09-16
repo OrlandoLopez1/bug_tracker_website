@@ -1,7 +1,7 @@
 import React from 'react';
 
 const StatusInProgressIcon = () => (
-	<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="32" viewBox="0 0 256 256">
+	<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 256 256">
 		<defs></defs>
 		<g transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
 			<circle cx="45" cy="45" r="45" style={{ fill: "rgb(255,206,0)" }} />
