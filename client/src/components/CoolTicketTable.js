@@ -181,14 +181,23 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                         <tbody>
                         {projectTickets.map((ticket) => (
                             <tr key={ticket._id}>
-                                <td>
-                                    <input type="checkbox" checked={!!selectedTickets[ticket._id]}
-                                           onChange={(e) => handleCheckboxChange(ticket._id, e.target.checked)}/></td>
+                                {ticket._id !== undefined ? (
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={!!selectedTickets[ticket._id]}
+                                            onChange={(e) => handleCheckboxChange(ticket._id, e.target.checked)}
+                                        />
+                                    </td>
+                                ) : (
+                                    <td>
+                                        <div></div>
+                                    </td>
+                                )}
                                 {columns.includes('Title') &&
                                     <td><Link className="ticket-link" to={`/ticketview/${ticket._id}`}>{ticket.title}</Link></td>
                                 }
-                                {columns.includes('Type') && <td>{ticket.Type}</td>}
-                                {columns.includes('Status') && <td>{ticket.status}</td>}
+                                {columns.includes('Type') && <td>{ticket.type}</td>}
                                 {columns.includes('Priority') &&
                                     <td>
                                     <span
@@ -200,6 +209,13 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
                                         }}>
                                         {ticket.priority}
                                     </span>
+                                    </td>
+                                }
+                                {columns.includes('Status') &&
+                                    <td>
+                                        <div className='status-icon' >
+                                            {STATUS_ICONS[ticket.status] || <div></div>}
+                                        </div>
                                     </td>
                                 }
                             </tr>

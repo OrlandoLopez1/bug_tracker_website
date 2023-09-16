@@ -1,7 +1,7 @@
 import React from 'react';
 
 const StatusCompleteIcon = () => (
-	<svg version="1.1" width="24" height="24" viewBox="0 0 256 256">
+	<svg version="1.1" width="20" height="20" viewBox="0 0 256 256">
 		<defs>
 		</defs>
 		<g transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" style={{ stroke: 'none', strokeWidth: 0, strokeDasharray: 'none', strokeLinecap: 'butt', strokeLinejoin: 'miter', strokeMiterlimit: 10, fill: 'none', fillRule: 'nonzero', opacity: 1 }}>
