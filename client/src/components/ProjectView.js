@@ -1,5 +1,6 @@
 import './ProjectView.css'
 import SideMenu from './SideMenu';
+import jwtDecode from "jwt-decode";
 import CustomNavbar from './CustomNavbar';
 import {useNavigate, useParams} from 'react-router-dom';
 import Modal from 'react-modal';

@@ -5,9 +5,11 @@
     import './ProjectPage.css';
     import AccordionBody from './AccordionBody';
     import {fetchProjects, deleteProject, updateProject} from "../controllers/ProjectController";
+    import {fetchUserProjects} from "../controllers/UserController"
     import { useNavigate } from 'react-router-dom';
     import Modal from 'react-modal';
     import ProjectForm from "./ProjectForm";
+    import jwtDecode from "jwt-decode";
     Modal.setAppElement('#root');
     //todo fix modal its hideous
     //todo block projects off by planning, finished, etc
@@ -23,9 +25,21 @@
 
         useEffect(() => {
             const fetchData = async () => {
+                if (!token) {
+                    navigate('/login')
+                }
+                const decodedToken = jwtDecode(token);
+                const role = decodedToken.UserInfo.role;
+                const userId = decodedToken.UserInfo.id
                 try {
-                    const projectData = await fetchProjects(token);
-                    setProjects(projectData);
+                    if (role === 'admin'){
+                        const projectData = await fetchProjects(token);
+                        setProjects(projectData);
+                    }
+                    else {
+                        const projectData = await fetchUserProjects(userId ,token);
+                        setProjects(projectData);
+                    }
                 } catch (error) {
                     console.error('Failed to fetch projects:', error);
                 }

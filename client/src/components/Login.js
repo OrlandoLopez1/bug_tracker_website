@@ -13,66 +13,58 @@ export default function Login() {
             const data = await loginUser(email, password);
             if (data.accessToken) {
                 localStorage.setItem('accessToken', data.accessToken);
-                navigate("/");
+                navigate("/projectpage");
                 alert("Login Successful");
             } else {
                 alert("Something went wrong");
             }
-
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
-
     return (
-        <div className="auth-wrapper">
-            <div className="auth-inner">
+        <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#212529'}}>
+            <div className="card p-4" style={{width: '300px', backgroundColor: '#eaeef3'}}>
                 <form onSubmit={handleSubmit}>
-                    <h3>Sign In</h3>
+                    <h3 className="mb-4">Sign In</h3>
 
                     <div className="mb-3">
-                        <label>Email address</label>
                         <input
                             type="email"
                             className="form-control"
-                            placeholder="Enter email"
+                            placeholder="Email"
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
                     <div className="mb-3">
-                        <label>Password</label>
                         <input
                             type="password"
                             className="form-control"
-                            placeholder="Enter password"
+                            placeholder="Password"
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
 
-                    <div className="mb-3">
-                        <div className="custom-control custom-checkbox">
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="customCheck1"
-                            />
-                            <label className="custom-control-label" htmlFor="customCheck1">
-                                Remember me
-                            </label>
-                        </div>
+                    <div className="mb-3 d-flex align-items-center">
+                        <input
+                            type="checkbox"
+                            className="me-2"
+                            id="rememberMe"
+                        />
+                        <label htmlFor="rememberMe">
+                            Remember me
+                        </label>
                     </div>
 
-                    <div className="d-grid">
-                        <button type="submit" className="btn btn-primary">
-                            Submit
-                        </button>
+                    <button type="submit" className="btn btn-primary w-100 mb-3">
+                        Login
+                    </button>
+
+                    <div className="d-flex justify-content-between">
+                        <a href="/register">Register</a>
                     </div>
-                    <p className="forgot-password text-right">
-                        Forgot <a href="#">password?</a>
-                    </p>
-                    <a href="/register">Register</a>
                 </form>
             </div>
         </div>

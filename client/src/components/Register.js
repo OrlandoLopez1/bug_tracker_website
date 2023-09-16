@@ -1,9 +1,7 @@
-// src/components/Register.js
 import React, { useState } from "react";
 import { registerUser } from "../controllers/AuthController";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-
 
 export default function Register() {
     const [firstName, setFirstName] = useState("");
@@ -13,6 +11,7 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("submitter");
     const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const userData = {
@@ -26,17 +25,17 @@ export default function Register() {
         const data = await registerUser(userData);
         if (data.message === 'User created') {
             alert("Registration Successful");
+            navigate("/login");
         } else {
             alert("Something went wrong");
         }
-        navigate("/login");
     };
 
     return (
-        <div className="auth-wrapper">
-            <div className="auth-inner">
+        <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#212529'}}>
+            <div className="card p-4" style={{width: '300px', backgroundColor: '#eaeef3'}}>
                 <form onSubmit={handleSubmit}>
-                    <h3>Sign Up</h3>
+                    <h3 className="mb-4">Sign Up</h3>
 
                     <div className="mb-3">
                         <label>First Name</label>
@@ -97,11 +96,13 @@ export default function Register() {
                             <option value="projectmanager">Project Manager</option>
                         </Form.Control>
                     </Form.Group>
+
                     <div className="d-grid">
                         <button type="submit" className="btn btn-primary">
                             Register
                         </button>
                     </div>
+
                     <p className="forgot-password text-right">
                         Already registered <a href="/login">sign in?</a>
                     </p>
