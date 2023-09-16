@@ -110,7 +110,7 @@ function CoolTicketTable({tableType, token, userId, projectId, viewMode, setView
     let table
     const columnsConfig = {
         default: ['Title', 'Type', 'Priority', 'Status'],
-        user: ['Title', 'Type', 'Status', 'Priority', "UpdatedAt", "CreatedAt", 'Project']
+        user: ['Title', 'Type', 'Priority', "UpdatedAt", "CreatedAt", 'Project', 'Status']
     };
 
     const STATUS_ICONS = {
