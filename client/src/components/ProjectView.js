@@ -52,8 +52,13 @@ function ProjectView() {
     const [selectedUsers, setSelectedUsers] = useState([]);
 
     const [modalIsOpenForCreateTicket, setModalIsOpenForCreateTicket] = useState(false);
+    const decodedToken = jwtDecode(token);
+    const role = decodedToken.UserInfo.role;
+    const userId = decodedToken.UserInfo.id
 
-    // updated click handlers to set correct mode
+    const handleBackClick = () => {
+        navigate(-1)
+    }
     const handleEditProjectClick = () => {
         setIsEditing(EDIT_MODES.PROJECT);
     };
@@ -84,7 +89,6 @@ function ProjectView() {
             const fetchedUsers = await fetchUsersForProject(projectId, token);
             setUsers(fetchedUsers);
             setSelectedUsers(fetchedUsers.map(user => user._id));
-            //todo check this, was 'users' now 'allUsers'
             const allUsers= await getAllUsers(token);
             const assignableUsers = allUsers.filter(user => user.role === 'submitter' || user.role === 'developer');
             setAssignableUsers(assignableUsers);
@@ -107,7 +111,7 @@ function ProjectView() {
         setIsEditing(project._id);
     };
 
-        const handleDeleteProject = (project) => {
+    const handleDeleteProject = (project) => {
         const confirmation = window.confirm(`Are you sure you want to delete project: ${project.name}?`);
 
         if (!confirmation) {
@@ -236,9 +240,16 @@ function ProjectView() {
                             <div className="title-text">
                                 {project.name}
                             </div>
-                            <div className="title-desc-text">
-                                Back | <button className="button-pv" onClick={handleEditProjectClick}>Edit</button>
-                        </div>
+                            {role === 'projectmanager' || role === 'admin' ? (
+                                <div className="title-desc-text">
+                                    <button className="button-pv" onClick={handleBackClick}>Back</button> | <button className="button-pv" onClick={handleEditProjectClick}>Edit</button>
+                                </div>
+                            ) : (
+                                <div className="title-desc-text">
+                                    <button className="button-pv" onClick={handleBackClick}>Back</button>
+                                </div>
+                            )
+                            }
                         </div>
                         <div className="project-details-top-container">
                             <div className='project-details-section'>
@@ -273,9 +284,17 @@ function ProjectView() {
                                     <div className="title-text">
                                         {"Users"}
                                     </div>
-                                    <div className="title-desc-text">
-                                        <button className="button-pv" onClick={handleAddUsersClick}>Add |</button> <button className="button-pv" onClick={handleEditUsersClick}>Edit</button>
-                                    </div>
+                                    {role === 'projectmanager' || role === 'admin' ? (
+
+                                        <div className="title-desc-text">
+                                            <button className="button-pv" onClick={handleAddUsersClick}>Add |</button> <button className="button-pv" onClick={handleEditUsersClick}>Edit</button>
+                                        </div>
+                                    ) : (
+                                        <div className="title-desc-text">
+                                        assigned to project
+                                        </div>
+                                    )
+                                    }
                                 </div>
                                 <div className="content">
                                     <CoolUserTable
@@ -292,10 +311,17 @@ function ProjectView() {
                                     <div className="title-text">
                                         {"Tickets"}
                                     </div>
-                                    <div className="title-desc-text">
-                                        <button className="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>Add</button> | <button className="button-pv" onClick={handleEditTicketsClick}>Edit</button>
+                                        {role === 'projectmanager' || role === 'developer' || role === 'admin' ? (
+                                            <div className="title-desc-text">
+                                                <button className="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>Add</button> | <button className="button-pv" onClick={handleEditTicketsClick}>Edit</button>
+                                            </div>
+                                            ) : (
+                                            <div className="title-desc-text">
+                                                <button className="button-pv" onClick={() => setModalIsOpenForCreateTicket(true)}>Add</button>
+                                            </div>
+                                        )
+                                        }
 
-                                    </div>
                                 </div>
                                 <div className="content">
                                     <CoolTicketTable

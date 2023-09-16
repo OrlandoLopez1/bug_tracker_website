@@ -22,9 +22,6 @@ function CommentSection({ curUserObject, isEditingComments, setIsEditingComments
         if (!token) {
             navigate('/login');
         }
-
-
-        // Fetch comments on component mount
         fetchCommentsForTicket(ticketId, token).then(setComments).catch(console.error);
     }, [navigate, token, ticketId]);
 
@@ -65,7 +62,6 @@ function CommentSection({ curUserObject, isEditingComments, setIsEditingComments
         }
     };
 
-// todo check if necessary
     const handleCommentClick = async (comment) => {
         if (isEditingComments) {
             // In edit mode, clicking an comment toggles its selection
@@ -201,8 +197,7 @@ function Comment({ comment, curUserObject, token }) {
             <div className="comment-main">
                 <div className="comment-header">
                     <h3>
-                        {/*{console.log("uploader: ", comment.uploader)}*/}
-                        <a href={`/channel/${curUserObject._id}`}>{curUserObject.username}</a>
+                        <a href={`/userview/${curUserObject._id}`}>{curUserObject.username}</a>
                     </h3>
                     <span>{comment.postedAt}</span>
                 </div>

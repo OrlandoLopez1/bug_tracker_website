@@ -1,20 +1,15 @@
 .add-button {
-    margin-left: 4%;
-    margin-Top: 3%;
-    background: #73c2fb;
+    background: none;
+    color: inherit;
     border: none;
-    max-width: 70px;
-    min-width: 70px;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
 }
 
 .add-button:hover {
-    margin-left: 4%;
-    margin-Top: 3%;
-    background: #73c2fb;
-    border: none;
-    max-width: 70px;
-    min-width: 70px;
-
+    text-decoration: underline;
 }
 
 
@@ -22,7 +17,6 @@
     flex: 1;
     background: white;
     padding: 2vh 1vw 2vh 1vw;
-    /*margin: 3vh 2vw 5vh 2vw ;*/
     margin-top: 3vh;
     margin-bottom: 5vh;
     margin-left: auto;

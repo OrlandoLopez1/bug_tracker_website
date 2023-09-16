@@ -10,6 +10,7 @@
     import Modal from 'react-modal';
     import ProjectForm from "./ProjectForm";
     import jwtDecode from "jwt-decode";
+    import button from "bootstrap/js/src/button";
     Modal.setAppElement('#root');
     //todo fix modal its hideous
     //todo block projects off by planning, finished, etc
@@ -20,15 +21,14 @@
         const token = localStorage.getItem('accessToken');
         const navigate = useNavigate();
         const [modalIsOpen, setModalIsOpen] = useState(false);
-
+        const decodedToken = jwtDecode(token);
+        const role = decodedToken.UserInfo.role;
+        const userId = decodedToken.UserInfo.id
         useEffect(() => {
             const fetchData = async () => {
                 if (!token) {
                     navigate('/login')
                 }
-                const decodedToken = jwtDecode(token);
-                const role = decodedToken.UserInfo.role;
-                const userId = decodedToken.UserInfo.id
                 try {
                     if (role === 'admin'){
                         const projectData = await fetchProjects(token);
@@ -116,13 +116,18 @@
                         </div>
                     </Modal>
                     <div className="outside-container">
-                        <Button className="add-button" variant="primary" onClick={() => setModalIsOpen(true)}>Add +</Button>
                     <div className="overlapping-title-project-page">
                             <div className="title-text">
                                 Projects
                             </div>
                             <div className="title-desc-text">
-                                All your projects
+                                {role === 'projectmanager' || role === 'admin' ?
+                                    (
+                                        <button className="add-button" variant="primary" onClick={() => setModalIsOpen(true)}>Add</button>
+                                    ) : (
+                                        "All assigned projects"
+                                    )
+                                }
                             </div>
 
                         </div>
@@ -141,11 +146,20 @@
                                         </Accordion.Header>
                                         <Accordion.Body>
                                             <div className="accordion-content">
-                                                <div className="accordion-buttons">
-                                                    <button onClick={() => navigate(`/projectview/${project._id}`)}>View</button>
-                                                    <button onClick={() => handleEditProject(project)}>Edit</button>
-                                                    <button onClick={() => handleDeleteProject(project)}>Delete</button>
-                                                </div>
+                                                    {role === "projectmanager" || role === "admin" ?
+                                                        (
+                                                            <div className="accordion-buttons">
+                                                                <button onClick={() => navigate(`/projectview/${project._id}`)}>View</button>
+                                                                <button onClick={() => handleEditProject(project)}>Edit</button>
+                                                                <button onClick={() => handleDeleteProject(project)}>Delete</button>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="accordion-buttons">
+                                                                <button onClick={() => navigate(`/projectview/${project._id}`)}>View</button>
+                                                            </div>
+                                                        )
+
+                                                    }
                                                 <AccordionBody
                                                     project={project}
                                                     isEditing={editingProjectId === project._id}
@@ -166,3 +180,4 @@
     }
 
     export default ProjectPage;
+

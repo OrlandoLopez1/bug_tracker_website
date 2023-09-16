@@ -61,7 +61,13 @@ function TicketView() {
     const [priority, setPriority] = useState('');
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
+    const decodedToken = jwtDecode(token);
+    const role = decodedToken.UserInfo.role;
+    const userId = decodedToken.UserInfo.id
 
+    const handleBackClick = () => {
+        navigate(-1)
+    }
     const handleEditTicketClick = () => {
         setIsEditingTicket(!isEditingTicket);
     };
@@ -267,9 +273,17 @@ function TicketView() {
                             <div className="title-text">
                                 {ticket.title}
                             </div>
-                            <div className="title-desc-text">
-                                Back | <button className="button-pv" onClick={handleEditTicketClick}>Edit</button>
-                            </div>
+                            {role === 'projectmanager' || role === 'developer' || role === 'admin' ? (
+                                <div className="title-desc-text">
+                                    <button className="button-pv" onClick={handleBackClick}>Back</button> | <button className="button-pv" onClick={handleEditTicketClick}>Edit</button>
+                                </div>
+                            ) : (
+                                <div className="title-desc-text">
+                                    <button className="button-pv" onClick={handleBackClick}>Back</button>
+                                </div>
+                            )
+                            }
+
                         </div>
                             <div className="ticket-details-top-container">
                                 <div className='ticket-details-section'>
@@ -317,9 +331,17 @@ function TicketView() {
                                     <div className="title-text">
                                         {"Attachments"}
                                     </div>
-                                    <div className="title-desc-text">
-                                        <button className="edit-button-tv" onClick={() => setIsEditingAttachments(!isEditingAttachments)}>Edit</button>
-                                    </div>
+                                    {role === 'projectmanager' || role === 'developer' || role === 'admin' ? (
+                                        <div className="title-desc-text">
+                                            <button className="edit-button-tv" onClick={() => setIsEditingAttachments(!isEditingAttachments)}>Edit</button>
+                                        </div>
+                                    ) : (
+                                        <div className="title-desc-text">
+                                            associated with ticket
+                                        </div>
+                                    )
+                                    }
+
 
                                 </div>
                                 <div className="content1-tv">
@@ -346,9 +368,16 @@ function TicketView() {
                                     <div className="title-text">
                                         {"Comments"}
                                     </div>
-                                    <div className="title-desc-text">
-                                        <button className="edit-button" onClick={() => setIsEditingComments(!isEditingComments)}>Edit</button>
-                                    </div>
+                                    {role === 'projectmanager' || role === 'developer' || role === 'admin' ? (
+                                        <div className="title-desc-text">
+                                            <button className="edit-button" onClick={() => setIsEditingComments(!isEditingComments)}>Edit</button>
+                                        </div>
+                                        ) : (
+                                        <div className="title-desc-text">
+                                            associated with ticket
+                                        </div>
+                                    )
+                                    }
                                 </div>
                                 <div className="content2-tv">
                                     <CommentSection
